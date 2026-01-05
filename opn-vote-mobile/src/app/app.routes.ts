@@ -1,13 +1,14 @@
 import { Routes } from '@angular/router';
+import { ExplorePageComponent } from './explore-page/explore-page.component';
 
 export const routes: Routes = [
   {
-    path: 'home',
-    loadComponent: () => import('./home/home.page').then((m) => m.HomePage),
+    path: 'explore',
+    component: ExplorePageComponent
   },
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'explore',
     pathMatch: 'full',
   },
 ];
