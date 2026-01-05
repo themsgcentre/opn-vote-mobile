@@ -1,0 +1,12 @@
+@import '../styles/sizes.scss';
+@import '../styles/font-weights.scss';
+
+.page-container {
+    display: flex;
+    justify-content: center;
+    padding-top: 40px;
+
+    .title {
+        font-size: $title-medium;
+    }
+}
