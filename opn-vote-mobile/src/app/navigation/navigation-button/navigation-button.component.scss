@@ -5,9 +5,15 @@
   color: inherit;
   fill: inherit;
 
-  .selected {
-    opacity: 1;
-  }
+  .button-container {
+  opacity: 0.5;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
+}
+
+.button-container.selected {
+  opacity: 1;
+}
 
   &.center {
     align-items: center;
