@@ -1,0 +1,29 @@
+@import '../../styles/font-weights.scss';
+
+:host {
+  display: flex;
+  color: inherit;
+  fill: inherit;
+
+  .selected {
+    opacity: 1;
+  }
+
+  &.center {
+    align-items: center;
+  }
+
+  &.bottom {
+    align-items: flex-end;
+  }
+
+  &.semi-bold .icon {
+    font-weight: $semi-bold;
+  }
+
+  .icon {
+    fill: inherit;
+    height: min-content;
+    display: inline-block;
+  }
+}

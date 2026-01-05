@@ -1,3 +1,26 @@
-<p>
-  navigation-bar works!
-</p>
+<div class="navigation-container">
+  <app-navigation-button 
+    [iconSize]="24" 
+    iconSelected="bi-house-fill"
+    iconUnselected="bi-house"
+    [selected]="selectedPath === 'home'"
+    (clicked)="selectPath('home')"
+    >
+  </app-navigation-button>
+  <app-navigation-button 
+    [iconSize]="24" 
+    iconSelected="bi-clock-fill"
+    iconUnselected="bi-clock"
+    [selected]="selectedPath === 'history'"
+    (clicked)="selectPath('history')"
+    >
+  </app-navigation-button>
+  <app-navigation-button 
+    [iconSize]="24" 
+    iconSelected="bi-person-fill"
+    iconUnselected="bi-person"
+    [selected]="selectedPath === 'user'"
+    (clicked)="selectPath('user')"
+    >
+  </app-navigation-button>
+</div>
