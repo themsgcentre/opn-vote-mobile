@@ -1,0 +1,9 @@
+@import 'styles/colors.scss';
+@import 'styles/font-weights.scss';
+@import 'styles/sizes.scss';
+
+* {
+  font-family: 'Titillium Web', sans-serif;
+  font-weight: $light;
+  font-weight: inherit;
+}

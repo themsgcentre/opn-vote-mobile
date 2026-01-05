@@ -1,0 +1,35 @@
+@import '../../styles/font-weights.scss';
+
+:host {
+  display: flex;
+  color: inherit;
+  fill: inherit;
+
+  .button-container {
+  opacity: 0.5;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
+}
+
+.button-container.selected {
+  opacity: 1;
+}
+
+  &.center {
+    align-items: center;
+  }
+
+  &.bottom {
+    align-items: flex-end;
+  }
+
+  &.semi-bold .icon {
+    font-weight: $semi-bold;
+  }
+
+  .icon {
+    fill: inherit;
+    height: min-content;
+    display: inline-block;
+  }
+}
