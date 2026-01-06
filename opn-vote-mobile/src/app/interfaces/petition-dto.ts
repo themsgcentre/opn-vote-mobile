@@ -3,6 +3,6 @@ export interface PetitionDTO {
     imageUrl: string | undefined;
     category: string;
     country: string;
-    endDate: Date;
+    endDate: Date | undefined;
     numberOfVotes: number;
 }

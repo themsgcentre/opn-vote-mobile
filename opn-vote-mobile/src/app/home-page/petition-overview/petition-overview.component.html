@@ -1,3 +1,16 @@
 @if(petition) {
-  <p> {{ petition.title }} </p>
+  <div class="petition-block">
+    <div class="country-display">{{petition.country}}</div>
+    <div class="image-container">
+      <app-petition-overview-image></app-petition-overview-image>
+    </div>
+    <div class="petition-info">
+      <app-petition-info
+        [category]="petition.category"
+        [title]="petition.title"
+        [daysTilEnd]="daysTilEnd"
+        [numberOfVotes]="petition.numberOfVotes"
+      ></app-petition-info>
+    </div>
+  </div>
 }

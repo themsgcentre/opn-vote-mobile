@@ -1,6 +1,10 @@
 <ion-content>
   <div class="page-container">
     <div class="title">openPetition</div>
+    <div class="sub-title">Laufende Petitionen:</div>
+    <div class="list-container">
+      <app-petition-list [petitions]="(openPetitions$ | async) ?? []"></app-petition-list>
+    </div>
   </div>
 </ion-content>
 

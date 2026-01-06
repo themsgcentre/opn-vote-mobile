@@ -1,9 +1,9 @@
 @for (petition of petitions; track $index) {
-  <div class="overview-containter">
+  <div class="overview-container">
     <app-petition-overview [petition]="petition"></app-petition-overview>
   </div>
 }
 
 @if(petitions.length == 0) {
-  <div> Keine Petitionen verfügbar. </div>
+  <div class="no-petition-info"> Aktuell sind keine Petitionen verfügbar. </div>
 }

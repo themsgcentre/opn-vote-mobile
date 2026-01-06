@@ -17,7 +17,7 @@ export class PetitionService {
     for(var i = 1; i < 11; i++) {
       petitions.push({
         title: 'Titel ' + i,
-        category: 'Test',
+        category: 'Test Category',
         imageUrl: undefined,
         country: 'Deutschland',
         endDate: this.addDays(new Date(), i * 10),
