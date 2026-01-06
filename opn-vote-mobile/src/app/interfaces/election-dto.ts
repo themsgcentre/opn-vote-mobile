@@ -1,4 +1,4 @@
-export interface PetitionDTO {
+export interface ElectionDTO {
     id: number;
     title: string;
     imageUrl: string | undefined;

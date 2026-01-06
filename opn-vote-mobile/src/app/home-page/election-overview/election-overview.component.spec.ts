@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { PetitionListComponent } from './petition-list.component';
+import { ElectionOverviewComponent } from './election-overview.component';
 
-describe('PetitionListComponent', () => {
-  let component: PetitionListComponent;
-  let fixture: ComponentFixture<PetitionListComponent>;
+describe('ElectionOverviewComponent', () => {
+  let component: ElectionOverviewComponent;
+  let fixture: ComponentFixture<ElectionOverviewComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ PetitionListComponent ],
+      declarations: [ ElectionOverviewComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PetitionListComponent);
+    fixture = TestBed.createComponent(ElectionOverviewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

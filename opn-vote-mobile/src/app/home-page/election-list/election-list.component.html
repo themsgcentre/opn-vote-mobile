@@ -1,0 +1,9 @@
+@for (election of elections; track $index) {
+  <div class="overview-container" (click)="electionClicked.emit(election.id)">
+    <app-election-overview [election]="election"></app-election-overview>
+  </div>
+}
+
+@if(elections.length == 0) {
+  <div class="no-election-info"> Aktuell sind keine Wahlen verfügbar. </div>
+}

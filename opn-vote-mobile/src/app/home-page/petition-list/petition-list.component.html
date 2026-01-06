@@ -1,9 +1,0 @@
-@for (petition of petitions; track $index) {
-  <div class="overview-container" (click)="petitionClicked.emit(petition.id)">
-    <app-petition-overview [petition]="petition"></app-petition-overview>
-  </div>
-}
-
-@if(petitions.length == 0) {
-  <div class="no-petition-info"> Aktuell sind keine Petitionen verfügbar. </div>
-}

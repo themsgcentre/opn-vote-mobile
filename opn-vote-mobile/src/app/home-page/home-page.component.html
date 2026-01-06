@@ -1,12 +1,12 @@
 <ion-content>
   <div class="page-container">
-    <div class="title">openPetition</div>
-    <div class="sub-title">Laufende Petitionen:</div>
+    <div class="title">OPN Vote</div>
+    <div class="sub-title">Laufende Wahlen:</div>
     <div class="list-container">
-      <app-petition-list 
-        [petitions]="(openPetitions$ | async) ?? []"
-        (petitionClicked)="navigateToPetition($event)"
-        ></app-petition-list>
+      <app-election-list 
+        [elections]="(openElection$ | async) ?? []"
+        (electionClicked)="navigateToElection($event)"
+        ></app-election-list>
     </div>
   </div>
 </ion-content>

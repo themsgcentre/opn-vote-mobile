@@ -3,12 +3,12 @@ import { NumberDisplayComponent } from "../number-display/number-display.compone
 import { VerticalLineComponent } from "src/app/reusables/vertical-line/vertical-line.component";
 
 @Component({
-  selector: 'app-petition-info',
-  templateUrl: './petition-info.component.html',
-  styleUrls: ['./petition-info.component.scss'],
+  selector: 'app-election-info',
+  templateUrl: './election-info.component.html',
+  styleUrls: ['./election-info.component.scss'],
   imports: [NumberDisplayComponent, VerticalLineComponent],
 })
-export class PetitionInfoComponent {
+export class ElectionInfoComponent {
   @Input() category: string = '';
   @Input() title: string = '';
   @Input() numberOfVotes: number = 0;

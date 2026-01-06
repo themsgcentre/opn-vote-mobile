@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { IonContent } from "@ionic/angular/standalone";
-import { PetitionListComponent } from "./petition-list/petition-list.component";
-import { PetitionService } from '../services/petition-service';
-import { PetitionDTO } from '../interfaces/petition-dto';
+import { ElectionListComponent } from "./election-list/election-list.component";
+import { ElectionService } from '../services/election-service';
+import { ElectionDTO } from '../interfaces/election-dto';
 import { Observable, of } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -11,21 +11,21 @@ import { Router } from '@angular/router';
   selector: 'app-home-page',
   templateUrl: './home-page.component.html',
   styleUrls: ['./home-page.component.scss'],
-  imports: [IonContent, PetitionListComponent, CommonModule],
+  imports: [IonContent, ElectionListComponent, CommonModule],
 })
 export class HomePageComponent  implements OnInit {
 
-  openPetitions$: Observable<PetitionDTO[]> = of([]);
+  openElection$: Observable<ElectionDTO[]> = of([]);
   constructor(
-    private petitionSerivce: PetitionService,
+    private electionSerivce: ElectionService,
     private router: Router
   ) { }
 
   ngOnInit() {
-    this.openPetitions$ = this.petitionSerivce.getOpenPetitions();
+    this.openElection$ = this.electionSerivce.getOpenElections();
   }
 
-  navigateToPetition(petitionId: number) {
-    this.router.navigateByUrl('petition/detail/' + petitionId)
+  navigateToElection(electionId: number) {
+    this.router.navigateByUrl('election/detail/' + electionId)
   }
 }
