@@ -1,5 +1,5 @@
 @for (petition of petitions; track $index) {
-  <div class="overview-container">
+  <div class="overview-container" (click)="petitionClicked.emit(petition.id)">
     <app-petition-overview [petition]="petition"></app-petition-overview>
   </div>
 }

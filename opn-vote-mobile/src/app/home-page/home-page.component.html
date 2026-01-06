@@ -3,7 +3,10 @@
     <div class="title">openPetition</div>
     <div class="sub-title">Laufende Petitionen:</div>
     <div class="list-container">
-      <app-petition-list [petitions]="(openPetitions$ | async) ?? []"></app-petition-list>
+      <app-petition-list 
+        [petitions]="(openPetitions$ | async) ?? []"
+        (petitionClicked)="navigateToPetition($event)"
+        ></app-petition-list>
     </div>
   </div>
 </ion-content>

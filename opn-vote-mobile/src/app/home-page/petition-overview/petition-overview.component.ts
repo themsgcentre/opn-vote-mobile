@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { PetitionDTO } from 'src/app/interfaces/petition-dto';
 import { PetitionInfoComponent } from "../petition-info/petition-info.component";
 import { PetitionOverviewImageComponent } from "../petition-overview-image/petition-overview-image.component";

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { PetitionDTO } from 'src/app/interfaces/petition-dto';
 import { PetitionOverviewComponent } from "../petition-overview/petition-overview.component";
 
@@ -10,4 +10,5 @@ import { PetitionOverviewComponent } from "../petition-overview/petition-overvie
 })
 export class PetitionListComponent {
   @Input() petitions: PetitionDTO[] = [];
+  @Output() petitionClicked: EventEmitter<number> = new EventEmitter<number>();
 }
