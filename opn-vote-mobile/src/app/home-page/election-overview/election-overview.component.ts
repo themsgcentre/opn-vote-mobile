@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { ElectionDTO } from 'src/app/interfaces/election-dto';
-import { ElectionInfoComponent } from "../election-info/petition-info.component";
+import { ElectionInfoComponent } from "../election-info/election-info.component";
 import { ElectionImageComponent } from "../election-image/election-image.component";
 
 @Component({
