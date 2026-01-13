@@ -3,6 +3,8 @@ import { HomePageComponent } from './home-page/home-page.component';
 import { UserPageComponent } from './user-page/user-page.component';
 import { VoteHistoryComponent } from './vote-history/vote-history.component';
 import { ElectionDetailViewComponent } from './election/election-detail-view/election-detail-view.component';
+import { RegistrationComponent } from './election/registration/registration.component';
+import { VotingComponent } from './election/voting/voting.component';
 
 export const routes: Routes = [
   {
@@ -25,5 +27,13 @@ export const routes: Routes = [
   {
     path: 'election/detail/:id', 
     component: ElectionDetailViewComponent
+  },
+  {
+    path: 'election/registration/:id',
+    component: RegistrationComponent
+  },
+  {
+    path: 'election/vote/:id',
+    component: VotingComponent
   }
 ];
