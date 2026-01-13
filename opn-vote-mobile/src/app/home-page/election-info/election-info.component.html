@@ -1,0 +1,17 @@
+<div class="info-container">
+  <div class="category-display">{{category}}</div>
+  <div class="title">{{title}}</div>
+  <div class="bottom-row">
+    <app-number-display
+      description="Abgestimmt"
+      [numericValue]="numberOfVotes"
+    ></app-number-display>
+    <app-vertical-line
+      [height]="54"
+    ></app-vertical-line>
+    <app-number-display
+      description="Tage verbleibend"
+      [numericValue]="daysTilEnd"
+    ></app-number-display>
+  </div>
+</div>

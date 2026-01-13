@@ -1,3 +1,13 @@
-<p>
-  home-page works!
-</p>
+<ion-content>
+  <div class="page-container">
+    <div class="title">OPN Vote</div>
+    <div class="sub-title">Laufende Wahlen:</div>
+    <div class="list-container">
+      <app-election-list 
+        [elections]="(openElection$ | async) ?? []"
+        (electionClicked)="navigateToElection($event)"
+        ></app-election-list>
+    </div>
+  </div>
+</ion-content>
+

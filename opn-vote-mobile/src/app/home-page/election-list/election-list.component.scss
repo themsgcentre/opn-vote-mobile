@@ -1,0 +1,13 @@
+@import '../../styles/sizes.scss';
+@import '../../styles/font-weights.scss';
+@import '../../styles/colors.scss';
+
+.no-election-info {
+    padding-top: 20px;
+    font-size: $text-medium;
+    color: $opn-lightgray;
+}
+
+.overview-container {
+    margin-top: 20px;
+}

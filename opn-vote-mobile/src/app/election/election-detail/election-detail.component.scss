@@ -1,0 +1,45 @@
+@import '../../styles/sizes.scss';
+@import '../../styles/font-weights.scss';
+@import '../../styles/colors.scss';
+
+.info-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .title {
+        margin-top: 50px;
+        font-size: $title-large;
+        font-weight: $bold;
+    }
+
+    .image-container {
+        margin-top: 30px;
+        background-color: $opn-gray;
+        height: 200px;
+        width: 300px;
+        display: flex;
+        border-radius: 3px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .vote-count {
+        margin-top: 20px;
+        font-size: $text-medium;
+    }
+
+    .endDate {
+        margin-top: 10px;
+        font-size: $text-medium;
+    }
+
+    .vote-button {
+        margin-top: 30px;
+        background-color: $opn-slategray;
+        border-radius: 5px;
+        padding: 10px;
+    }
+}

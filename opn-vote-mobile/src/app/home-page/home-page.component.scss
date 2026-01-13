@@ -1,0 +1,25 @@
+@import '../styles/sizes.scss';
+@import '../styles/font-weights.scss';
+
+.page-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 40px;
+
+    .title {
+        font-size: $title-medium;
+        padding-bottom: 30px;
+    }
+
+
+    .sub-title {
+        font-size: $text-large;
+        font-weight: $semi-bold;
+    }
+
+    .list-container {
+        padding-top: 20px;
+    }
+}
