@@ -6,7 +6,7 @@
     </div>
     <div class="vote-count">Bisherige Stimmen: {{election.numberOfVotes}}</div>
     <div class="endDate">Tage verbleibend: {{daysTilEnd}}</div>
-    <div class="vote-button">Jetzt an Wahl teilnehmen</div>
+    <div class="vote-button" (click)="participateClicked.emit()">Jetzt an Wahl teilnehmen</div>
   </div>
 }
 

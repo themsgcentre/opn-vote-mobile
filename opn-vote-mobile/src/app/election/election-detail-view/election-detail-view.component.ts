@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { filter, map, Observable, of, switchMap, tap } from 'rxjs';
 import { ElectionDTO } from 'src/app/interfaces/election-dto';
 import { ElectionService } from 'src/app/services/election-service';
@@ -16,6 +16,7 @@ export class ElectionDetailViewComponent  implements OnInit {
   election$: Observable<ElectionDTO | undefined> = of(undefined)
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private electionService: ElectionService
   ) { }
 
@@ -27,5 +28,9 @@ export class ElectionDetailViewComponent  implements OnInit {
         this.electionService.getElectionById(id)
       )
     );
+  }
+
+  onParticipateClicked() {
+    this.router.navigate(['/election/registration', this.route.snapshot.paramMap.get('id')]);
   }
 }
