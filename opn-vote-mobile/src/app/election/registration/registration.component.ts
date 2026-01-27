@@ -28,7 +28,10 @@ export class RegistrationComponent implements OnInit {
   ngOnInit(): void {
     //this.masterKey$ = this.masterKeyService.getMasterkey();
     this.masterKey$ = of(null); // Simulate missing master key for testing
-    this.electionId = this.route.snapshot.params['electionId'];
+    
+    const idParam = this.route.snapshot.paramMap.get('id');
+    this.electionId = idParam !== null ? Number(idParam) : null;
+
     if (this.electionId !== null) {
       this.validElection$ = this.electionService.getElectionById(this.electionId).pipe(
         map(election => election !== undefined && election !== null)

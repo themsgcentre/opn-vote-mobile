@@ -6,5 +6,9 @@
   ></app-masterkey-options>
 }
 @else {
-  <p> not implemented yet </p>
+  @if ((validElection$ | async)) {
+    <p>Registration successful!</p>
+  } @else {
+    <p>Invalid election ID.</p>
+  }
 }
