@@ -8,6 +8,7 @@ import { Component, Input, OnInit } from '@angular/core';
 export class MasterkeySetupComponent  implements OnInit {
 
   @Input() canSkip: boolean = false;
+  
   constructor() { }
 
   ngOnInit() {}
