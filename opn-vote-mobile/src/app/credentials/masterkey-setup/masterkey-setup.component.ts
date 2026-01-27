@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-masterkey-setup',
@@ -8,13 +8,6 @@ import { Component, Input, OnInit } from '@angular/core';
 export class MasterkeySetupComponent {
 
   @Input() canSkip: boolean = false;
-
-  createMasterKeyClicked() {
-    console.log("Create Master Key clicked");
-  }
-
-  importMasterKeyClicked() {
-    //TODO: Implement later
-    console.log("Import Master Key clicked");
-  }
+  @Output() createMasterKeyClicked = new EventEmitter<void>();
+  @Output() importMasterKeyClicked = new EventEmitter<void>();
 }
