@@ -5,12 +5,16 @@ import { Component, Input, OnInit } from '@angular/core';
   templateUrl: './masterkey-setup.component.html',
   styleUrls: ['./masterkey-setup.component.scss'],
 })
-export class MasterkeySetupComponent  implements OnInit {
+export class MasterkeySetupComponent {
 
   @Input() canSkip: boolean = false;
-  
-  constructor() { }
 
-  ngOnInit() {}
+  createMasterKeyClicked() {
+    console.log("Create Master Key clicked");
+  }
 
+  importMasterKeyClicked() {
+    //TODO: Implement later
+    console.log("Import Master Key clicked");
+  }
 }
