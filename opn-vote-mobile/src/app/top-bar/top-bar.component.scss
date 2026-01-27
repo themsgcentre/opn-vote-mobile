@@ -1,0 +1,24 @@
+@import '../styles/colors.scss';
+@import '../styles/sizes.scss';
+@import '../styles/font-weights.scss';
+
+:host {
+    height: $top-bar-height;
+    position: relative;
+    display: flex;
+    z-index: 1;
+    background-color: $opn-gray;
+
+    .top-bar-container {
+        width: 100%;
+        padding: 0px 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .title {
+            font-weight: $bold;
+            font-size: $title-large;
+        }
+    }
+}

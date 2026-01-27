@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-masterkey-setup',
@@ -7,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MasterkeySetupComponent  implements OnInit {
 
+  @Input() canSkip: boolean = false;
   constructor() { }
 
   ngOnInit() {}

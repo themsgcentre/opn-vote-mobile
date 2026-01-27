@@ -5,6 +5,15 @@
   height: 100%;
 }
 
+.top-bar {
+  z-index: 1;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: $top-bar-height;
+  width: 100%;
+}
+
 .navigation-bar {
   z-index: 1;
   position: fixed;
@@ -16,7 +25,7 @@
 
 .router-container {
   position: fixed;
-  top: 0;
+  top: $top-bar-height;
   left: 0;
   right: 0;
   bottom: $navbar-height;
