@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { MasterkeySetupComponent } from './masterkey-setup.component';
+import { MasterkeyOptionsComponent } from './masterkey-options.component';
 
 describe('MasterkeySetupComponent', () => {
-  let component: MasterkeySetupComponent;
-  let fixture: ComponentFixture<MasterkeySetupComponent>;
+  let component: MasterkeyOptionsComponent;
+  let fixture: ComponentFixture<MasterkeyOptionsComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ MasterkeySetupComponent ],
+      declarations: [ MasterkeyOptionsComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MasterkeySetupComponent);
+    fixture = TestBed.createComponent(MasterkeyOptionsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

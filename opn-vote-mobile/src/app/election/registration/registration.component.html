@@ -1,5 +1,9 @@
-@if(!hasMasterKey) {
-  <app-masterkey-setup></app-masterkey-setup>
+@if(!(masterKey$ | async)) {
+  <app-masterkey-options 
+  [canSkip]="false"
+  (createMasterKeyClicked)="onCreateMasterKey()"
+  (importMasterKeyClicked)="onImportMasterKey()"
+  ></app-masterkey-options>
 }
 @else {
   <p> not implemented yet </p>
