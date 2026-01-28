@@ -31,6 +31,8 @@ export class ElectionDetailViewComponent  implements OnInit {
   }
 
   onParticipateClicked() {
-    this.router.navigate(['/election/registration', this.route.snapshot.paramMap.get('id')]);
+  const electionId = this.route.snapshot.paramMap.get('id');
+  this.router.navigate( ['/election/credentials/masterkey-options'],
+    { queryParams: { canSkip: true, electionId: electionId, returnUrl: `/election/${electionId}` } });
   }
 }
