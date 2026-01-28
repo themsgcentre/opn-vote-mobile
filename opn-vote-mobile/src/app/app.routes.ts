@@ -4,7 +4,8 @@ import { UserPageComponent } from './user-page/user-page.component';
 import { VoteHistoryComponent } from './vote-history/vote-history.component';
 import { ElectionDetailViewComponent } from './election/election-detail-view/election-detail-view.component';
 import { VotingComponent } from './election/voting/voting.component';
-import { MasterkeyOptionsComponent } from './credentials/masterkey-options/masterkey-options.component';
+import { MasterkeySetupComponent } from './credentials/masterkey-setup/masterkey-setup.component';
+import { VoteKeySetupComponent } from './credentials/vote-key-setup/vote-key-setup.component';
 
 export const routes: Routes = [
   {
@@ -29,8 +30,12 @@ export const routes: Routes = [
     component: ElectionDetailViewComponent
   },
   {
-    path: 'election/credentials/masterkey-options',  
-    component: MasterkeyOptionsComponent
+    path: 'election/credentials/master-key-setup',  
+    component: MasterkeySetupComponent
+  },
+  {
+    path: 'election/credentials/vote-key-setup/:id',
+    component: VoteKeySetupComponent
   },
   {
     path: 'election/vote/:id',

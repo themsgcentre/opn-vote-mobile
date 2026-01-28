@@ -3,11 +3,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MasterkeyService } from 'src/app/services/masterkey-service';
 
 @Component({
-  selector: 'app-masterkey-options',
-  templateUrl: './masterkey-options.component.html',
-  styleUrls: ['./masterkey-options.component.scss'],
+  selector: 'app-masterkey-setup',
+  templateUrl: './masterkey-setup.component.html',
+  styleUrls: ['./masterkey-setup.component.scss'],
 })
-export class MasterkeyOptionsComponent implements OnInit {
+export class MasterkeySetupComponent implements OnInit {
   constructor(
     private masterKeyService: MasterkeyService,
     private route: ActivatedRoute,
@@ -31,11 +31,10 @@ export class MasterkeyOptionsComponent implements OnInit {
   }
     
   onCreateMasterKey() {
-    this.masterKeyService.createNewMasterkey()
-      .subscribe({
-        next: () => {
-          this.router.navigateByUrl('/');
-        }
-      });
+    this.masterKeyService.createNewMasterkey().subscribe({
+    complete: () => {
+      this.router.navigateByUrl(this.returnUrl);
+    },
+  });
   }
 }
