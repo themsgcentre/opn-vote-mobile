@@ -31,7 +31,7 @@ export class BallotPaperSetupComponent  implements OnInit {
       take(1)
     ).subscribe(() => {
       this.router.navigate([
-        '/',
+        '/election/vote',
         this.electionId
       ]);
     });
