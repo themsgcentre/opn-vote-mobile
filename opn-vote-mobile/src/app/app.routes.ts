@@ -6,6 +6,7 @@ import { ElectionDetailViewComponent } from './election/election-detail-view/ele
 import { VotingComponent } from './election/voting/voting.component';
 import { MasterkeySetupComponent } from './credentials/masterkey-setup/masterkey-setup.component';
 import { VoteKeySetupComponent } from './credentials/vote-key-setup/vote-key-setup.component';
+import { BallotPaperSetupComponent } from './credentials/ballot-paper-setup/ballot-paper-setup.component';
 
 export const routes: Routes = [
   {
@@ -36,6 +37,10 @@ export const routes: Routes = [
   {
     path: 'election/credentials/vote-key-setup/:id',
     component: VoteKeySetupComponent
+  },
+  {
+    path: 'election/ballot-paper-setup/:id',
+    component: BallotPaperSetupComponent
   },
   {
     path: 'election/vote/:id',

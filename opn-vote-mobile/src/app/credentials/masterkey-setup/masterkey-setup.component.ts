@@ -32,9 +32,9 @@ export class MasterkeySetupComponent implements OnInit {
     
   onCreateMasterKey() {
     this.masterKeyService.createNewMasterkey().subscribe({
-    complete: () => {
-      this.router.navigateByUrl(this.returnUrl);
-    },
+      complete: () => {
+        this.router.navigateByUrl(this.returnUrl);
+      },
   });
   }
 }
