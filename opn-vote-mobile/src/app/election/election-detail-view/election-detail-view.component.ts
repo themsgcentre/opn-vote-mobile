@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { filter, map, Observable, of, switchMap, tap } from 'rxjs';
 import { ElectionDTO } from 'src/app/interfaces/election-dto';
 import { ElectionService } from 'src/app/services/election-service';
@@ -16,6 +16,7 @@ export class ElectionDetailViewComponent  implements OnInit {
   election$: Observable<ElectionDTO | undefined> = of(undefined)
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private electionService: ElectionService
   ) { }
 
@@ -27,5 +28,11 @@ export class ElectionDetailViewComponent  implements OnInit {
         this.electionService.getElectionById(id)
       )
     );
+  }
+
+  onParticipateClicked() {
+  const electionId = this.route.snapshot.paramMap.get('id');
+  this.router.navigate( ['/election/credentials/master-key-setup'],
+    { queryParams: { canSkip: false, electionId: electionId, returnUrl: `election/credentials/vote-key-setup/${electionId}`} });
   }
 }
