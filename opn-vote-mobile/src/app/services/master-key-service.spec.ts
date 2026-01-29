@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { MasterkeyService } from './masterkey-service';
+import { MasterKeyService } from './master-key-service';
 
-describe('MasterkeyService', () => {
-  let service: MasterkeyService;
+describe('MasterKeyService', () => {
+  let service: MasterKeyService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(MasterkeyService);
+    service = TestBed.inject(MasterKeyService);
   });
 
   it('should be created', () => {

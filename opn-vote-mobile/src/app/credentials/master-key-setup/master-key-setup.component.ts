@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MasterkeyService } from 'src/app/services/masterkey-service';
+import { MasterKeyService } from 'src/app/services/master-key-service';
 
 @Component({
-  selector: 'app-masterkey-setup',
-  templateUrl: './masterkey-setup.component.html',
-  styleUrls: ['./masterkey-setup.component.scss'],
+  selector: 'app-master-key-setup',
+  templateUrl: './master-key-setup.component.html',
+  styleUrls: ['./master-key-setup.component.scss'],
 })
-export class MasterkeySetupComponent implements OnInit {
+export class MasterKeySetupComponent implements OnInit {
   constructor(
-    private masterKeyService: MasterkeyService,
+    private masterKeyService: MasterKeyService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -31,10 +31,10 @@ export class MasterkeySetupComponent implements OnInit {
   }
     
   onCreateMasterKey() {
-    this.masterKeyService.createNewMasterkey().subscribe({
+    this.masterKeyService.createNewMasterKey().subscribe({
       complete: () => {
         this.router.navigateByUrl(this.returnUrl);
       },
-  });
+    });
   }
 }

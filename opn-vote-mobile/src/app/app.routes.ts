@@ -4,7 +4,7 @@ import { UserPageComponent } from './user-page/user-page.component';
 import { VoteHistoryComponent } from './vote-history/vote-history.component';
 import { ElectionDetailViewComponent } from './election/election-detail-view/election-detail-view.component';
 import { VotingComponent } from './election/voting/voting.component';
-import { MasterkeySetupComponent } from './credentials/masterkey-setup/masterkey-setup.component';
+import { MasterKeySetupComponent } from './credentials/master-key-setup/master-key-setup.component';
 import { VoteKeySetupComponent } from './credentials/vote-key-setup/vote-key-setup.component';
 import { BallotPaperSetupComponent } from './credentials/ballot-paper-setup/ballot-paper-setup.component';
 
@@ -32,7 +32,7 @@ export const routes: Routes = [
   },
   {
     path: 'election/credentials/master-key-setup',  
-    component: MasterkeySetupComponent
+    component: MasterKeySetupComponent
   },
   {
     path: 'election/credentials/vote-key-setup/:id',

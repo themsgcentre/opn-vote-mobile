@@ -4,12 +4,12 @@ import { Observable, of } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class MasterkeyService {
-  createNewMasterkey(): Observable<void> {
+export class MasterKeyService {
+  createNewMasterKey(): Observable<void> {
     return of();
   }
 
-  getMasterkey(): Observable<string | null> {
+  getMasterKey(): Observable<string | null> {
     return of(null);
   }
 }
