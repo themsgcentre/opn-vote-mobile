@@ -16,4 +16,10 @@ export class ElectionService {
       map((dto: ElectionDTO | null) => (dto ? mapElection(dto) : null))
     );
   }
+
+  getAllElections(): Observable<Election[]> {
+    return this.electionProxyService.getElections().pipe(
+      map((dtos: ElectionDTO[]) => dtos.map(mapElection))
+    );
+  }
 }

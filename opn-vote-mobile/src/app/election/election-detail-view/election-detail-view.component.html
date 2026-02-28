@@ -1,4 +1,8 @@
-<app-election-detail 
-    [election]="(election$ | async) ?? null"
-    (participateClicked)="onParticipateClicked()"
-></app-election-detail>
+<ion-content>
+    <div class="detail-container">
+        <app-election-detail 
+        [election]="(election$ | async) ?? null"
+        (participateClicked)="onParticipateClicked()"
+        ></app-election-detail>
+    </div>
+</ion-content>
