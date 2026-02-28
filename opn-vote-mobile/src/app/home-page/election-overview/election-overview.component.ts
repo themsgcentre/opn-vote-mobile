@@ -1,8 +1,7 @@
 import { Component, Input, OnChanges } from '@angular/core';
-import { ElectionDTO } from 'src/app/interfaces/election-dto';
 import { ElectionInfoComponent } from "../election-info/election-info.component";
 import { ElectionImageComponent } from "../election-image/election-image.component";
-import { daysBetween } from 'src/app/operations/date-operations';
+import { Election } from 'src/app/interfaces/election';
 
 @Component({
   selector: 'app-election-overview',
@@ -11,13 +10,9 @@ import { daysBetween } from 'src/app/operations/date-operations';
   imports: [ElectionInfoComponent, ElectionImageComponent],
 })
 export class ElectionOverviewComponent implements OnChanges {
-  @Input() election: ElectionDTO | undefined; 
+  @Input() election: Election | undefined; 
   daysTilEnd: number = 0;
 
   ngOnChanges(): void {
-    const now = new Date();
-    if(this.election && this.election.endDate) {
-      this.daysTilEnd = daysBetween(now, this.election.endDate)
-    }
   }
 }

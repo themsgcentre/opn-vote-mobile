@@ -1,42 +1,25 @@
 import { Injectable } from '@angular/core';
+import { ElectionProxyService } from './election-proxy-service';
+import { Election } from '../interfaces/election';
+import { map, Observable } from 'rxjs';
 import { ElectionDTO } from '../interfaces/election-dto';
-import { Observable, of } from 'rxjs';
+import { mapElection } from '../mappers/election-mapper';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ElectionService {
-  // TODO: Add add methods to only get open elections, finished ones, etc.
-  getOpenElections(): Observable<ElectionDTO[]> { //TODO: replace with call to proxy service -> backend
-    return of(this.getDummyElections())
+  constructor(private electionProxyService: ElectionProxyService) {}
+
+  getElectionById(id: number): Observable<Election | null> {
+    return this.electionProxyService.getElectionById(id).pipe(
+      map((dto: ElectionDTO | null) => (dto ? mapElection(dto) : null))
+    );
   }
 
-  getElectionById(id: number): Observable<ElectionDTO | undefined> {
-    const election = this.getDummyElections().find((election) => election.id === id);
-    return of(election);
+  getAllElections(): Observable<Election[]> {
+    return this.electionProxyService.getElections().pipe(
+      map((dtos: ElectionDTO[]) => dtos.map(mapElection))
+    );
   }
-
-  // TODO: Remove once request to backend works
-  private getDummyElections(): ElectionDTO[] {
-    var elections = [];
-    for(var i = 1; i < 11; i++) {
-      elections.push({
-        id: i,
-        title: 'Titel ' + i,
-        category: 'Test Category',
-        imageUrl: undefined,
-        country: 'Deutschland',
-        endDate: this.addDays(new Date(), i * 10),
-        numberOfVotes: i*200
-      } as ElectionDTO)
-    }
-    return elections;
-  }
-
-  private addDays(date: Date, days: number): Date {
-  const result = new Date(date);
-  result.setDate(result.getDate() + days);
-  return result;
 }
-}
-

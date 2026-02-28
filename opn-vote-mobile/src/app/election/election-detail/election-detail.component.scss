@@ -10,30 +10,21 @@
     align-items: center;
 
     .title {
-        margin-top: 50px;
-        font-size: $title-large;
+        margin: 30px 24px;
+        font-size: $title-medium;
         font-weight: $bold;
     }
 
     .image-container {
-        margin-top: 30px;
-        background-color: $opn-gray;
-        height: 200px;
-        width: 300px;
         display: flex;
-        border-radius: 3px;
         justify-content: center;
         align-items: center;
     }
 
-    .vote-count {
-        margin-top: 20px;
+    .description {
+        margin: 30px 24px;
         font-size: $text-medium;
-    }
-
-    .endDate {
-        margin-top: 10px;
-        font-size: $text-medium;
+        font-weight: $regular;
     }
 
     .vote-button {

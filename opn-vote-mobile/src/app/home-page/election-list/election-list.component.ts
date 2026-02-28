@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ElectionDTO } from 'src/app/interfaces/election-dto';
 import { ElectionOverviewComponent } from "../election-overview/election-overview.component";
+import { Election } from 'src/app/interfaces/election';
 
 @Component({
   selector: 'app-election-list',
@@ -9,6 +9,6 @@ import { ElectionOverviewComponent } from "../election-overview/election-overvie
   imports: [ElectionOverviewComponent],
 })
 export class ElectionListComponent {
-  @Input() elections: ElectionDTO[] = [];
+  @Input() elections: Election[] = [];
   @Output() electionClicked: EventEmitter<number> = new EventEmitter<number>();
 }
