@@ -6,7 +6,7 @@ import { delay, Observable, of, tap } from 'rxjs';
 })
 export class VoteKeyService {
 
-  private voteKey: string | undefined = undefined;
+  private voteKey: string | undefined = undefined; //only for simulation purposes
 
   getVoteKey(electionId: number): Observable<string | undefined> {
     return of(this.voteKey).pipe(delay(800));
