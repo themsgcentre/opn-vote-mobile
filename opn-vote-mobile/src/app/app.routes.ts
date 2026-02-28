@@ -1,12 +1,10 @@
 import { Routes } from '@angular/router';
 import { HomePageComponent } from './home-page/home-page.component';
-import { UserPageComponent } from './user-page/user-page.component';
 import { VoteHistoryComponent } from './vote-history/vote-history.component';
 import { ElectionDetailViewComponent } from './election/election-detail-view/election-detail-view.component';
 import { VotingComponent } from './election/voting/voting.component';
-import { MasterKeySetupComponent } from './credentials/master-key-setup/master-key-setup.component';
-import { VoteKeySetupComponent } from './credentials/vote-key-setup/vote-key-setup.component';
-import { BallotPaperSetupComponent } from './credentials/ballot-paper-setup/ballot-paper-setup.component';
+import { MasterKeyManagementComponent } from './credentials/master-key-management/master-key-management.component';
+import { RegistrationComponent } from './election/registration/registration.component';
 
 export const routes: Routes = [
   {
@@ -19,7 +17,7 @@ export const routes: Routes = [
   },
   {
     path: 'user',
-    component: UserPageComponent
+    component: MasterKeyManagementComponent
   },
   {
     path: '',
@@ -31,16 +29,8 @@ export const routes: Routes = [
     component: ElectionDetailViewComponent
   },
   {
-    path: 'election/credentials/master-key-setup',  
-    component: MasterKeySetupComponent
-  },
-  {
-    path: 'election/credentials/vote-key-setup/:id',
-    component: VoteKeySetupComponent
-  },
-  {
-    path: 'election/ballot-paper-setup/:id',
-    component: BallotPaperSetupComponent
+    path: 'election/register/:id',
+    component: RegistrationComponent
   },
   {
     path: 'election/vote/:id',

@@ -1,0 +1,16 @@
+<div class="registration-container">
+  @switch (step$ | async) {
+    @case ('MASTERKEY') {
+      <app-master-key-setup (createClicked)="onCreateMasterKey()"></app-master-key-setup>
+    }
+    @case ('VOTEKEY') {
+      <app-vote-key-setup (createClicked)="onCreateVoteKey()"></app-vote-key-setup>
+    }
+    @case ('BALLOT') {
+      <app-ballot-setup (createClicked)="onCreateBallot()"></app-ballot-setup>
+    }
+    @case ('READY') {
+      
+    }
+  }
+</div>
