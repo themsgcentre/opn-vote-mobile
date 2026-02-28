@@ -1,4 +1,4 @@
 <app-election-detail 
-    [election]="(election$ | async) ?? undefined"
+    [election]="(election$ | async) ?? null"
     (participateClicked)="onParticipateClicked()"
 ></app-election-detail>

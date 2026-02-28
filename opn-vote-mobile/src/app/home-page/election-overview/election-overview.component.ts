@@ -16,8 +16,8 @@ export class ElectionOverviewComponent implements OnChanges {
 
   ngOnChanges(): void {
     const now = new Date();
-    if(this.election && this.election.endDate) {
+    /*if(this.election && this.election.endDate) {
       this.daysTilEnd = daysBetween(now, this.election.endDate)
-    }
+    }*/
   }
 }

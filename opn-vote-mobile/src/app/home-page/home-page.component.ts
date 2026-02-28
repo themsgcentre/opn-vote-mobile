@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IonContent } from "@ionic/angular/standalone";
 import { ElectionListComponent } from "./election-list/election-list.component";
-import { ElectionService } from '../services/election-service';
+import { ElectionProxyService } from '../services/election-proxy-service';
 import { ElectionDTO } from '../interfaces/election-dto';
 import { Observable, of } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -17,12 +17,12 @@ export class HomePageComponent  implements OnInit {
 
   openElection$: Observable<ElectionDTO[]> = of([]);
   constructor(
-    private electionSerivce: ElectionService,
+    private electionSerivce: ElectionProxyService,
     private router: Router
   ) { }
 
   ngOnInit() {
-    this.openElection$ = this.electionSerivce.getOpenElections();
+    //this.openElection$ = this.electionSerivce.getOpenElections();
   }
 
   navigateToElection(electionId: number) {

@@ -1,9 +1,18 @@
 export interface ElectionDTO {
-    id: number;
-    title: string;
-    imageUrl: string | undefined;
-    category: string;
-    country: string;
-    endDate: Date | undefined;
-    numberOfVotes: number;
+    id: number,
+    descriptionBlob: string,
+    descriptionIpfsCid: string,
+    authorizedVoterCount: number,
+    privateKey: string | null,
+    publicKey: string,
+    registerPublicKeyE: string,
+    registerPublicKeyN: string,
+    registeredVoterCount: number,
+    registrationEndTime: number,
+    registrationStartTime: number,
+    status: number,
+    totalVotes: number,
+    transactionHash: string,
+    votingEndTime: number,
+    votingStartTime: number,
 }

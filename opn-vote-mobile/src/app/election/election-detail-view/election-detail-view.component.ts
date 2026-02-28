@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { filter, map, Observable, of, switchMap, tap } from 'rxjs';
 import { ElectionDTO } from 'src/app/interfaces/election-dto';
-import { ElectionService } from 'src/app/services/election-service';
+import { ElectionProxyService } from 'src/app/services/election-proxy-service';
 import { ElectionDetailComponent } from "../election-detail/election-detail.component";
 import { CommonModule } from '@angular/common';
 
@@ -13,11 +13,11 @@ import { CommonModule } from '@angular/common';
   imports: [ElectionDetailComponent, CommonModule],
 })
 export class ElectionDetailViewComponent  implements OnInit {
-  election$: Observable<ElectionDTO | undefined> = of(undefined)
+  election$: Observable<ElectionDTO | null> = of(null)
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private electionService: ElectionService
+    private electionService: ElectionProxyService
   ) { }
 
   ngOnInit() {
@@ -31,8 +31,8 @@ export class ElectionDetailViewComponent  implements OnInit {
   }
 
   onParticipateClicked() {
-  const electionId = this.route.snapshot.paramMap.get('id');
-  this.router.navigate( ['/election/credentials/master-key-setup'],
-    { queryParams: { canSkip: false, electionId: electionId, returnUrl: `election/credentials/vote-key-setup/${electionId}`} });
+    const electionId = this.route.snapshot.paramMap.get('id');
+    this.router.navigate( ['/election/credentials/master-key-setup'],
+      { queryParams: { canSkip: false, electionId: electionId, returnUrl: `election/credentials/vote-key-setup/${electionId}`} });
   }
 }
