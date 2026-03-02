@@ -5,7 +5,7 @@ import { MasterKeySetupComponent } from 'src/app/credentials/master-key-setup/ma
 import { BallotPaperService } from 'src/app/services/ballot-paper-service';
 import { MasterKeyService } from 'src/app/services/master-key-service';
 import { VoteKeyService } from 'src/app/services/vote-key-service';
-import { RegistrationState } from 'src/app/state/registration.state';
+import { RegistrationState } from 'src/app/globals/registration.state';
 import { VoteKeySetupComponent } from "src/app/credentials/vote-key-setup/vote-key-setup.component";
 
 @Component({

@@ -5,3 +5,8 @@ export interface GetElectionResponse {
 export interface GetElectionsResponse {
   elections: any[]; 
 }
+
+export interface BlindedSignatureResponse {
+  data?: { blindedSignature: string };
+  error?: string;
+}
