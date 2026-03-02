@@ -6,16 +6,13 @@ import { delay, Observable, of, tap } from 'rxjs';
 })
 export class VoteKeyService {
 
-  private voteKey: string | undefined = undefined;
+  private voteKey: string | null = null;
 
-  getVoteKey(electionId: number): Observable<string | undefined> {
-    return of(this.voteKey).pipe(delay(800));
+  getVoteKey(electionId: number): Observable<string | null> {
+    throw new Error("Not implemented");
   }
 
-  setVoteKey(key: string): Observable<void> {
-    return of(void 0).pipe(
-      delay(800),          
-      tap(() => (this.voteKey = key))
-    );
+  createVoteKey(electionId: number): Observable<void> {
+    throw new Error("Not implemented");
   }
 }

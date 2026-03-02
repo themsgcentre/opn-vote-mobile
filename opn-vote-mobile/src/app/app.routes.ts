@@ -29,11 +29,11 @@ export const routes: Routes = [
     component: ElectionDetailViewComponent
   },
   {
-    path: 'election/register/:id',
+    path: 'election/register/:id/:jwt',
     component: RegistrationComponent
   },
   {
-    path: 'election/vote/:id',
+    path: 'election/vote/:id/',
     component: VotingComponent
   }
 ];
