@@ -1,18 +1,13 @@
 import { Injectable } from '@angular/core';
-import { delay, Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, delay, Observable, of, tap } from 'rxjs';
+import { RegisterProxyService } from './register-proxy-service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class VoteKeyService {
+  private hasVoteKeySubject = new BehaviorSubject<boolean>(false);
+  hasVoteKey$ = this.hasVoteKeySubject.asObservable();
 
-  private voteKey: string | null = null;
-
-  getVoteKey(electionId: number): Observable<string | null> {
-    throw new Error("Not implemented");
-  }
-
-  createVoteKey(electionId: number): Observable<void> {
-    throw new Error("Not implemented");
-  }
+  constructor(private registerProxyService: RegisterProxyService) {}
 }
