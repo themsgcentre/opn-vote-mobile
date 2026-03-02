@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { ElectionService } from 'src/app/services/election-service';
 import { Election } from 'src/app/interfaces/election';
 import { IonCol, IonContent } from "@ionic/angular/standalone";
+import { JWT } from 'src/app/jwt';
 
 @Component({
   selector: 'app-election-detail-view',
@@ -33,7 +34,6 @@ export class ElectionDetailViewComponent  implements OnInit {
 
   onParticipateClicked() {
     const electionId = this.route.snapshot.paramMap.get('id');
-    this.router.navigate( ['/election/credentials/master-key-setup'],
-      { queryParams: { canSkip: false, electionId: electionId, returnUrl: `election/credentials/vote-key-setup/${electionId}`} });
+    this.router.navigate( ['/election/register', electionId, JWT]);
   }
 }

@@ -1,0 +1,9 @@
+export enum RegistrationState {
+    MASTERKEY = 'MASTERKEY',
+    VOTEKEY = 'VOTEKEY',
+    VOTEKEY_CREATED = 'VOTEKEY_CREATED',
+    BALLOT = 'BALLOT',
+    BALLOT_CREATED = 'BALLOT_CREATED',
+    READY = 'READY',
+    ERROR = 'ERROR'
+ }
