@@ -7,7 +7,7 @@
     position: relative;
     display: flex;
     z-index: 1;
-    background-color: $opn-gray;
+    background-color: $opn-lightblue;
 
     .top-bar-container {
         width: 100%;
@@ -17,8 +17,8 @@
         justify-content: center;
 
         .title {
-            font-weight: $bold;
-            font-size: $title-large;
+            font-weight: $semi-bold;
+            font-size: $title-medium;
         }
     }
 }
