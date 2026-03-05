@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
 import { from, map, Observable } from 'rxjs';
-import { Token } from '../token/token';
-import { R } from '../token/r';
-import { MasterKey } from '../token/masterkey';
+import { Token } from '../voting-system/token';
+import { R } from '../voting-system/r';
+import { MasterKey } from '../voting-system/masterkey';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +16,7 @@ export class MasterKeyService {
     return from(this.createAndStore());
   }
 
-  getMasterKey(): Observable<string | null> {
+  getMasterKey(): Observable<MasterKey | null> {
     return from(this.load());
   }
 

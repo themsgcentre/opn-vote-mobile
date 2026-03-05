@@ -1,53 +1,77 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
-import { BlindedSignatureResponse } from '../interfaces/responses';
+import globalConst from '../utils/constants';
 import { UrlPaths } from '../globals/url-paths';
-import { RegisterError } from '../globals/register-error';
-import { RegisterErrorType } from '../globals/register-error.type';
+import { Signature } from '../voting-system/signature';
+import { Token } from '../voting-system/token';
+import { numberToHex32, sha256Hex, validateCredentials, validateHexString, validateSignature, validateToken } from '../utils/utils';
+import { EncryptionType } from '../voting-system/encryption-type';
+import { ethers } from 'ethers';
+
+export class ServerError extends Error { }
 
 @Injectable({
   providedIn: 'root',
 })
 export class RegisterProxyService {
-  constructor(private http: HttpClient) {}
+  async getBlindedSignature(jwttoken: string, blindedElectionToken: string): Promise<{ hexString: string; isBlinded: boolean }> {
+      const blindedElectionTokenFormatted = { token: blindedElectionToken };
+      const signOptions = {
+          method: "POST",
+          headers: new Headers(
+              {
+                  'content-type': 'application/json',
+                  'Authorization': 'Bearer ' + jwttoken
+              }
+          ),
+          body: JSON.stringify(blindedElectionTokenFormatted)
+      };
 
-  getBlindedSignature(jwt: string, blindedElectionTokenHex: string): Observable<{ hexString: string; isBlinded: true }> {
-    const headers = new HttpHeaders({
-      'content-type': 'application/json',
-      Authorization: `Bearer ${jwt}`,
-    });
-
-    return this.http
-  .post<BlindedSignatureResponse>(
-    UrlPaths.blindedSignatureUrl,
-    { token: blindedElectionTokenHex },
-    { headers }
-  )
-  .pipe(
-    map((res) => {
-      const err = (res.error ?? '').toLowerCase();
-
-      if (err) {
-        if (err.includes('already registered')) {
-          throw new RegisterError(RegisterErrorType.ALREADYREGISTERED);
-        }
-
-        if (err.includes('failed to authenticate jwt')) {
-          throw new RegisterError(RegisterErrorType.JWTAUTH);
-        }
-
-        throw new RegisterError(RegisterErrorType.GENERAL);
+      const response = await fetch(UrlPaths.blindedSignatureUrl, signOptions);
+      const jsondata = await response.json();
+      if (jsondata.error?.length > 0) {
+          switch (jsondata.error.toLowerCase()) {
+              case 'already registered':
+                  throw new ServerError(globalConst.ERROR.ALREADYREGISTERED);
+              case 'failed to authenticate jwt':
+                  throw new ServerError(globalConst.ERROR.JWTAUTH);
+              default:
+                  throw new ServerError(globalConst.ERROR.GENERAL);
+          }
       }
 
-      const sig = res.data?.blindedSignature;
+      return { hexString: jsondata.data.blindedSignature, isBlinded: true };
+  }
+
+  async createVoterCredentials(unblindedSignature: Signature, unblindedElectionToken: Token, masterToken: Token, electionID: number) {
+      if (masterToken.isBlinded) {
+          throw new Error("Master token must be unblinded.");
+      }
+      if (!masterToken.isMaster) {
+          throw new Error("Provided token must be a master token.");
+      }
+      validateSignature(unblindedSignature);
+      validateToken(unblindedElectionToken);
+      validateToken(masterToken);
+      // Convert the election ID to hex and validate
+      const electionIDHex = { hexString: numberToHex32(electionID) };
+      validateHexString(electionIDHex, 66, false, true);
       
-      if (!sig) {
-        throw new RegisterError(RegisterErrorType.GENERAL);
-      }
+      // Combine master token and election ID to hex strings to derive the election-specific voter wallet private key and encryption key (user encrypted vote)
+      const walletPrivKeyInput =
+        '0x' + masterToken.hexString.substring(2) +
+        "|" + "Ethereum-Wallet" +
+        "|" + electionIDHex.hexString.substring(2);
 
-      return { hexString: sig, isBlinded: true as const };
-    })
-  );
+      const walletPrivKey = {
+        hexString: await sha256Hex(walletPrivKeyInput)
+      };
+
+      const encryptionKeyInput = '0x' + masterToken.hexString.substring(2) + "|" + "Encryption-Key" + "|" + electionIDHex.hexString.substring(2);
+      const encryptionKey = { hexString: await sha256Hex((encryptionKeyInput)), encryptionType: EncryptionType.AES };
+      const voterWallet = new ethers.Wallet(walletPrivKey.hexString);
+      const voterCredentials = { unblindedSignature, unblindedElectionToken, voterWallet, encryptionKey, electionID };
+      validateCredentials(voterCredentials);
+      return voterCredentials;
   }
 }
