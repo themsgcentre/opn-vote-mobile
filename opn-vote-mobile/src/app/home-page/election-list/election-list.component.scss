@@ -3,11 +3,24 @@
 @import '../../styles/colors.scss';
 
 .no-election-info {
-    padding-top: 20px;
-    font-size: $text-medium;
-    color: $opn-lightgray;
+  padding-top: 20px;
+  font-size: $text-medium;
+  color: $opn-lightgray;
+  text-align: center;
 }
 
 .overview-container {
-    margin-top: 20px;
+  margin-top: 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 20px;
+}
+
+.overview-item {
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
