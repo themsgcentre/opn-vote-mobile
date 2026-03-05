@@ -28,6 +28,11 @@ export function mapElection(dto: ElectionDTO): Election {
     registeredVoterCount: dto.registeredVoterCount,
     totalVotes: dto.totalVotes,
 
+    rsa: {
+      e: dto.registerPublicKeyE,
+      n: dto.registerPublicKeyN,
+    },
+
     registrationStart: toDateFromSeconds(dto.registrationStartTime),
     registrationEnd: toDateFromSeconds(dto.registrationEndTime),
 

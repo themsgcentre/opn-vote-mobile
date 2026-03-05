@@ -15,6 +15,11 @@ export interface Election {
     imageUrl: string;
   }[];
 
+  rsa: {
+    n: string;
+    e: string;
+  }
+  
   backLink: string;
   author: string;
   authorWalletAddress: string;
