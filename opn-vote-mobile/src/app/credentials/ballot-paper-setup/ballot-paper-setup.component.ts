@@ -2,7 +2,7 @@ import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, filter, finalize, shareReplay, take } from 'rxjs';
-import { BallotPaperService } from 'src/app/services/ballot-paper-service';
+import { BallotService } from 'src/app/services/ballot-service';
 
 @Component({
   selector: 'app-ballot-paper-setup',
@@ -19,7 +19,7 @@ export class BallotPaperSetupComponent  implements OnInit {
   readonly ballotPaper$ = this.ballotPaperSubject.asObservable();
 
   constructor(
-    private ballotPaperService: BallotPaperService ,
+    private ballotPaperService: BallotService ,
     private router: Router,
     private route: ActivatedRoute
   ) { }
