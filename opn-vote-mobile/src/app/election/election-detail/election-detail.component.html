@@ -1,16 +1,23 @@
 @if(election) {
   <div class="info-container">
-    <div class="title">{{election.title}}</div>
+    <div class="title-section">
+      <div class="title">{{ election.title }}</div>
+      <div class="title-divider"></div>
+    </div>
+
     <div class="image-container">
-        <app-election-image
+      <app-election-image
         [small]="election.headerImage.small"
         [large]="election.headerImage.large"
         [takeLarge]="false"
         [alt]="election.title"
-        ></app-election-image>
+      ></app-election-image>
     </div>
-    <div class="description">{{election.description}}</div>
-    <div class="vote-button" (click)="participateClicked.emit()">Jetzt an Wahl teilnehmen</div>
+
+    <div class="description">{{ election.description }}</div>
+
+    <div class="vote-button" (click)="participateClicked.emit()">
+      Jetzt an Wahl teilnehmen
+    </div>
   </div>
 }
-
