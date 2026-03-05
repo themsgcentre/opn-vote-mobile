@@ -3,21 +3,22 @@
     @case (RegistrationState.MASTERKEY) {
       <app-master-key-setup (createClicked)="onCreateMasterKey()"></app-master-key-setup>
     }
-    
-    @case (RegistrationState.VOTEKEY_CREATED) {
-      
+
+    @case (RegistrationState.SECRET_CREATED) {
+      <p>Secret created. proceed to create a ballot</p>
+      <button (click)="onProceedToCreateBallot()">go to create ballot</button>
     }
     @case (RegistrationState.BALLOT) {
-
+      <button (click)="onCreateBallot()">create ballot</button>
     }
     @case (RegistrationState.BALLOT_CREATED) {
-      
+        <p>Ballot created. Registration complete.</p>
     }
     @case (RegistrationState.READY) {
       
     }
     @case (RegistrationState.ERROR) {
-      
+      <p>An error occurred during registration. Please try again.</p>
     }
   }
 </div>
