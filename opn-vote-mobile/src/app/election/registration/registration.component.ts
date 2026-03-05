@@ -1,26 +1,54 @@
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
-import { combineLatest, map, Observable, of } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject, combineLatest, map, Observable, of, switchMap, throwError } from 'rxjs';
 import { MasterKeySetupComponent } from 'src/app/credentials/master-key-setup/master-key-setup.component';
 import { BallotService } from 'src/app/services/ballot-service';
 import { MasterKeyService } from 'src/app/services/master-key-service';
 import { RegistrationState } from 'src/app/globals/registration.state';
+import { ElectionDTO } from 'src/app/interfaces/election-dto';
+import { ActivatedRoute } from '@angular/router';
+import { ElectionProxyService } from 'src/app/services/election-proxy-service';
 @Component({
   selector: 'app-registration',
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.scss'],
   imports: [AsyncPipe, MasterKeySetupComponent]
 })
-export class RegistrationComponent {
-  RegistrationState = RegistrationState; 
+export class RegistrationComponent implements OnInit {
+  RegistrationState = RegistrationState;
+  electionId: number = NaN;
+  jwt: string | null = null;
+
+  private refresh$ = new BehaviorSubject<void>(undefined);
+
+  hasMasterKey$: Observable<boolean> = this.refresh$.pipe(
+    switchMap(() => this.masterKeyService.hasMasterKey())
+  );
+
+  hasBallot$: Observable<boolean> = this.refresh$.pipe(
+    switchMap(() => this.ballotService.hasBallot(this.electionId))
+  );
 
   constructor(
+    private route: ActivatedRoute,
     private masterKeyService: MasterKeyService,
-    private ballotService: BallotService
+    private ballotService: BallotService,
+    private electionProxyService: ElectionProxyService
   ) {}
 
-  hasMasterKey$ = this.masterKeyService.hasMasterKey();
-  hasBallot$ =  of(false);     
+  ngOnInit(): void {
+    const idParam = this.route.snapshot.paramMap.get('id');
+    this.electionId = idParam ? Number(idParam) : NaN;
+
+    this.jwt = this.route.snapshot.paramMap.get('jwt');
+
+    if (!Number.isFinite(this.electionId)) {
+      this.step$ = of(RegistrationState.ERROR);
+      return;
+    }
+
+    this.hasBallot$ = this.ballotService.hasBallot(this.electionId);
+  }
 
   step$: Observable<RegistrationState> = combineLatest([
       this.hasMasterKey$,
@@ -35,17 +63,41 @@ export class RegistrationComponent {
 
   onCreateMasterKey() {
     this.masterKeyService.createNewMasterKey().subscribe({
-      next: () => this.hasMasterKey$ = this.masterKeyService.hasMasterKey(),
+      next: () => this.refresh$.next(),
       error: () => this.step$ = of(RegistrationState.ERROR)
     });
   }
 
-  onCreateVoteKey() {
-    //this.voteKeyService.createVoteKey().subscribe();
+  onProceedToCreateBallot() {
+    this.step$ = of(RegistrationState.BALLOT);
   }
 
+
   onCreateBallot() {
-    //this.ballotPaperService.createBallot().subscribe();
+    console.log(this.jwt, this.electionId);
+  if (!this.jwt) {
+    this.step$ = of(RegistrationState.ERROR);
+    return;
+  }
+
+  this.electionProxyService.getElectionById(this.electionId).pipe(
+      switchMap((election: ElectionDTO | null) => {
+        if (!election) {
+          return throwError(() => new Error('ELECTION_NOT_FOUND'));
+        }
+
+        return this.ballotService.createBallot(this.jwt!, election);
+      })
+    ).subscribe({
+      next: () => {
+        this.refresh$.next();
+      },
+
+      error: (err) => {
+        console.log(err);
+        this.step$ = of(RegistrationState.ERROR);
+      }
+    });
   }
 
   onContinue() {
