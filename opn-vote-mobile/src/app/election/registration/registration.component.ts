@@ -18,6 +18,7 @@ export class RegistrationComponent implements OnInit {
   RegistrationState = RegistrationState;
   electionId: number = NaN;
   jwt: string | null = null;
+  error: string | null = null;
 
   private refresh$ = new BehaviorSubject<void>(undefined);
 
@@ -85,7 +86,6 @@ export class RegistrationComponent implements OnInit {
         if (!election) {
           return throwError(() => new Error('ELECTION_NOT_FOUND'));
         }
-
         return this.ballotService.createBallot(this.jwt!, election);
       })
     ).subscribe({
@@ -94,7 +94,7 @@ export class RegistrationComponent implements OnInit {
       },
 
       error: (err) => {
-        console.log(err);
+        this.error = err?.message || 'An unknown error occurred';
         this.step$ = of(RegistrationState.ERROR);
       }
     });
