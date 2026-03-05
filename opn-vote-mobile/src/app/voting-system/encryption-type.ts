@@ -1,4 +1,4 @@
-export declare enum EncryptionType {
+export enum EncryptionType {
     AES = "AES",
     RSA = "RSA"
 }

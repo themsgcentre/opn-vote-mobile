@@ -3,9 +3,7 @@
     @case (RegistrationState.MASTERKEY) {
       <app-master-key-setup (createClicked)="onCreateMasterKey()"></app-master-key-setup>
     }
-    @case (RegistrationState.VOTEKEY) {
-      <app-vote-key-setup (createClicked)="onCreateVoteKey()"></app-vote-key-setup>
-    }
+    
     @case (RegistrationState.VOTEKEY_CREATED) {
       
     }
