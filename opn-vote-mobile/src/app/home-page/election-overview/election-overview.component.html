@@ -1,3 +1,13 @@
-@if(election) {
-  <div> {{election.title}}</div>
+@if (election) {
+  <div class="election-block">
+
+    <div class="title-bar">
+      {{ election.title }}
+    </div>
+
+    <div class="info-container">
+      Weitere Informationen zur Abstimmung
+    </div>
+
+  </div>
 }
