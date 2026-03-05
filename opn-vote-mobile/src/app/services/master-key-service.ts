@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
 import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
 import { from, map, Observable } from 'rxjs';
+import { Token } from '../token/token';
+import { R } from '../token/r';
+import { MasterKey } from '../token/masterkey';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MasterKeyService {
   private readonly STORAGE_KEY = 'opnvote_masterkey_v1';
-  private cached: string | null = null;
+  private cached: MasterKey | null = null;
 
   createNewMasterKey(): Observable<void> {
     return from(this.createAndStore());
@@ -26,20 +29,43 @@ export class MasterKeyService {
   }
 
   private async createAndStore(): Promise<void> {
-    const raw = crypto.getRandomValues(new Uint8Array(32)); 
-    const b64 = this.uint8ToBase64(raw);
+    const tokenBytes = crypto.getRandomValues(new Uint8Array(32));
+    const rBytes = crypto.getRandomValues(new Uint8Array(32));
 
-    await SecureStoragePlugin.set({ key: this.STORAGE_KEY, value: b64 });
-    this.cached = b64;
+    const masterToken: Token = {
+      hexString: this.bytesToHex(tokenBytes),
+      isMaster: true,
+      isBlinded: false,
+    };
+
+    const masterR: R = {
+      hexString: this.bytesToHex(rBytes),
+      isMaster: true,
+    };
+
+    const value: MasterKey = { masterToken, masterR };
+
+    await SecureStoragePlugin.set({
+      key: this.STORAGE_KEY,
+      value: JSON.stringify(value),
+    });
+
+    this.cached = value;
   }
 
-  private async load(): Promise<string | null> {
+  private async load(): Promise<MasterKey | null> {
     if (this.cached) return this.cached;
 
     try {
       const res = await SecureStoragePlugin.get({ key: this.STORAGE_KEY });
-      this.cached = res.value ?? null;
-      return this.cached;
+      if (!res.value) return null;
+
+      const parsed = JSON.parse(res.value) as MasterKey;
+
+      if (!parsed?.masterToken?.hexString || !parsed?.masterR?.hexString) return null;
+
+      this.cached = parsed;
+      return parsed;
     } catch {
       return null;
     }
@@ -53,9 +79,11 @@ export class MasterKeyService {
     }
   }
 
-  private uint8ToBase64(u8: Uint8Array): string {
-    let s = '';
-    for (let i = 0; i < u8.length; i++) s += String.fromCharCode(u8[i]);
-    return btoa(s);
+  private bytesToHex(bytes: Uint8Array): string {
+    let hex = '0x';
+    for (let i = 0; i < bytes.length; i++) {
+      hex += bytes[i].toString(16).padStart(2, '0');
+    }
+    return hex;
   }
 }
