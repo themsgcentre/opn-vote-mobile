@@ -5,8 +5,13 @@
       {{ election.title }}
     </div>
 
-    <div class="info-container">
-      Weitere Informationen zur Abstimmung
+    <div class="image-container">
+      <app-election-image
+        [small]="election.headerImage.small"
+        [large]="election.headerImage.large"
+        [takeLarge]="false"
+        [alt]="election.title">
+      </app-election-image>
     </div>
 
   </div>
