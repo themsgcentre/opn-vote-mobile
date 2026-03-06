@@ -19,31 +19,42 @@ export class ServerError extends Error { }
 export class RegisterProxyService {
   constructor(private http: HttpClient) { }
   
-  getBlindedSignature(jwt: string, blindedElectionToken: string): Observable<Signature> {
-      const headers = new HttpHeaders({
-    'content-type': 'application/json',
-    Authorization: `Bearer ${jwt}`,
-  });
+  getBlindedSignature(jwt: string, blindedElectionToken: Token): Observable<Signature> {
+    const headers = new HttpHeaders({
+      'content-type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    });
 
-  return this.http
-    .post<BlindedSignatureResponse>(
-      UrlPaths.blindedSignatureUrl,
-      { token: blindedElectionToken },
-      { headers }
-    )
-    .pipe(
-      map((res) => {
-        const err = (res.error ?? '').toLowerCase();
-        if (err.includes('already registered')) throw new RegisterError(RegisterErrorType.ALREADYREGISTERED);
-        if (err.includes('failed to authenticate jwt')) throw new RegisterError(RegisterErrorType.JWTAUTH);
-        if (err) throw new RegisterError(RegisterErrorType.GENERAL);
+    return this.http
+      .post<BlindedSignatureResponse>(
+        UrlPaths.blindedSignatureUrl,
+        { token: blindedElectionToken },
+        { headers }
+      )
+      .pipe(
+        map((res) => {
+          const err = (res.error ?? '').toLowerCase();
 
-        const sig = res.data?.blindedSignature;
-        if (!sig) throw new RegisterError(RegisterErrorType.GENERAL);
+          if (err.includes('already registered')) {
+            throw new RegisterError(RegisterErrorType.ALREADYREGISTERED);
+          }
 
-        return { hexString: sig, isBlinded: true as const };
-      })
-    );
+          if (err.includes('failed to authenticate jwt')) {
+            throw new RegisterError(RegisterErrorType.JWTAUTH);
+          }
+
+          if (err) {
+            throw new RegisterError(RegisterErrorType.GENERAL);
+          }
+
+          const sig = res.data?.blindedSignature;
+          if (!sig) {
+            throw new RegisterError(RegisterErrorType.GENERAL);
+          }
+
+          return { hexString: sig, isBlinded: true as const };
+        })
+      );
   }
 
   async createVoterCredentials(unblindedSignature: Signature, unblindedElectionToken: Token, masterToken: Token, electionID: number) {

@@ -68,7 +68,7 @@ export class BallotService {
                 );
 
                 return this.registerProxyService
-                  .getBlindedSignature(jwt, blindedElectionToken.hexString)
+                  .getBlindedSignature(jwt, blindedElectionToken)
                   .pipe(
                     map((blindedSig) => {
                       const unblindedSig = this.tokenService.unblindSignature(
