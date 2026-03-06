@@ -90,10 +90,12 @@ export class RegistrationComponent implements OnInit {
       })
     ).subscribe({
       next: () => {
+        console.log('Ballot created successfully');
         this.refresh$.next();
       },
 
       error: (err) => {
+        console.log(err)
         this.error = err?.message || 'An unknown error occurred';
         this.step$ = of(RegistrationState.ERROR);
       }
