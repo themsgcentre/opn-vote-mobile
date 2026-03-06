@@ -11,9 +11,8 @@ import { Election } from 'src/app/interfaces/election';
 export class ElectionDetailComponent implements OnChanges{
   @Input() election: Election | null = null;
   @Output() participateClicked: EventEmitter<void> = new EventEmitter<void>();
-  daysTilEnd: number = 0;
 
   ngOnChanges(): void {
-    
+    console.log(this.election);
   }
 }
