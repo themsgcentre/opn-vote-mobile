@@ -5,20 +5,21 @@
     }
 
     @case (RegistrationState.SECRET_CREATED) {
-      <p>Secret created. proceed to create a ballot</p>
-      <button (click)="onProceedToCreateBallot()">go to create ballot</button>
+      <div>Secret created. proceed to create a ballot</div>
+      <div class="proceed-button" (click)="onProceedToBallotCreation()">Proceed to ballot creation</div>
     }
     @case (RegistrationState.BALLOT) {
       <button (click)="onCreateBallot()">create ballot</button>
     }
     @case (RegistrationState.BALLOT_CREATED) {
-        <p>Ballot created. Registration complete.</p>
+        <div>Ballot created. Registration complete.</div>
+        <div class="proceed-button" (click)="onProceedToVoting()">Proceed to voting</div>
     }
     @case (RegistrationState.READY) {
-      <p>Ready</p>
+      <div>Forwarding to voting page...</div>
     }
     @case (RegistrationState.ERROR) {
-      <p>{{ error }}</p>
+      <div class="error-display">{{ error }}</div>
     }
   }
 </div>
