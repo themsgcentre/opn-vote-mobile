@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Option } from '../interfaces/option';
 import { FormsModule } from '@angular/forms';
+import { VoteOption } from '../voting-system/vote-option';
 
 @Component({
   selector: 'app-options',
@@ -12,6 +13,7 @@ export class OptionsComponent  implements OnInit {
 
   @Input() options: Option[] = [];
   @Input() groupname: string = '';
+  @Output() selected = new EventEmitter<VoteOption>();
   selectedOption: Option | null = null;
 
   constructor() { }
@@ -20,6 +22,7 @@ export class OptionsComponent  implements OnInit {
 
   onBallotSelected(option: Option) {
     this.selectedOption = option;
+    this.selected.emit(this.selectedOption.voteOption);
   }
 
 }
