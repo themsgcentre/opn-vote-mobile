@@ -11,7 +11,11 @@
     <div class="question">
       <div class="title">{{ question.text }}</div>
       <div class="options-container">
-        <app-options [options]="options" [groupname]="question.text"></app-options>
+        <app-options 
+          [options]="options" 
+          [groupname]="question.text"
+          (selected)="optionSelected.emit($event)"
+        ></app-options>
       </div>
     </div>
   }

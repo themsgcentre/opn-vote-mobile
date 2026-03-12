@@ -1,7 +1,12 @@
 <div class="options-container">
   @for (option of options; track option.voteOption) {
     <div class="option">
-      <input type="radio" [name]="groupname" [(ngModel)]="selectedOption" [value]="option" class="button">
+      <input type="radio" 
+        [name]="groupname" 
+        [(ngModel)]="selectedOption" 
+        [value]="option" class="button"
+        (ngModelChange)="onBallotSelected($event)"
+        >
       <div class="option-text">{{ option.text }}</div>
     </div>
   }
