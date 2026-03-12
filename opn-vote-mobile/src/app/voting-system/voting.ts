@@ -7,6 +7,9 @@ import { RSA_BIT_LENGTH } from "../utils/constants"
 import { VoteOption } from "./vote-option"
 import { ElectionCredentials } from "./election-credentials"
 import { VotingTransaction } from "../interfaces/voting-transaction"
+import { EthSignature } from "./eth-signature"
+import { ServerError } from "./server-error"
+import { UrlPaths } from "../globals/url-paths"
 
 export async function encryptVotes(
   votes: Array<Vote>,
@@ -247,5 +250,38 @@ function validateVotingTransaction(votingTransaction: VotingTransaction) {
     }
     if (votingTransaction.svsSignature) {
         validateEthSignature(votingTransaction.svsSignature);
+    }
+}
+
+export function addSVSSignatureToVotingTransaction(
+  votingTransaction: VotingTransaction,
+  svsSignature: EthSignature,
+): VotingTransaction {
+  if (votingTransaction.svsSignature) {
+    throw new Error('Voting Transaction already contains SVS Signature')
+  }
+
+  validateVotingTransaction(votingTransaction)
+  validateEthSignature(svsSignature)
+
+  return {
+    ...votingTransaction,
+    svsSignature: svsSignature,
+  }
+}
+
+export async function getAbi() {
+    const getHeader = new Headers();
+    getHeader.append("Content-Type", "application/json");
+    const options = {
+        method: "GET",
+        headers: getHeader,
+    };
+    try {
+        const response = await fetch(UrlPaths.abiConfigUrl, options);
+        const jsondata = await response.json();
+        return jsondata;
+    } catch (error) {
+        throw new ServerError();
     }
 }

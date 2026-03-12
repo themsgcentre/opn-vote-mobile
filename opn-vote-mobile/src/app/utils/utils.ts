@@ -12,6 +12,7 @@ import { webcrypto } from "node:crypto"
 import { EncryptedVotes } from "../voting-system/vote"
 import { VotingTransaction } from "../interfaces/voting-transaction"
 import { EthSignature } from "../voting-system/eth-signature"
+import { RecastingVotingTransaction } from "../interfaces/recasting-voting-transaction"
 
 export function validateElectionID(electionID: number) {
     if (!Number.isInteger(electionID)) {
@@ -283,7 +284,7 @@ export function validateEncryptedVotes(
   }
 }
 
-export function validateRecastingVotingTransaction(recastingTransaction: VotingTransaction): void {
+export function validateRecastingVotingTransaction(recastingTransaction: RecastingVotingTransaction): void {
     validateElectionID(recastingTransaction.electionID);
     validateEncryptedVotes(recastingTransaction.encryptedVoteRSA, EncryptionType.RSA);
     validateEncryptedVotes(recastingTransaction.encryptedVoteAES, EncryptionType.AES);
@@ -300,3 +301,38 @@ export function validateEthSignature(ethSignature: EthSignature): void {
         throw new Error('Invalid Ethereum signature');
     }
 }
+
+export function validateVotingTransaction(votingTransaction: VotingTransaction): void {
+  if (!votingTransaction.unblindedElectionToken || !votingTransaction.unblindedSignature) {
+    throw new Error('Invalid voting transaction: missing required properties')
+  }
+
+  validateElectionID(votingTransaction.electionID)
+  validateEthAddress(votingTransaction.voterAddress)
+  validateEncryptedVotes(votingTransaction.encryptedVoteRSA, EncryptionType.RSA)
+  validateEncryptedVotes(votingTransaction.encryptedVoteAES, EncryptionType.AES)
+  validateToken(votingTransaction.unblindedElectionToken)
+  validateSignature(votingTransaction.unblindedSignature)
+
+  if (votingTransaction.unblindedElectionToken.isMaster) {
+    throw new Error('Voting transaction must not include a Master Token.')
+  }
+  if (votingTransaction.unblindedElectionToken.isBlinded) {
+    throw new Error('Voting transaction must not include a blinded Token')
+  }
+
+  if (votingTransaction.unblindedSignature.isBlinded) {
+    throw new Error('Voting transaction must not include a blinded Signature')
+  }
+
+  if (votingTransaction.svsSignature) {
+    validateEthSignature(votingTransaction.svsSignature)
+  }
+}
+
+export const replacer = (_: string, value: unknown): unknown => {
+  if (typeof value === "bigint") {
+    return value.toString();
+  }
+  return value;
+};
