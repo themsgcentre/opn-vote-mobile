@@ -12,6 +12,7 @@
           (optionSelected)="voteUpdated($event)"
         ></app-question-list>
       </div>
+      <button class="submit-button" [disabled]="!canSubmit" (click)="submitVote()">Stimmzettel abgeben</button>
     }
   </div>
 </ion-content>

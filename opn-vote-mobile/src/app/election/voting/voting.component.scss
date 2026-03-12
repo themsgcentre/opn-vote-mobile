@@ -36,4 +36,14 @@
     .voting-area {
         margin-top: 20px;
     }
+
+    .submit-button {
+        background-color: $opn-slategray;
+        padding: 10px 40px;
+        border-radius: 5px;
+    }
+
+    .submit-button:disabled {
+        background-color: $opn-gray;
+    }
 }

@@ -65,7 +65,6 @@ export class RegistrationComponent implements OnInit {
   }
 
   createBallot() {
-    console.log(this.jwt, this.electionId);
     if (!this.jwt) {
       this.step$ = of(RegistrationState.ERROR);
       return;

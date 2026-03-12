@@ -8,7 +8,7 @@ import { EncryptionType } from "../voting-system/encryption-type"
 import { ElectionCredentials } from "../voting-system/election-credentials"
 import { EncryptionKey } from "../voting-system/encryption-key"
 import { ethers } from "ethers"
-import { webcrypto } from "node:crypto"
+//import { webcrypto } from "node:crypto"
 import { EncryptedVotes } from "../voting-system/vote"
 import { VotingTransaction } from "../interfaces/voting-transaction"
 import { EthSignature } from "../voting-system/eth-signature"
@@ -253,7 +253,8 @@ export function getSubtleCrypto(): SubtleCrypto {
   if (typeof window !== 'undefined' && typeof window.crypto !== 'undefined') {
     return window.crypto.subtle
   } else {
-    return webcrypto.subtle as SubtleCrypto
+    //return webcrypto.subtle as SubtleCrypto
+    throw new Error('Web Crypto API is not available in this environment.');
   }
 }
 

@@ -8,10 +8,7 @@ import { ElectionInformation } from 'src/app/interfaces/election';
   styleUrls: ['./election-list.component.scss'],
   imports: [ElectionOverviewComponent],
 })
-export class ElectionListComponent implements OnChanges{
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.elections);
-  }
+export class ElectionListComponent{
   @Input() elections: ElectionInformation[] = [];
   @Output() electionClicked: EventEmitter<number> = new EventEmitter<number>();
 }
