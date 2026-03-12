@@ -1,0 +1,15 @@
+<div class="question-container">
+  @if(question) {
+    <div class="image-container">
+      <app-image [small]="question.imageUrl"></app-image>
+    </div>
+
+    <div class="question">
+      <div class="title">{{ question.text }}</div>
+      <div class="options-container">
+        <app-options></app-options>
+      </div>
+    </div>
+  }
+  
+</div>

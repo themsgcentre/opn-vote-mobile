@@ -1,7 +1,14 @@
-<div class="voting-container">
-  <div class="title">Abstimmung</div>
-  <div class="description">
-    Sie können jetzt Ihre Stimme abgeben. Bitte folgen Sie den Anweisungen auf dem Bildschirm, um Ihre Wahl zu treffen und zu bestätigen.
+<ion-content>
+  <div class="voting-container">
+    <div class="title">Stimmzettel</div>
+    <div class="description">
+      Sie haben für jede Abstimmungsfrage eine Stimme. Sie können die Abstimmung im Wahlzeitraum wiederholen, es zählt der letzte abgegebene Stimmzettel.
+    </div>
+    @if(election$ | async; as election) {
+      <div class="election-info">Stimmabgabe für: <span class="election-title">{{ election.title }}</span></div>
+      <div class="voting-area">
+        <app-question-list [questions]="(questions$ | async) || []"></app-question-list>
+      </div>
+    }
   </div>
-  
-</div>
+</ion-content>

@@ -1,0 +1,5 @@
+<div class="question-list-container">
+  @for (question of questions; track question.text) {
+    <app-question [question]="question"></app-question>
+  }
+</div>

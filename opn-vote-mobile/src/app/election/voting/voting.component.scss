@@ -22,4 +22,18 @@
         color: $opn-lightgray;
         opacity: 0.8;
     }   
+
+    .election-info {
+        font-size: $text-medium;
+        padding: 10px;
+        text-align: center;
+
+        .election-title {
+            font-weight: $bold;
+        }
+    }
+
+    .voting-area {
+        margin-top: 20px;
+    }
 }

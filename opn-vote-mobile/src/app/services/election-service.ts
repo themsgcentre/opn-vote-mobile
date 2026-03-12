@@ -4,6 +4,7 @@ import { ElectionInformation } from '../interfaces/election';
 import { map, Observable } from 'rxjs';
 import { ElectionDTO } from '../interfaces/election-dto';
 import { mapElectionInformation } from '../mappers/election-mapper';
+import { Question } from '../interfaces/question';
 
 @Injectable({
   providedIn: 'root',
@@ -36,6 +37,16 @@ export class ElectionService {
   getN(id: number): Observable<string> {
     return this.electionProxyService.getElectionById(id).pipe(
       map((dto: ElectionDTO | null) => dto?.registerPublicKeyN || '')
+    );
+  }
+
+  loadQuestions(id: number): Observable<Question[]> {
+    return this.electionProxyService.getElectionById(id).pipe(
+      map((dto: ElectionDTO | null) => {
+        if (!dto) return [];
+        const blob = JSON.parse(dto.descriptionBlob);
+        return blob.questions || [];
+      })
     );
   }
 }
