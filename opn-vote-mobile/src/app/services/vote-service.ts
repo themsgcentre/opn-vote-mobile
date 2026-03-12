@@ -2,8 +2,13 @@ import { Injectable } from '@angular/core';
 import { EncryptionType } from '../voting-system/encryption-type';
 import { ethers } from 'ethers';
 import { VoteOption } from '../voting-system/vote-option';
-import { createVoteRecastTransaction, encryptVotes } from '../voting-system/voting';
+import { addSVSSignatureToVotingTransaction, createVoteRecastTransaction, createVotingTransactionWithoutSVSSignature, encryptVotes, getAbi } from '../voting-system/voting';
 import { ElectionCredentials } from '../voting-system/election-credentials';
+import { signTransaction } from '../voting-system/transaction';
+import { UrlPaths } from '../globals/url-paths';
+import { createRelayRequest, createSignatureData, gelatoForward } from '../voting-system/gelato';
+import { GelatoRelay } from '@gelatonetwork/relay-sdk';
+import { replacer } from '../utils/utils';
 
 @Injectable({
   providedIn: 'root',
@@ -36,8 +41,8 @@ export class VoteService {
     const abiData = await getAbi();
     const opnVoteInterface = new ethers.Interface(abiData);
 
-    const provider = new ethers.JsonRpcProvider(Config.env.rpcnodeUrl); 
-    const relayRequest = await createRelayRequest(votingTransactionFull, votingCredentials, Config.env.opnVoteContractAddress, opnVoteInterface, provider);
+    const provider = new ethers.JsonRpcProvider(UrlPaths.rpcnodeUrl); 
+    const relayRequest = await createRelayRequest(votingTransactionFull, votingCredentials, UrlPaths.opnVoteContractAddress, opnVoteInterface, provider);
     const relay = new GelatoRelay();
     const signatureDataInitial = await createSignatureData(relayRequest, votingCredentials, relay, provider);
 

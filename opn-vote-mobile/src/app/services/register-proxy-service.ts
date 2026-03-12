@@ -11,8 +11,6 @@ import { BlindedSignatureResponse } from '../interfaces/responses';
 import { RegisterErrorType } from '../globals/register-error.type';
 import { RegisterError } from '../globals/register-error';
 
-export class ServerError extends Error { }
-
 @Injectable({
   providedIn: 'root',
 })
