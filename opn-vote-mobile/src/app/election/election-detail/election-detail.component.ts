@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
-import { ImageComponent } from 'src/app/home-page/election-image/election-image.component';
+import { ImageComponent } from 'src/app/home-page/image/image.component';
 import { ElectionInformation } from 'src/app/interfaces/election';
 
 @Component({

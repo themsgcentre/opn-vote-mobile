@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Question } from '../interfaces/question';
-import { ImageComponent } from "../home-page/election-image/election-image.component";
+import { ImageComponent } from "../home-page/image/image.component";
 import { OptionsComponent } from "../options/options.component";
+import { defaultOptions } from '../voting-system/default-options';
 
 @Component({
   selector: 'app-question',
@@ -11,6 +12,7 @@ import { OptionsComponent } from "../options/options.component";
 })
 export class QuestionComponent  implements OnInit {
   @Input() question: Question | null = null;
+  options = defaultOptions;
 
   constructor() { }
 
