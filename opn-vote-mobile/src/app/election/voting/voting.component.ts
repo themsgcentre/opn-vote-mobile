@@ -19,6 +19,7 @@ export class VotingComponent  implements OnInit {
   ) { }
 
   election: Observable<ElectionInformation | null> = new Observable();
+  questions: string[] = [];
   error: string | null = null;
 
   ngOnInit() {
