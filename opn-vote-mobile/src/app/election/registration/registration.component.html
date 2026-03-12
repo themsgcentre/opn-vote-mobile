@@ -5,18 +5,18 @@
     }
 
     @case (RegistrationState.SECRET_CREATED) {
-      <div>Secret created. proceed to create a ballot</div>
-      <div class="proceed-button" (click)="onProceedToBallotCreation()">Proceed to ballot creation</div>
+      <div>Masterkey erstellt. Fahre zur Wahlschein-Erstellung fort.</div>
+      <div class="proceed-button" (click)="onProceedToBallotCreation()">Weiter zur Wahlscheinerstellung</div>
     }
     @case (RegistrationState.BALLOT) {
       <button (click)="onCreateBallot()">create ballot</button>
     }
     @case (RegistrationState.BALLOT_CREATED) {
-        <div>Ballot created. Registration complete.</div>
-        <div class="proceed-button" (click)="onProceedToVoting()">Proceed to voting</div>
+        <div>Wahlschein erstellt. Fahren Sie jetzt zur Wahl fort.</div>
+        <div class="proceed-button" (click)="onProceedToVoting()">Weiter zur Stimmabgabe</div>
     }
     @case (RegistrationState.READY) {
-      <div>Forwarding to voting page...</div>
+      <div>WEiterleitung zur Stimmabgabe...</div>
     }
     @case (RegistrationState.ERROR) {
       <div class="error-display">{{ error }}</div>
