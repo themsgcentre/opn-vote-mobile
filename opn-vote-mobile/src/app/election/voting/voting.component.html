@@ -1,18 +1,23 @@
 <ion-content>
   <div class="voting-container">
-    <div class="title">Stimmzettel</div>
-    <div class="description">
-      Sie haben für jede Abstimmungsfrage eine Stimme. Sie können die Abstimmung im Wahlzeitraum wiederholen, es zählt der letzte abgegebene Stimmzettel.
-    </div>
-    @if(election$ | async; as election) {
-      <div class="election-info">Stimmabgabe für: <span class="election-title">{{ election.title }}</span></div>
-      <div class="voting-area">
-        <app-question-list 
-          [questions]="(questions$ | async) || []"
-          (optionSelected)="voteUpdated($event)"
-        ></app-question-list>
+    @if(hasBallot$ | async) {
+      <div class="title">Stimmzettel</div>
+      <div class="description">
+        Sie haben für jede Abstimmungsfrage eine Stimme. Sie können die Abstimmung im Wahlzeitraum wiederholen, es zählt der letzte abgegebene Stimmzettel.
       </div>
-      <button class="submit-button" [disabled]="!canSubmit" (click)="submitVote()">Stimmzettel abgeben</button>
+      @if(election$ | async; as election) {
+        <div class="election-info">Stimmabgabe für: <span class="election-title">{{ election.title }}</span></div>
+        <div class="voting-area">
+          <app-question-list 
+            [questions]="(questions$ | async) || []"
+            (optionSelected)="voteUpdated($event)"
+          ></app-question-list>
+        </div>
+        <button class="submit-button" [disabled]="!canSubmit" (click)="submitVote()">Stimmzettel abgeben</button>
+      }
+    }
+    @else {
+      <div>Wahlzettel konnte nicht erkannt werden. Bitte versuchen Sie es erneut.</div>
     }
   </div>
 </ion-content>

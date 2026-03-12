@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Token } from '../voting-system/token';
-import { gcdBigInt, hexStringToBigInt, padMessage, sha256Hex, validateElectionID, validateR, validateRSAParams, validateSignature, validateToken } from '../utils/utils';
+import { gcdBigInt, hexStringToBigInt, numberToHex32, padMessage, sha256Hex, validateElectionID, validateR, validateRSAParams, validateSignature, validateToken } from '../utils/utils';
 import { PREFIX_BLINDED_TOKEN, PREFIX_UNBLINDED_TOKEN } from '../utils/constants';
 import { R } from '../voting-system/r';
 import { RSAParams } from '../voting-system/rsa-params';
 import { modInv, modPow } from 'bigint-crypto-utils';
 import { Signature } from '../voting-system/signature';
+import { Ballot } from '../voting-system/ballot';
+import { EncryptionType } from '../voting-system/encryption-type';
+import { Wallet } from 'ethers';
+import { ElectionCredentials } from '../voting-system/election-credentials';
 
 @Injectable({
   providedIn: 'root',
@@ -120,6 +124,58 @@ export class TokenService {
       } while (!blindedToken.hexString.startsWith(PREFIX_BLINDED_TOKEN)); // Ensure blinded token has a '0x1' prefix
       validateR(electionR);
       return electionR;
+  }
+
+  async createElectionCredentialsFromStoredData(
+    electionId: number,
+    ballot: Ballot,
+    masterToken: Token
+  ): Promise<ElectionCredentials> {
+    const electionIDHex = {
+      hexString: numberToHex32(electionId),
+    };
+
+    const walletPrivKeyInput =
+      '0x' +
+      masterToken.hexString.substring(2) +
+      '|' +
+      'Ethereum-Wallet' +
+      '|' +
+      electionIDHex.hexString.substring(2);
+
+    const walletPrivKey = {
+      hexString: await sha256Hex(walletPrivKeyInput),
+    };
+
+    const encryptionKeyInput =
+      '0x' +
+      masterToken.hexString.substring(2) +
+      '|' +
+      'Encryption-Key' +
+      '|' +
+      electionIDHex.hexString.substring(2);
+
+    const encryptionKey = {
+      hexString: await sha256Hex(encryptionKeyInput),
+      encryptionType: EncryptionType.AES,
+    };
+
+    const voterWallet = new Wallet(walletPrivKey.hexString);
+
+    return {
+      electionID: electionId,
+      unblindedElectionToken: {
+        hexString: ballot.unblindedElectionTokenHex,
+        isMaster: false,
+        isBlinded: false,
+      },
+      unblindedSignature: {
+        hexString: ballot.unblindedSignatureHex,
+        isBlinded: false,
+      },
+      encryptionKey,
+      voterWallet,
+    };
   }
 
   unblindSignature(signature: Signature, r: R, rsaParams: RSAParams) {

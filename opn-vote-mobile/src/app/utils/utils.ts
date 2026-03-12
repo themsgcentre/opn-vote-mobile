@@ -260,9 +260,16 @@ export function getSubtleCrypto(): SubtleCrypto {
 
 export function hexToBuffer(hexString: string): BufferSource {
   if (hexString.startsWith('0x')) {
-    hexString = hexString.substring(2)
+    hexString = hexString.slice(2);
   }
-  return new Uint8Array(Buffer.from(hexString, 'hex'))
+
+  const bytes = new Uint8Array(hexString.length / 2);
+
+  for (let i = 0; i < bytes.length; i++) {
+    bytes[i] = parseInt(hexString.substr(i * 2, 2), 16);
+  }
+
+  return bytes;
 }
 
 export function validateEncryptedVotes(
@@ -337,3 +344,22 @@ export const replacer = (_: string, value: unknown): unknown => {
   }
   return value;
 };
+
+export function hexToBytes(hex: string): Uint8Array {
+  const clean = hex.startsWith('0x') ? hex.slice(2) : hex;
+
+  const bytes = new Uint8Array(clean.length / 2);
+  for (let i = 0; i < bytes.length; i++) {
+    bytes[i] = parseInt(clean.substr(i * 2, 2), 16);
+  }
+
+  return bytes;
+}
+
+export function bytesToHex(bytes: Uint8Array): string {
+  let hex = '0x';
+  for (const b of bytes) {
+    hex += b.toString(16).padStart(2, '0');
+  }
+  return hex;
+}

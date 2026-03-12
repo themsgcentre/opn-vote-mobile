@@ -113,13 +113,17 @@ export async function gelatoForward(signatureDataInitialSerialized: string) {
         body: signatureDataInitialSerialized,
     };
 
+    console.log(signatureDataInitialSerialized)
+
     const response = await fetch(UrlPaths.gelatoForwardUrl, options);
+    const responseText = await response.text();
+
     if (response.status >= 500) {
-        throw new ServerError();
+        throw new ServerError(`Server ${response.status}: ${responseText}`);
     }
     try {
         return await response.json();
     } catch (error) {
-        throw new ServerError();
+        throw new ServerError("2");
     }
 }

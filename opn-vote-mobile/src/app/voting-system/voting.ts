@@ -2,7 +2,7 @@ import { ethers } from "ethers"
 import { EncryptionKey } from "./encryption-key"
 import { EncryptionType } from "./encryption-type"
 import { EncryptedVotes, Vote } from "./vote"
-import { getSubtleCrypto, hexToBuffer, validateCredentials, validateElectionID, validateEncryptedVotes, validateEncryptionKey, validateEthAddress, validateEthSignature, validateRecastingVotingTransaction, validateSignature, validateToken } from "../utils/utils"
+import { bytesToHex, getSubtleCrypto, hexToBuffer, hexToBytes, validateCredentials, validateElectionID, validateEncryptedVotes, validateEncryptionKey, validateEthAddress, validateEthSignature, validateRecastingVotingTransaction, validateSignature, validateToken } from "../utils/utils"
 import { RSA_BIT_LENGTH } from "../utils/constants"
 import { VoteOption } from "./vote-option"
 import { ElectionCredentials } from "./election-credentials"
@@ -15,7 +15,6 @@ export async function encryptVotes(
   votes: Array<Vote>,
   encryptionKey: EncryptionKey,
   encryptionType: EncryptionType,
-  version: number = 2,
 ): Promise<EncryptedVotes> {
   if (encryptionKey.encryptionType !== encryptionType) {
     throw new Error(
@@ -45,7 +44,7 @@ async function encryptVotesAES(
 
     const subtle: SubtleCrypto = getSubtleCrypto()
 
-    const keyBuffer = Buffer.from(encryptionKey.hexString.substring(2), 'hex')
+    const keyBuffer = new Uint8Array(hexToBytes(encryptionKey.hexString));
     const iv = new Uint8Array(ethers.randomBytes(12)) // 12 bytes (96 bits)
     const encoder = new TextEncoder()
     const voteBytes = encoder.encode(votesToString(votes))
@@ -58,12 +57,15 @@ async function encryptVotesAES(
       ['encrypt'],
     )
     const encrypted = await subtle.encrypt({ name: 'AES-GCM', iv }, cryptoKey, voteBytes)
-    const encryptedHex = ethers.hexlify(Buffer.concat([iv, new Uint8Array(encrypted)]))
+    const encryptedBytes = new Uint8Array(iv.length + encrypted.byteLength);
+    encryptedBytes.set(iv, 0);
+    encryptedBytes.set(new Uint8Array(encrypted), iv.length);
+    const encryptedHex = bytesToHex(encryptedBytes);
 
     return { hexString: encryptedHex, encryptionType: EncryptionType.AES }
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error('Failed to encrypt votes: ' + error.message)
+      throw new Error('Failed to encrypt votes on AES: ' + error.message)
     } else {
       throw new Error('Failed to encrypt votes due to an unknown error. Error: ' + error)
     }
@@ -126,7 +128,7 @@ async function encryptVotesRSA(
       buffer,
     )
     const encryptedVotes: EncryptedVotes = {
-      hexString: '0x' + Buffer.from(encrypted).toString('hex'),
+      hexString: ethers.hexlify(new Uint8Array(encrypted)),
       encryptionType: EncryptionType.RSA,
     }
     validateEncryptedVotes(encryptedVotes, EncryptionType.RSA)
@@ -134,7 +136,7 @@ async function encryptVotesRSA(
     return encryptedVotes
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error('Failed to encrypt votes: ' + error.message)
+      throw new Error('Failed to encrypt votes on RSA: ' + error.message)
     } else {
       throw new Error('Failed to encrypt votes due to an unknown error. Error: ' + error)
     }
@@ -271,17 +273,14 @@ export function addSVSSignatureToVotingTransaction(
 }
 
 export async function getAbi() {
-    const getHeader = new Headers();
-    getHeader.append("Content-Type", "application/json");
-    const options = {
-        method: "GET",
-        headers: getHeader,
-    };
-    try {
-        const response = await fetch(UrlPaths.abiConfigUrl, options);
-        const jsondata = await response.json();
-        return jsondata;
-    } catch (error) {
-        throw new ServerError();
+  try {
+    const response = await fetch("/assets/abi.json");
+    if (!response.ok) {
+      throw new ServerError(`HTTP ${response.status}`);
     }
+
+    return await response.json();
+  } catch (error) {
+    throw new ServerError("Could not get ABI");
+  }
 }

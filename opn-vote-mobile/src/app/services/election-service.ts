@@ -40,6 +40,12 @@ export class ElectionService {
     );
   }
 
+  getPublicKey(id: number): Observable<string | undefined> {
+    return this.electionProxyService.getElectionById(id).pipe(
+      map((dto: ElectionDTO | null) => dto?.publicKey)
+    );
+  }
+
   loadQuestions(id: number): Observable<Question[]> {
     return this.electionProxyService.getElectionById(id).pipe(
       map((dto: ElectionDTO | null) => {
