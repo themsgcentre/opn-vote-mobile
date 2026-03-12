@@ -2,14 +2,16 @@ import { Injectable } from '@angular/core';
 import { EncryptionType } from '../voting-system/encryption-type';
 import { ethers } from 'ethers';
 import { VoteOption } from '../voting-system/vote-option';
+import { createVoteRecastTransaction, encryptVotes } from '../voting-system/voting';
+import { ElectionCredentials } from '../voting-system/election-credentials';
 
 @Injectable({
   providedIn: 'root',
 })
 export class VoteService {
-  sendVotes(votes: Record<number, VoteOption>, votingCredentials, electionPublicKey: string, isRecast: boolean) {
+  async sendVotes(votes: Record<number, VoteOption>, votingCredentials: ElectionCredentials, electionPublicKey: string, isRecast: boolean) {
     // map votes into needed format
-    const newVoteArray = Object.values(votes);
+    const newVoteArray = Object.values(votes).map((vote) => ({ value: vote })) as Array<{ value: VoteOption }>;
 
     const encryptedVotesAES = await encryptVotes(newVoteArray, votingCredentials.encryptionKey, EncryptionType.AES);
     const encryptedVotesRSA = await encryptVotes(newVoteArray, { hexString: electionPublicKey, encryptionType: EncryptionType.RSA }, EncryptionType.RSA);
