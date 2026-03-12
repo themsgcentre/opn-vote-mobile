@@ -29,18 +29,21 @@ export class VotingComponent  implements OnInit {
 
   election$: Observable<ElectionInformation | null> = new Observable();
   questions$: Observable<Question[]> = new Observable();
+  questionCount: number = 0;
   error: string | null = null;
+  canSubmit = false;
   votes: Record<number, VoteOption> = {};
 
   ngOnInit() {
     const idParam = this.route.snapshot.paramMap.get('id');
     const electionId = idParam ? Number(idParam) : NaN;
-    console.log("VotingComponent initialized with electionId", electionId);
 
     if(!isNaN(electionId)) {
-      console.log("Loading election with id", electionId);
       this.election$ = this.electionService.getElectionInformation(electionId);
       this.questions$ = this.electionService.loadQuestions(electionId);
+      this.questions$.subscribe(questions => {
+        this.questionCount = questions.length;
+      });
     }
     else {
       this.error = "Ungültige Wahl-ID";
@@ -49,6 +52,11 @@ export class VotingComponent  implements OnInit {
 
   voteUpdated(vote: QuestionVote) {
     this.votes[vote.key] = vote.selected;
+    this.canSubmit = Object.keys(this.votes).length == this.questionCount;
+  }
+
+  submitVote() {
+    
   }
 
 }

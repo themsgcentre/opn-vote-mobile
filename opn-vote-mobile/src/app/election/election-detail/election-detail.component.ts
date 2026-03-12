@@ -13,6 +13,6 @@ export class ElectionDetailComponent implements OnChanges{
   @Output() participateClicked: EventEmitter<void> = new EventEmitter<void>();
 
   ngOnChanges(): void {
-    console.log(this.election);
+    
   }
 }
