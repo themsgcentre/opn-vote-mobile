@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-election-image',
+  selector: 'app-image',
   templateUrl: './election-image.component.html',
   styleUrls: ['./election-image.component.scss'],
 })
-export class ElectionImageComponent {
+export class ImageComponent {
 
   @Input() large: string = '';
   @Input() small: string = '';

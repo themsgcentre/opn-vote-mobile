@@ -2,12 +2,12 @@
   <div class="info-container">
     <div class="title">{{election.title}}</div>
     <div class="image-container">
-        <app-election-image
+        <app-image
         [small]="election.headerImage.small"
         [large]="election.headerImage.large"
         [takeLarge]="false"
         [alt]="election.title"
-        ></app-election-image>
+        ></app-image>
     </div>
     <div class="description">{{election.description}}</div>
     <div class="vote-button" (click)="participateClicked.emit()">Jetzt an Wahl teilnehmen</div>
