@@ -1,13 +1,12 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, combineLatest, map, Observable, of, switchMap, throwError } from 'rxjs';
+import { BehaviorSubject, combineLatest, forkJoin, map, Observable, of, switchMap, throwError } from 'rxjs';
 import { MasterKeySetupComponent } from 'src/app/credentials/master-key-setup/master-key-setup.component';
 import { BallotService } from 'src/app/services/ballot-service';
 import { MasterKeyService } from 'src/app/services/master-key-service';
 import { RegistrationState } from 'src/app/globals/registration.state';
-import { ElectionDTO } from 'src/app/interfaces/election-dto';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ElectionProxyService } from 'src/app/services/election-proxy-service';
+import { ElectionService } from 'src/app/services/election-service';
 
 @Component({
   selector: 'app-registration',
@@ -22,7 +21,7 @@ export class RegistrationComponent implements OnInit {
     private router: Router,
     private masterKeyService: MasterKeyService,
     private ballotService: BallotService,
-    private electionProxyService: ElectionProxyService
+    private electionService: ElectionService
   ) {}
 
   RegistrationState = RegistrationState;
@@ -72,21 +71,22 @@ export class RegistrationComponent implements OnInit {
       return;
     }
 
-    this.electionProxyService.getElectionById(this.electionId).pipe(
-        switchMap((election: ElectionDTO | null) => {
-          if (!election) {
+    forkJoin({
+      n: this.electionService.getN(this.electionId),
+      e: this.electionService.getE(this.electionId)
+      }).pipe(
+        switchMap(({ n, e }) => {
+          if (!n || !e) {
             return throwError(() => new Error('ELECTION_NOT_FOUND'));
           }
-          return this.ballotService.createBallot(this.jwt!, election);
+          return this.ballotService.createBallot(this.electionId,this.jwt!, n, e);
         })
       ).subscribe({
         next: () => {
-          console.log('Ballot created successfully');
           this.refresh$.next();
         },
 
         error: (err) => {
-          console.log(err)
           this.error = err?.message || 'An unknown error occurred';
           this.step$ = of(RegistrationState.ERROR);
         }

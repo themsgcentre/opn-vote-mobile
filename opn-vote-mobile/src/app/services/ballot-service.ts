@@ -3,7 +3,6 @@ import { from, map, Observable, switchMap, throwError } from 'rxjs';
 import { RegisterProxyService } from './register-proxy-service';
 import { MasterKeyService } from './master-key-service';
 import { Ballot } from '../voting-system/ballot';
-import { ElectionDTO } from '../interfaces/election-dto';
 import { RSA_BIT_LENGTH } from '../utils/constants';
 import { TokenService } from './token-service';
 import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
@@ -34,26 +33,26 @@ export class BallotService {
     return from(this.deleteBallotInternal(electionId));
   }
 
-  createBallot(jwt: string, election: ElectionDTO): Observable<Ballot> {
+  createBallot(electionId: number, jwt: string, n: string, e: string): Observable<Ballot> {
     return this.masterKeyService.getMasterKey().pipe(
       switchMap((mk) => {
         if (!mk) return throwError(() => new Error('NO_MASTERKEY'));
 
         const rsaParams = {
-          N: BigInt(election.registerPublicKeyN),
-          e: BigInt(election.registerPublicKeyE),
+          N: BigInt(n),
+          e: BigInt(e),
           NbitLength: RSA_BIT_LENGTH,
         };
 
         // derive token
         return from(
-          this.tokenService.deriveElectionUnblindedToken(election.id, mk.masterToken)
+          this.tokenService.deriveElectionUnblindedToken(electionId, mk.masterToken)
         ).pipe(
           // derive R 
           switchMap((unblindedElectionToken) =>
             from(
               this.tokenService.deriveElectionR(
-                election.id,
+                electionId,
                 mk.masterR,
                 unblindedElectionToken,
                 rsaParams
@@ -78,7 +77,7 @@ export class BallotService {
                       );
 
                       const ballot: Ballot = {
-                        electionId: election.id,
+                        electionId: electionId,
                         unblindedElectionTokenHex: unblindedElectionToken.hexString,
                         unblindedSignatureHex: unblindedSig.hexString,
                       };

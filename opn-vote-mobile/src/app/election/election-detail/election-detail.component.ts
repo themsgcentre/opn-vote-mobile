@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { ElectionImageComponent } from 'src/app/home-page/election-image/election-image.component';
-import { Election } from 'src/app/interfaces/election';
+import { ElectionInformation } from 'src/app/interfaces/election';
 
 @Component({
   selector: 'app-election-detail',
@@ -9,7 +9,7 @@ import { Election } from 'src/app/interfaces/election';
   imports: [ElectionImageComponent]
 })
 export class ElectionDetailComponent implements OnChanges{
-  @Input() election: Election | null = null;
+  @Input() election: ElectionInformation | null = null;
   @Output() participateClicked: EventEmitter<void> = new EventEmitter<void>();
 
   ngOnChanges(): void {

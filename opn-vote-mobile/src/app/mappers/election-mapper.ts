@@ -1,5 +1,5 @@
 import { ElectionDTO } from '../interfaces/election-dto';
-import { Election } from '../interfaces/election';
+import { ElectionInformation } from '../interfaces/election';
 import { DescriptionBlob } from '../interfaces/description-blob';
 
 const toDateFromSeconds = (seconds: number | string): Date => {
@@ -7,7 +7,7 @@ const toDateFromSeconds = (seconds: number | string): Date => {
   return new Date(n * 1000);
 };
 
-export function mapElection(dto: ElectionDTO): Election {
+export function mapElectionInformation(dto: ElectionDTO): ElectionInformation {
   const blob: DescriptionBlob = JSON.parse(dto.descriptionBlob);
 
   return {
@@ -18,20 +18,13 @@ export function mapElection(dto: ElectionDTO): Election {
     description: blob.description,
 
     headerImage: blob.headerImage,
-    questions: blob.questions,
 
     backLink: blob.backLink,
     author: blob.author,
-    authorWalletAddress: blob.authorWalletAddress,
 
     authorizedVoterCount: dto.authorizedVoterCount,
     registeredVoterCount: dto.registeredVoterCount,
     totalVotes: dto.totalVotes,
-
-    rsa: {
-      e: dto.registerPublicKeyE,
-      n: dto.registerPublicKeyN,
-    },
 
     registrationStart: toDateFromSeconds(dto.registrationStartTime),
     registrationEnd: toDateFromSeconds(dto.registrationEndTime),
@@ -40,6 +33,5 @@ export function mapElection(dto: ElectionDTO): Election {
     votingEnd: toDateFromSeconds(dto.votingEndTime),
 
     status: dto.status,
-    transactionHash: dto.transactionHash,
   };
 }

@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { ElectionInfoComponent } from "../election-info/election-info.component";
 import { ElectionImageComponent } from "../election-image/election-image.component";
-import { Election } from 'src/app/interfaces/election';
+import { ElectionInformation } from 'src/app/interfaces/election';
 
 @Component({
   selector: 'app-election-overview',
@@ -10,7 +10,7 @@ import { Election } from 'src/app/interfaces/election';
   imports: [ElectionInfoComponent, ElectionImageComponent],
 })
 export class ElectionOverviewComponent implements OnChanges {
-  @Input() election: Election | undefined; 
+  @Input() election: ElectionInformation | undefined; 
   daysTilEnd: number = 0;
 
   ngOnChanges(): void {

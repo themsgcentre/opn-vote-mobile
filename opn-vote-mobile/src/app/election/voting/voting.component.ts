@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { Election } from 'src/app/interfaces/election';
+import { ElectionInformation } from 'src/app/interfaces/election';
 import { BallotService } from 'src/app/services/ballot-service';
 import { ElectionService } from 'src/app/services/election-service';
 
@@ -18,7 +18,7 @@ export class VotingComponent  implements OnInit {
     private ballotService: BallotService,
   ) { }
 
-  election: Observable<Election | null> = new Observable();
+  election: Observable<ElectionInformation | null> = new Observable();
   error: string | null = null;
 
   ngOnInit() {
@@ -28,10 +28,8 @@ export class VotingComponent  implements OnInit {
 
     if(!isNaN(electionId)) {
       console.log("Loading election with id", electionId);
-      this.election = this.electionService.getElectionById(electionId)
-      this.election.subscribe(e => {
-        console.log(e?.questions);
-      })
+      this.election = this.electionService.getElectionInformation(electionId)
+      
     }
     else {
       this.error = "Ungültige Wahl-ID";
