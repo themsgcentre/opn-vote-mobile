@@ -2,9 +2,11 @@ import { ethers } from "ethers"
 import { EncryptionKey } from "./encryption-key"
 import { EncryptionType } from "./encryption-type"
 import { EncryptedVotes, Vote } from "./vote"
-import { getSubtleCrypto, hexToBuffer, validateEncryptedVotes, validateEncryptionKey } from "../utils/utils"
+import { getSubtleCrypto, hexToBuffer, validateCredentials, validateElectionID, validateEncryptedVotes, validateEncryptionKey, validateEthAddress, validateEthSignature, validateRecastingVotingTransaction, validateSignature, validateToken } from "../utils/utils"
 import { RSA_BIT_LENGTH } from "../utils/constants"
 import { VoteOption } from "./vote-option"
+import { ElectionCredentials } from "./election-credentials"
+import { VotingTransaction } from "../interfaces/voting-transaction"
 
 export async function encryptVotes(
   votes: Array<Vote>,
@@ -180,4 +182,70 @@ export function votesToString(votes: Array<Vote>): string {
       return vote.value.toString()
     })
     .join(',')
+}
+
+export function createVoteRecastTransaction(voterCredentials: ElectionCredentials, encryptedVotesRSA: EncryptedVotes, encryptedVotesAES: EncryptedVotes): VotingTransaction {
+    validateCredentials(voterCredentials);
+    validateEncryptedVotes(encryptedVotesRSA, EncryptionType.RSA);
+    validateEncryptedVotes(encryptedVotesAES, EncryptionType.AES);
+    const recastingVotingTransaction = {
+        electionID: voterCredentials.electionID,
+        voterAddress: voterCredentials.voterWallet.address,
+        encryptedVoteRSA: encryptedVotesRSA,
+        encryptedVoteAES: encryptedVotesAES,
+    } as VotingTransaction;
+    validateRecastingVotingTransaction(recastingVotingTransaction);
+    return recastingVotingTransaction;
+}
+
+export function createVotingTransactionWithoutSVSSignature(voterCredentials: ElectionCredentials, encryptedVotesRSA: EncryptedVotes, encryptedVotesAES: EncryptedVotes): VotingTransaction {
+    validateEncryptedVotes(encryptedVotesRSA, EncryptionType.RSA);
+    validateEncryptedVotes(encryptedVotesAES, EncryptionType.AES);
+    validateToken(voterCredentials.unblindedElectionToken);
+    validateSignature(voterCredentials.unblindedSignature);
+    validateEthAddress(voterCredentials.voterWallet.address);
+    if (voterCredentials.unblindedElectionToken.isMaster) {
+        throw new Error('Voting transaction must not include a Master Token');
+    }
+    if (voterCredentials.unblindedElectionToken.isBlinded) {
+        throw new Error('Voting transaction must not include a blinded Token');
+    }
+    if (voterCredentials.unblindedSignature.isBlinded) {
+        throw new Error('Voting transaction must not include a blinded Signature');
+    }
+    const votingTransaction = {
+        electionID: voterCredentials.electionID,
+        voterAddress: voterCredentials.voterWallet.address,
+        encryptedVoteRSA: encryptedVotesRSA,
+        encryptedVoteAES: encryptedVotesAES,
+        unblindedElectionToken: voterCredentials.unblindedElectionToken,
+        unblindedSignature: voterCredentials.unblindedSignature,
+        svsSignature: null,
+    } as VotingTransaction;
+    validateVotingTransaction(votingTransaction);
+    return votingTransaction;
+}
+
+function validateVotingTransaction(votingTransaction: VotingTransaction) {
+    if (!votingTransaction.unblindedElectionToken || !votingTransaction.unblindedSignature) {
+        throw new Error('Invalid voting transaction: missing required properties');
+    }
+    validateElectionID(votingTransaction.electionID);
+    validateEthAddress(votingTransaction.voterAddress);
+    validateEncryptedVotes(votingTransaction.encryptedVoteRSA, EncryptionType.RSA);
+    validateEncryptedVotes(votingTransaction.encryptedVoteAES, EncryptionType.AES);
+    validateToken(votingTransaction.unblindedElectionToken);
+    validateSignature(votingTransaction.unblindedSignature);
+    if (votingTransaction.unblindedElectionToken.isMaster) {
+        throw new Error('Voting transaction must not include a Master Token.');
+    }
+    if (votingTransaction.unblindedElectionToken.isBlinded) {
+        throw new Error('Voting transaction must not include a blinded Token');
+    }
+    if (votingTransaction.unblindedSignature.isBlinded) {
+        throw new Error('Voting transaction must not include a blinded Signature');
+    }
+    if (votingTransaction.svsSignature) {
+        validateEthSignature(votingTransaction.svsSignature);
+    }
 }

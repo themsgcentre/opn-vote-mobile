@@ -10,6 +10,8 @@ import { EncryptionKey } from "../voting-system/encryption-key"
 import { ethers } from "ethers"
 import { webcrypto } from "node:crypto"
 import { EncryptedVotes } from "../voting-system/vote"
+import { VotingTransaction } from "../interfaces/voting-transaction"
+import { EthSignature } from "../voting-system/eth-signature"
 
 export function validateElectionID(electionID: number) {
     if (!Number.isInteger(electionID)) {
@@ -279,4 +281,22 @@ export function validateEncryptedVotes(
   } else {
     throw new Error(`Invalid encryption type: ${encryptionType}`)
   }
+}
+
+export function validateRecastingVotingTransaction(recastingTransaction: VotingTransaction): void {
+    validateElectionID(recastingTransaction.electionID);
+    validateEncryptedVotes(recastingTransaction.encryptedVoteRSA, EncryptionType.RSA);
+    validateEncryptedVotes(recastingTransaction.encryptedVoteAES, EncryptionType.AES);
+    validateEthAddress(recastingTransaction.voterAddress);
+}
+
+export function validateEthSignature(ethSignature: EthSignature): void {
+    const expectedLength = 132; // Ethereum signature length is 65 bytes, plus 2 for '0x' prefix
+    validateHexString(ethSignature, expectedLength);
+    try {
+        ethers.Signature.from(ethSignature.hexString);
+    }
+    catch (error) {
+        throw new Error('Invalid Ethereum signature');
+    }
 }
