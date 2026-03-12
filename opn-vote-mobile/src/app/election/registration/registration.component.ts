@@ -15,6 +15,14 @@ import { ElectionProxyService } from 'src/app/services/election-proxy-service';
   imports: [AsyncPipe, MasterKeySetupComponent]
 })
 export class RegistrationComponent implements OnInit {
+
+  constructor(
+    private route: ActivatedRoute,
+    private masterKeyService: MasterKeyService,
+    private ballotService: BallotService,
+    private electionProxyService: ElectionProxyService
+  ) {}
+
   RegistrationState = RegistrationState;
   electionId: number = NaN;
   jwt: string | null = null;
@@ -30,12 +38,17 @@ export class RegistrationComponent implements OnInit {
     switchMap(() => this.ballotService.hasBallot(this.electionId))
   );
 
-  constructor(
-    private route: ActivatedRoute,
-    private masterKeyService: MasterKeyService,
-    private ballotService: BallotService,
-    private electionProxyService: ElectionProxyService
-  ) {}
+  step$: Observable<RegistrationState> = combineLatest([
+      this.hasMasterKey$,
+      this.hasBallot$,
+    ]).pipe(
+      map(([hasMasterKey, hasBallot]) => {
+        if (!hasMasterKey) return RegistrationState.MASTERKEY;
+        if (!hasBallot) return RegistrationState.BALLOT;
+        return RegistrationState.BALLOT_CREATED;
+        return RegistrationState.READY;
+      })
+    );
 
   ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
@@ -51,58 +64,55 @@ export class RegistrationComponent implements OnInit {
     this.hasBallot$ = this.ballotService.hasBallot(this.electionId);
   }
 
-  step$: Observable<RegistrationState> = combineLatest([
-      this.hasMasterKey$,
-      this.hasBallot$,
-    ]).pipe(
-      map(([hasMasterKey, hasBallot]) => {
-        if (!hasMasterKey) return RegistrationState.MASTERKEY;
-        if (!hasBallot) return RegistrationState.BALLOT;
-        return RegistrationState.READY;
-      })
-    );;
+  createBallot() {
+    console.log(this.jwt, this.electionId);
+    if (!this.jwt) {
+      this.step$ = of(RegistrationState.ERROR);
+      return;
+    }
 
-  onCreateMasterKey() {
+    this.electionProxyService.getElectionById(this.electionId).pipe(
+        switchMap((election: ElectionDTO | null) => {
+          if (!election) {
+            return throwError(() => new Error('ELECTION_NOT_FOUND'));
+          }
+          return this.ballotService.createBallot(this.jwt!, election);
+        })
+      ).subscribe({
+        next: () => {
+          console.log('Ballot created successfully');
+          this.refresh$.next();
+        },
+
+        error: (err) => {
+          console.log(err)
+          this.error = err?.message || 'An unknown error occurred';
+          this.step$ = of(RegistrationState.ERROR);
+        }
+      });
+  }
+
+  createMasterKey() {
     this.masterKeyService.createNewMasterKey().subscribe({
       next: () => this.refresh$.next(),
       error: () => this.step$ = of(RegistrationState.ERROR)
     });
   }
 
-  onProceedToCreateBallot() {
-    this.step$ = of(RegistrationState.BALLOT);
+  onCreateMasterKey() {
+    this.createMasterKey();
   }
-
 
   onCreateBallot() {
-    console.log(this.jwt, this.electionId);
-  if (!this.jwt) {
-    this.step$ = of(RegistrationState.ERROR);
-    return;
+    this.createBallot();
   }
 
-  this.electionProxyService.getElectionById(this.electionId).pipe(
-      switchMap((election: ElectionDTO | null) => {
-        if (!election) {
-          return throwError(() => new Error('ELECTION_NOT_FOUND'));
-        }
-        return this.ballotService.createBallot(this.jwt!, election);
-      })
-    ).subscribe({
-      next: () => {
-        console.log('Ballot created successfully');
-        this.refresh$.next();
-      },
-
-      error: (err) => {
-        console.log(err)
-        this.error = err?.message || 'An unknown error occurred';
-        this.step$ = of(RegistrationState.ERROR);
-      }
-    });
+  // button listeners
+  onProceedToVoting() {
+    
   }
 
-  onContinue() {
-    // navigate to voting page / next screen
+  onProceedToBallotCreation() {
+    this.step$ = of(RegistrationState.BALLOT);
   }
 }

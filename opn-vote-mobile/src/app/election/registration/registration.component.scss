@@ -1,7 +1,25 @@
+@import '../../styles/colors.scss';
+@import '../../styles/font-weights.scss';
+@import '../../styles/sizes.scss';
+
+
 .registration-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   height: 100%;
-  margin-top: 16px;
+  margin-top: 24px;
+
+  .proceed-button {
+    margin-top: 25px;
+    background-color: $opn-slategray;
+    width: 60%;
+    height: 60px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-weight: $bold;
+  }
 }
