@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
-import { from, map, Observable, switchMap, throwError } from 'rxjs';
+import { combineLatest, from, map, Observable, of, switchMap, throwError } from 'rxjs';
 import { RegisterProxyService } from './register-proxy-service';
 import { MasterKeyService } from './master-key-service';
 import { Ballot } from '../voting-system/ballot';
 import { RSA_BIT_LENGTH } from '../utils/constants';
 import { TokenService } from './token-service';
 import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
+import { ElectionDTO } from '../interfaces/election-dto';
+import { ElectionCredentials } from '../voting-system/election-credentials';
 
 @Injectable({
   providedIn: 'root',
@@ -95,6 +97,27 @@ export class BallotService {
       })
     );
   }
+
+  getElectionCredentials(electionId: number): Observable<ElectionCredentials | null> {
+  return combineLatest([
+    this.loadBallot(electionId),
+    this.masterKeyService.getMasterKey(),
+  ]).pipe(
+    switchMap(([ballot, masterKey]) => {
+      if (!ballot || !masterKey) {
+        return of(null);
+      }
+
+      return from(
+        this.tokenService.createElectionCredentialsFromStoredData(
+          electionId,
+          ballot,
+          masterKey.masterToken
+        )
+      );
+    })
+  );
+}
 
   private async saveBallotInternal(ballot: Ballot): Promise<void> {
     await SecureStoragePlugin.set({

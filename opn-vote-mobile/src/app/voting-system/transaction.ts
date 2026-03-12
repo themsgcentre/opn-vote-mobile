@@ -15,7 +15,7 @@ export async function signTransaction(votingTransaction: VotingTransaction, vote
 
     const response = await fetch(UrlPaths.signVotingTransactionUrl, signOptions);
     if (response.status !== 200) {
-        throw new ServerError();
+        throw new ServerError("3");
     }
     const jsondata = await response.json();
     if (jsondata?.data?.blindedSignature) {
