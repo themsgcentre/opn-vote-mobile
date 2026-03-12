@@ -8,6 +8,8 @@ import { EncryptionType } from "../voting-system/encryption-type"
 import { ElectionCredentials } from "../voting-system/election-credentials"
 import { EncryptionKey } from "../voting-system/encryption-key"
 import { ethers } from "ethers"
+import { webcrypto } from "node:crypto"
+import { EncryptedVotes } from "../voting-system/vote"
 
 export function validateElectionID(electionID: number) {
     if (!Number.isInteger(electionID)) {
@@ -241,5 +243,40 @@ export function validateEncryptionKey(
 export function validateEthAddress(address: string): void {
   if (!ethers.isAddress(address)) {
     throw new Error('Invalid Ethereum address provided.')
+  }
+}
+
+export function getSubtleCrypto(): SubtleCrypto {
+  if (typeof window !== 'undefined' && typeof window.crypto !== 'undefined') {
+    return window.crypto.subtle
+  } else {
+    return webcrypto.subtle as SubtleCrypto
+  }
+}
+
+export function hexToBuffer(hexString: string): BufferSource {
+  if (hexString.startsWith('0x')) {
+    hexString = hexString.substring(2)
+  }
+  return new Uint8Array(Buffer.from(hexString, 'hex'))
+}
+
+export function validateEncryptedVotes(
+  encryptedVotes: EncryptedVotes,
+  encryptionType: EncryptionType,
+): void {
+  if (encryptionType === EncryptionType.AES) {
+    if (!isValidHex(encryptedVotes.hexString, true, false)) {
+      throw new Error(`Invalid token format. Token: ${encryptedVotes.hexString}`)
+    }
+    if (encryptedVotes.hexString.length < 64) {
+      throw new Error(
+        `Invalid encrypted votes length. Length: ${encryptedVotes.hexString.length}. Expected minimum length: 66`,
+      )
+    }
+  } else if (encryptionType === EncryptionType.RSA) {
+    validateHexString(encryptedVotes, RSA_BIT_LENGTH / 4 + 2)
+  } else {
+    throw new Error(`Invalid encryption type: ${encryptionType}`)
   }
 }
