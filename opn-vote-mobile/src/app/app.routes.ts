@@ -33,7 +33,7 @@ export const routes: Routes = [
     component: RegistrationComponent
   },
   {
-    path: 'election/vote/:id/',
+    path: 'election/vote/:id',
     component: VotingComponent
   }
 ];

@@ -6,8 +6,9 @@ import { BallotService } from 'src/app/services/ballot-service';
 import { MasterKeyService } from 'src/app/services/master-key-service';
 import { RegistrationState } from 'src/app/globals/registration.state';
 import { ElectionDTO } from 'src/app/interfaces/election-dto';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ElectionProxyService } from 'src/app/services/election-proxy-service';
+
 @Component({
   selector: 'app-registration',
   templateUrl: './registration.component.html',
@@ -18,6 +19,7 @@ export class RegistrationComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private masterKeyService: MasterKeyService,
     private ballotService: BallotService,
     private electionProxyService: ElectionProxyService
@@ -46,7 +48,6 @@ export class RegistrationComponent implements OnInit {
         if (!hasMasterKey) return RegistrationState.MASTERKEY;
         if (!hasBallot) return RegistrationState.BALLOT;
         return RegistrationState.BALLOT_CREATED;
-        return RegistrationState.READY;
       })
     );
 
@@ -99,6 +100,12 @@ export class RegistrationComponent implements OnInit {
     });
   }
 
+  redirectToVoting() {
+    this.router.navigate([`/election/vote/${this.electionId}`]);
+  }
+
+
+  //#region button listeners
   onCreateMasterKey() {
     this.createMasterKey();
   }
@@ -107,12 +114,12 @@ export class RegistrationComponent implements OnInit {
     this.createBallot();
   }
 
-  // button listeners
   onProceedToVoting() {
-    
+    this.redirectToVoting();
   }
 
   onProceedToBallotCreation() {
     this.step$ = of(RegistrationState.BALLOT);
   }
+  //#endregion
 }
