@@ -8,8 +8,9 @@ import { QuestionListComponent } from 'src/app/question-list/question-list.compo
 import { BallotService } from 'src/app/services/ballot-service';
 import { ElectionService } from 'src/app/services/election-service';
 import { IonContent } from "@ionic/angular/standalone";
-import { Vote } from 'src/app/voting-system/vote';
+import { QuestionVote } from 'src/app/voting-system/vote';
 import { VoteOption } from 'src/app/voting-system/vote-option';
+import { VoteService } from 'src/app/services/vote-service';
 
 @Component({
   selector: 'app-voting',
@@ -22,13 +23,14 @@ export class VotingComponent  implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private electionService: ElectionService,
+    private voteService: VoteService,
     private ballotService: BallotService,
   ) { }
 
   election$: Observable<ElectionInformation | null> = new Observable();
   questions$: Observable<Question[]> = new Observable();
   error: string | null = null;
-  votes: Record<string, VoteOption> = {};
+  votes: Record<number, VoteOption> = {};
 
   ngOnInit() {
     const idParam = this.route.snapshot.paramMap.get('id');
@@ -45,7 +47,7 @@ export class VotingComponent  implements OnInit {
     }
   }
 
-  voteUpdated(vote: Vote) {
+  voteUpdated(vote: QuestionVote) {
     this.votes[vote.key] = vote.selected;
   }
 

@@ -1,17 +1,15 @@
 import { Injectable } from '@angular/core';
 import { EncryptionType } from '../voting-system/encryption-type';
 import { ethers } from 'ethers';
+import { VoteOption } from '../voting-system/vote-option';
 
 @Injectable({
   providedIn: 'root',
 })
 export class VoteService {
-  /*sendVotes(votes, votingCredentials, electionPublicKey: string, isRecast: boolean) {
+  sendVotes(votes: Record<number, VoteOption>, votingCredentials, electionPublicKey: string, isRecast: boolean) {
     // map votes into needed format
-    let newVoteArray = [];
-    Object.keys(votes).map((key) => {
-        newVoteArray[key] = { value: votes[key] };
-    });
+    const newVoteArray = Object.values(votes);
 
     const encryptedVotesAES = await encryptVotes(newVoteArray, votingCredentials.encryptionKey, EncryptionType.AES);
     const encryptedVotesRSA = await encryptVotes(newVoteArray, { hexString: electionPublicKey, encryptionType: EncryptionType.RSA }, EncryptionType.RSA);
@@ -36,7 +34,7 @@ export class VoteService {
     const abiData = await getAbi();
     const opnVoteInterface = new ethers.Interface(abiData);
 
-    const provider = new ethers.JsonRpcProvider(Config.env.rpcnodeUrl); // lets talk where to put all this stuff in biweekly - its on the list
+    const provider = new ethers.JsonRpcProvider(Config.env.rpcnodeUrl); 
     const relayRequest = await createRelayRequest(votingTransactionFull, votingCredentials, Config.env.opnVoteContractAddress, opnVoteInterface, provider);
     const relay = new GelatoRelay();
     const signatureDataInitial = await createSignatureData(relayRequest, votingCredentials, relay, provider);
@@ -45,5 +43,5 @@ export class VoteService {
     const gelatoForwardResult = await gelatoForward(signatureDataInitialSerialized);
 
     return gelatoForwardResult.data.taskId;
-  }*/
+  }
 }
