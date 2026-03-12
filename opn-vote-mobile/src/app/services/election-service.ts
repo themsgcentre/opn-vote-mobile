@@ -44,8 +44,15 @@ export class ElectionService {
     return this.electionProxyService.getElectionById(id).pipe(
       map((dto: ElectionDTO | null) => {
         if (!dto) return [];
+
         const blob = JSON.parse(dto.descriptionBlob);
-        return blob.questions || [];
+        const questions = blob.questions || [];
+
+        return questions.map((q: any, index: number): Question => ({
+          key: index,
+          text: q.text,
+          imageUrl: q.imageUrl
+        }));
       })
     );
   }

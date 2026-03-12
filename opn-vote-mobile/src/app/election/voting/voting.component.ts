@@ -8,6 +8,8 @@ import { QuestionListComponent } from 'src/app/question-list/question-list.compo
 import { BallotService } from 'src/app/services/ballot-service';
 import { ElectionService } from 'src/app/services/election-service';
 import { IonContent } from "@ionic/angular/standalone";
+import { Vote } from 'src/app/voting-system/vote';
+import { VoteOption } from 'src/app/voting-system/vote-option';
 
 @Component({
   selector: 'app-voting',
@@ -26,6 +28,7 @@ export class VotingComponent  implements OnInit {
   election$: Observable<ElectionInformation | null> = new Observable();
   questions$: Observable<Question[]> = new Observable();
   error: string | null = null;
+  votes: Record<string, VoteOption> = {};
 
   ngOnInit() {
     const idParam = this.route.snapshot.paramMap.get('id');
@@ -40,6 +43,10 @@ export class VotingComponent  implements OnInit {
     else {
       this.error = "Ungültige Wahl-ID";
     }
+  }
+
+  voteUpdated(vote: Vote) {
+    this.votes[vote.key] = vote.selected;
   }
 
 }

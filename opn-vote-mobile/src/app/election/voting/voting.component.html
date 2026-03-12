@@ -7,7 +7,10 @@
     @if(election$ | async; as election) {
       <div class="election-info">Stimmabgabe für: <span class="election-title">{{ election.title }}</span></div>
       <div class="voting-area">
-        <app-question-list [questions]="(questions$ | async) || []"></app-question-list>
+        <app-question-list 
+          [questions]="(questions$ | async) || []"
+          (optionSelected)="voteUpdated($event)"
+        ></app-question-list>
       </div>
     }
   </div>
