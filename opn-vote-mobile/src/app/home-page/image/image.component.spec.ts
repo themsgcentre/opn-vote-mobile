@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { ImageComponent } from './election-image.component';
+import { ImageComponent } from './image.component';
 
-describe('ElectionImageComponent', () => {
+describe('ImageComponent', () => {
   let component: ImageComponent;
   let fixture: ComponentFixture<ImageComponent>;
 

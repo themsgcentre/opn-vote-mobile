@@ -1,0 +1,17 @@
+@import '../styles/sizes.scss';
+@import '../styles/font-weights.scss';
+@import '../styles/colors.scss';
+
+.options-container {
+    font-size: $text-small;
+
+    .option {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+
+        .option-text {
+            margin-left: 10px;
+        }
+    }
+}
