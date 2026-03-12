@@ -1,4 +1,4 @@
-export interface Election {
+export interface ElectionInformation {
   id: number;
 
   title: string;
@@ -9,20 +9,9 @@ export interface Election {
     large: string;
     small: string;
   };
-
-  questions: {
-    text: string;
-    imageUrl: string;
-  }[];
-
-  rsa: {
-    n: string;
-    e: string;
-  }
   
   backLink: string;
   author: string;
-  authorWalletAddress: string;
 
   authorizedVoterCount: number;
   registeredVoterCount: number;
@@ -34,5 +23,4 @@ export interface Election {
   votingEnd: Date;
 
   status: number;
-  transactionHash: string;
 }
