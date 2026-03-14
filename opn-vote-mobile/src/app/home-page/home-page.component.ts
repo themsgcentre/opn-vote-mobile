@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ElectionService } from '../services/election-service';
-import { Election } from '../interfaces/election';
+import { ElectionInformation } from '../interfaces/election';
 
 @Component({
   selector: 'app-home-page',
@@ -15,14 +15,14 @@ import { Election } from '../interfaces/election';
 })
 export class HomePageComponent  implements OnInit {
 
-  openElection$: Observable<Election[]> = of([]);
+  openElection$: Observable<ElectionInformation[]> = of([]);
   constructor(
     private electionService: ElectionService,
     private router: Router
   ) { }
 
   ngOnInit() {
-    this.openElection$ = this.electionService.getAllElections();
+    this.openElection$ = this.electionService.getAllElectionInformations();
   }
 
   navigateToElection(electionId: number) {

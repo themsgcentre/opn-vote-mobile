@@ -1,12 +1,12 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { NumberDisplayComponent } from "../number-display/number-display.component";
-import { VerticalLineComponent } from "src/app/reusables/vertical-line/vertical-line.component";
+import { Component, Input } from '@angular/core';
+import { LineComponent } from "src/app/reusables/line/line.component";
+import { NumberDisplayComponent } from 'src/app/reusables/number-display/number-display.component';
 
 @Component({
   selector: 'app-election-info',
   templateUrl: './election-info.component.html',
   styleUrls: ['./election-info.component.scss'],
-  imports: [NumberDisplayComponent, VerticalLineComponent],
+  imports: [NumberDisplayComponent, LineComponent],
 })
 export class ElectionInfoComponent {
   @Input() category: string = '';

@@ -4,8 +4,9 @@ import { filter, map, Observable, of, switchMap } from 'rxjs';
 import { ElectionDetailComponent } from "../election-detail/election-detail.component";
 import { CommonModule } from '@angular/common';
 import { ElectionService } from 'src/app/services/election-service';
-import { Election } from 'src/app/interfaces/election';
+import { ElectionInformation } from 'src/app/interfaces/election';
 import { IonCol, IonContent } from "@ionic/angular/standalone";
+import { JWT } from 'src/app/jwt';
 
 @Component({
   selector: 'app-election-detail-view',
@@ -14,7 +15,7 @@ import { IonCol, IonContent } from "@ionic/angular/standalone";
   imports: [ElectionDetailComponent, CommonModule, IonContent],
 })
 export class ElectionDetailViewComponent  implements OnInit {
-  election$: Observable<Election | null> = of(null)
+  election$: Observable<ElectionInformation | null> = of(null)
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -26,14 +27,13 @@ export class ElectionDetailViewComponent  implements OnInit {
       map(paramMap => Number(paramMap.get('id'))),
       filter(id => !isNaN(id)),
       switchMap(id =>
-        this.electionService.getElectionById(id)
+        this.electionService.getElectionInformation(id)
       )
     );
   }
 
   onParticipateClicked() {
     const electionId = this.route.snapshot.paramMap.get('id');
-    this.router.navigate( ['/election/credentials/master-key-setup'],
-      { queryParams: { canSkip: false, electionId: electionId, returnUrl: `election/credentials/vote-key-setup/${electionId}`} });
+    this.router.navigate( ['/election/register', electionId, JWT]);
   }
 }

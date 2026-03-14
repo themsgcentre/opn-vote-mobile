@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { ElectionOverviewComponent } from "../election-overview/election-overview.component";
-import { Election } from 'src/app/interfaces/election';
+import { ElectionInformation } from 'src/app/interfaces/election';
 
 @Component({
   selector: 'app-election-list',
@@ -8,7 +8,7 @@ import { Election } from 'src/app/interfaces/election';
   styleUrls: ['./election-list.component.scss'],
   imports: [ElectionOverviewComponent],
 })
-export class ElectionListComponent {
-  @Input() elections: Election[] = [];
+export class ElectionListComponent{
+  @Input() elections: ElectionInformation[] = [];
   @Output() electionClicked: EventEmitter<number> = new EventEmitter<number>();
 }

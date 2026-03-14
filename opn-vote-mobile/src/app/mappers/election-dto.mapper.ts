@@ -10,7 +10,6 @@ const toNumber = (v: unknown): number => {
 
 export function parseElectionDTO(raw: RawElection): ElectionDTO {
   if (!raw) throw new Error('Election is null/undefined');
-    console.log(raw)
   return {
     id: toNumber(raw.id),
     descriptionBlob: String(raw.descriptionBlob ?? ''),
