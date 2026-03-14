@@ -3,8 +3,8 @@ import { HomePageComponent } from './home-page/home-page.component';
 import { VoteHistoryComponent } from './vote-history/vote-history.component';
 import { ElectionDetailViewComponent } from './election/election-detail-view/election-detail-view.component';
 import { VotingComponent } from './election/voting/voting.component';
-import { MasterKeyManagementComponent } from './credentials/master-key-management/master-key-management.component';
 import { RegistrationComponent } from './election/registration/registration.component';
+import { MasterKeySetupComponent } from './credentials/master-key-setup/master-key-setup.component';
 
 export const routes: Routes = [
   {
@@ -17,7 +17,7 @@ export const routes: Routes = [
   },
   {
     path: 'user',
-    component: MasterKeyManagementComponent
+    component: MasterKeySetupComponent
   },
   {
     path: '',
