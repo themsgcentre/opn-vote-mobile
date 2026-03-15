@@ -9,32 +9,46 @@
 
     .title {
         font-size: $title-medium;
-        font-weight: $bold;
-        margin-top: 20px;
-        margin-bottom: 12px;
+        font-weight: $regular;
+        margin-top: 12px;
+    }
+
+        .election-info {
+        font-size: $text-medium;
+        width: 80%;
+        text-align: center;
+        color: $opn-textgray;
+        padding-bottom: 12px;
+
+        .election-title {
+            font-weight: $bold;
+            color: $opn-white;
+        }
+    }
+
+    .notice {
+        font-size: $text-medium;
+        color: $opn-white;
     }
 
     .description {
         font-size: $text-medium;
         width: 80%;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
         text-align: center;
-        color: $opn-lightgray;
-        opacity: 0.8;
+        color: $opn-textgray;
     }   
 
-    .election-info {
-        font-size: $text-medium;
-        padding: 10px;
-        text-align: center;
-
-        .election-title {
-            font-weight: $bold;
-        }
+    .line {
+        width: 100%;
+        height: 5px;
+        justify-content: center;
+        align-items: center;
     }
 
     .voting-area {
-        margin-top: 20px;
+        padding-top: 15px;
+        background-color: $opn-slategray;
     }
 
     .submit-button {

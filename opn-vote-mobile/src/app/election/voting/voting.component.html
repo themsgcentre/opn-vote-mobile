@@ -2,11 +2,18 @@
   <div class="voting-container">
     @if(hasBallot$ | async) {
       <div class="title">Stimmzettel</div>
-      <div class="description">
-        Sie haben für jede Abstimmungsfrage eine Stimme. Sie können die Abstimmung im Wahlzeitraum wiederholen, es zählt der letzte abgegebene Stimmzettel.
-      </div>
       @if(election$ | async; as election) {
-        <div class="election-info">Stimmabgabe für: <span class="election-title">{{ election.title }}</span></div>
+        <div class="election-info">für die Abstimmung:<br>
+           <span class="election-title">{{ election.title }}</span></div>
+      }
+      <div class="notice">
+        <i class="bi bi-exclamation-circle"></i> Hinweis
+      </div>
+      <div class="description">
+        Für jede Frage haben Sie eine Stimme. Sie können Ihre Stimme bis zum Ende des Wahlzeitraums ändern.
+      </div>
+      <div class="line"><app-line width="100%" height="5px" color="#29B0CC"></app-line></div>
+      @if(election$ | async; as election) {
         <div class="voting-area">
           <app-question-list 
             [questions]="(questions$ | async) || []"

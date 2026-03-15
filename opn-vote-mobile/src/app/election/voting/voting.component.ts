@@ -12,12 +12,13 @@ import { QuestionVote } from 'src/app/voting-system/vote';
 import { VoteOption } from 'src/app/voting-system/vote-option';
 import { VoteService } from 'src/app/services/vote-service';
 import { ElectionCredentials } from 'src/app/voting-system/election-credentials';
+import { LineComponent } from 'src/app/reusables/line/line.component';
 
 @Component({
   selector: 'app-voting',
   templateUrl: './voting.component.html',
   styleUrls: ['./voting.component.scss'],
-  imports: [CommonModule, QuestionListComponent, IonContent]
+  imports: [CommonModule, QuestionListComponent, IonContent, LineComponent]
 })
 export class VotingComponent  implements OnInit {
 
