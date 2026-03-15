@@ -4,6 +4,7 @@ import { ElectionInformation } from 'src/app/interfaces/election';
 
 @Component({
   selector: 'app-election-detail',
+  standalone: true,
   templateUrl: './election-detail.component.html',
   styleUrls: ['./election-detail.component.scss'],
   imports: [ImageComponent]
