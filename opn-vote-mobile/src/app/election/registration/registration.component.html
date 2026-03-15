@@ -12,7 +12,7 @@
       <button (click)="onCreateBallot()">create ballot</button>
     }
     @case (RegistrationState.BALLOT_CREATED) {
-        <div>Wahlschein erstellt. Fahren Sie jetzt zur Wahl fort.</div>
+        <div class="text">Wahlschein erstellt. Fahren Sie jetzt zur Wahl fort.</div>
         <div class="proceed-button" (click)="onProceedToVoting()">Weiter zur Stimmabgabe</div>
     }
     @case (RegistrationState.READY) {
