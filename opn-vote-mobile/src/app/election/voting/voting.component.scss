@@ -15,10 +15,10 @@
 
         .election-info {
         font-size: $text-medium;
-        width: 80%;
+        width: 90%;
         text-align: center;
         color: $opn-textgray;
-        padding-bottom: 12px;
+
 
         .election-title {
             font-weight: $bold;
@@ -29,11 +29,12 @@
     .notice {
         font-size: $text-medium;
         color: $opn-white;
+        margin-top: 12px;
     }
 
     .description {
         font-size: $text-medium;
-        width: 80%;
+        width: 90%;
         margin-bottom: 10px;
         text-align: center;
         color: $opn-textgray;
@@ -55,6 +56,7 @@
         background-color: $opn-slategray;
         padding: 10px 40px;
         border-radius: 5px;
+        margin: 5px 0px 20px 0px;
     }
 
     .submit-button:disabled {
