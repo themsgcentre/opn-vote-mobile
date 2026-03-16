@@ -12,8 +12,8 @@
 .tabs-container {
   width: 100%;
   display: flex;
-  gap: 8px;
-  margin-bottom: 18px;
+  gap: 6px;
+  margin-bottom: 16px;
 }
 
 .tab-button {
@@ -55,6 +55,10 @@
   background: transparent;
   color: $opn-darkgray;
   font-size: $text-small;
+}
+
+.search-input::placeholder {
+  color: $opn-darkgray;
 }
 
 .list-container {

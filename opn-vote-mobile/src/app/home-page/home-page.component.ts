@@ -17,6 +17,7 @@ type HomeTab = 'active' | 'upcoming' | 'finished';
 })
 export class HomePageComponent implements OnInit {
   openElection$: Observable<ElectionInformation[]> = of([]);
+
   allElections: ElectionInformation[] = [];
   filteredElections: ElectionInformation[] = [];
 
@@ -26,7 +27,7 @@ export class HomePageComponent implements OnInit {
   constructor(
     private electionService: ElectionService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.openElection$ = this.electionService.getAllElectionInformations();
@@ -43,8 +44,8 @@ export class HomePageComponent implements OnInit {
   }
 
   onSearchChange(event: Event) {
-    const target = event.target as HTMLInputElement;
-    this.searchTerm = target.value;
+    const input = event.target as HTMLInputElement;
+    this.searchTerm = input.value;
     this.applyFilters();
   }
 
@@ -58,15 +59,27 @@ export class HomePageComponent implements OnInit {
   }
 
   filterByTab(elections: ElectionInformation[]): ElectionInformation[] {
+    const now = new Date();
+
     switch (this.selectedTab) {
       case 'active':
-        return elections;
+        return elections.filter((election) => {
+          const votingStart = new Date(election.votingStart);
+          const votingEnd = new Date(election.votingEnd);
+          return votingStart <= now && now <= votingEnd;
+        });
 
       case 'upcoming':
-        return [];
+        return elections.filter((election) => {
+          const votingStart = new Date(election.votingStart);
+          return now < votingStart;
+        });
 
       case 'finished':
-        return [];
+        return elections.filter((election) => {
+          const votingEnd = new Date(election.votingEnd);
+          return now > votingEnd;
+        });
 
       default:
         return elections;
