@@ -3,6 +3,7 @@ import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-image',
+  standalone: true,
   templateUrl: './image.component.html',
   styleUrls: ['./image.component.scss'],
   imports: [CommonModule]

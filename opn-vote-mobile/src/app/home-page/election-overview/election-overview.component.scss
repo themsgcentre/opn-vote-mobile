@@ -2,36 +2,57 @@
 @import '../../styles/font-weights.scss';
 @import '../../styles/colors.scss';
 
+:host {
+  display: block;
+  width: 100%;
+}
+
 .election-block {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 40px;
-    height: 350px;
-    width: 340px;
-    background-color: $opn-slategray;
-    border-radius: 5px;
+  width: 100%;
+  border-radius: 5px;
+  overflow: hidden;
+  background-color: $opn-slategray;
+  display: flex;
+  flex-direction: column;
+}
 
-    .country-display {
-        height: 36px;
-        font-weight: $bold;
-        font-size: $text-medium;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+.title-bar {
+  min-height: 44px;
+  height: auto;
 
-    .image-container {
-        height: 45%;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: $opn-gray;
-    }
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    .election-info {
-        width: 100%;
-        height: 45%;
-    }
+  font-size: $text-medium;
+  font-weight: $semi-bold;
+
+  background-color: $opn-midblue;
+  color: $opn-white;
+
+  text-align: center;
+  padding: 8px 10px;
+  word-break: break-word;
+}
+
+.image-container {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  display: flex;
+  background-color: $opn-gray;
+}
+
+.image-container app-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+
+.image-container ::ng-deep img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }

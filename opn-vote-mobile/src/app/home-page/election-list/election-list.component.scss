@@ -2,12 +2,26 @@
 @import '../../styles/font-weights.scss';
 @import '../../styles/colors.scss';
 
+:host {
+  display: block;
+  width: 100%;
+}
+
 .no-election-info {
-    padding-top: 20px;
-    font-size: $text-medium;
-    color: $opn-lightgray;
+  padding-top: 20px;
+  font-size: $text-medium;
+  color: $opn-lightgray;
+  text-align: center;
 }
 
 .overview-container {
-    margin-top: 20px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.overview-item {
+  width: 100%;
+  cursor: pointer;
 }

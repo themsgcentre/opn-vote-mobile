@@ -9,20 +9,36 @@ import { VoteOption } from '../voting-system/vote-option';
   styleUrls: ['./options.component.scss'],
   imports: [FormsModule]
 })
-export class OptionsComponent  implements OnInit {
+export class OptionsComponent implements OnInit {
 
   @Input() options: Option[] = [];
   @Input() groupname: string = '';
   @Output() selected = new EventEmitter<VoteOption>();
-  selectedOption: Option | null = null;
 
-  constructor() { }
+  selectedOption: Option | null = null;
 
   ngOnInit() {}
 
   onBallotSelected(option: Option) {
     this.selectedOption = option;
-    this.selected.emit(this.selectedOption.voteOption);
+    this.selected.emit(option.voteOption);
   }
 
+  isApprove(option: Option): boolean {
+    const text = option.text.toLowerCase();
+    const value = String(option.voteOption).toLowerCase();
+    return text.includes('stimme zu') || value.includes('yes') || value.includes('approve');
+  }
+
+  isReject(option: Option): boolean {
+    const text = option.text.toLowerCase();
+    const value = String(option.voteOption).toLowerCase();
+    return text.includes('stimme nicht zu') || value.includes('no') || value.includes('reject');
+  }
+
+  isAbstain(option: Option): boolean {
+    const text = option.text.toLowerCase();
+    const value = String(option.voteOption).toLowerCase();
+    return text.includes('enthalte') || value.includes('abstain');
+  }
 }

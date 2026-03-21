@@ -7,18 +7,18 @@
     position: relative;
     display: flex;
     z-index: 1;
-    background-color: $opn-gray;
+    background-color: $opn-lightblue;
 
     .top-bar-container {
         width: 100%;
-        padding: 0px 50px;
+        padding-bottom: 15px;
         display: flex;
-        align-items: center;
+        align-items: end;
         justify-content: center;
 
         .title {
-            font-weight: $bold;
-            font-size: $title-large;
+            font-weight: $semi-bold;
+            font-size: $title-medium;
         }
     }
 }

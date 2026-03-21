@@ -1,12 +1,47 @@
 <ion-content>
   <div class="page-container">
-    <div class="sub-title">Laufende Wahlen:</div>
+    <div class="tabs-container">
+      <button
+        class="tab-button"
+        [class.active]="selectedTab === 'active'"
+        (click)="selectTab('active')"
+      >
+        aktiv
+      </button>
+
+      <button
+        class="tab-button"
+        [class.active]="selectedTab === 'upcoming'"
+        (click)="selectTab('upcoming')"
+      >
+        anstehend
+      </button>
+
+      <button
+        class="tab-button"
+        [class.active]="selectedTab === 'finished'"
+        (click)="selectTab('finished')"
+      >
+        abgeschlossen
+      </button>
+    </div>
+
+    <div class="search-container">
+      <i class="bi bi-search search-icon"></i>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Wahl suchen"
+        [value]="searchTerm"
+        (input)="onSearchChange($event)"
+      />
+    </div>
+
     <div class="list-container">
-      <app-election-list 
-        [elections]="(openElection$ | async) ?? []"
+      <app-election-list
+        [elections]="filteredElections"
         (electionClicked)="navigateToElection($event)"
-        ></app-election-list>
+      ></app-election-list>
     </div>
   </div>
 </ion-content>
-

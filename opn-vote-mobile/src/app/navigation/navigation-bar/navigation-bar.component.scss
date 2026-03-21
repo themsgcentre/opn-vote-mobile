@@ -6,14 +6,15 @@
     position: relative;
     display: flex;
     z-index: 1;
-    background-color: $opn-gray;
+    background-color: $opn-lightblue;
 
     .navigation-container {
         width: 100%;
         padding: 0px 50px;
         display: flex;
         flex-direction: row;
-        align-items: center;
+        align-items: top;
+        padding-top: 20px;
         justify-content: space-between;
     }
 }

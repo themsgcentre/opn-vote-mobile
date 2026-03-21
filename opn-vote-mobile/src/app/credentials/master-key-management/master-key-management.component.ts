@@ -4,6 +4,8 @@ import { MasterKeyService } from 'src/app/services/master-key-service';
 import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
+type InfoPopupType = 'masterkey' | 'provider' | null;
+
 @Component({
   selector: 'app-master-key-management',
   templateUrl: './master-key-management.component.html',
@@ -14,6 +16,7 @@ export class MasterKeyManagementComponent implements OnInit {
 
   constructor(private masterKeyService: MasterKeyService) {}
   hasMasterKey$: Observable<boolean> = new Observable<boolean>(); 
+  activeInfoPopup: InfoPopupType = null;
 
   ngOnInit() {
     this.refresh();
@@ -29,5 +32,37 @@ export class MasterKeyManagementComponent implements OnInit {
 
   onDeleteMasterKey() {
     this.masterKeyService.deleteMasterKey().subscribe(() => this.refresh());
+  }
+
+  openInfoPopup(type: InfoPopupType) {
+    this.activeInfoPopup = type;
+  }
+
+  closeInfoPopup() {
+    this.activeInfoPopup = null;
+  }
+
+  get popupTitle(): string {
+    if (this.activeInfoPopup === 'masterkey') {
+      return 'Masterkey';
+    }
+
+    if (this.activeInfoPopup === 'provider') {
+      return 'Authorization Provider';
+    }
+
+    return '';
+  }
+
+  get popupText(): string {
+    if (this.activeInfoPopup === 'masterkey') {
+      return 'Der Masterkey dient zur sicheren Verwaltung Ihrer Identität und wird für sensible Aktionen innerhalb der App benötigt.';
+    }
+
+    if (this.activeInfoPopup === 'provider') {
+      return 'Hier können später externe Authentifizierungsanbieter zur Identifikation und Autorisierung ausgewählt werden.';
+    }
+
+    return '';
   }
 }

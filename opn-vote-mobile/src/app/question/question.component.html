@@ -1,16 +1,20 @@
 <div class="question-container">
   @if(question) {
-    <div class="image-container">
-      <app-image 
-        [alt]="question.text" 
-        [small]="question.imageUrl"
-        height="110px"
-        ></app-image>
-    </div>
+    <div class="title">{{ question.text }}</div>
 
-    <div class="question">
-      <div class="title">{{ question.text }}</div>
-      <div class="options-container">
+    <div class="content-row">
+      <div class="image-container">
+        <app-image 
+          [alt]="question.text" 
+          [small]="question.imageUrl"
+          width="100%"
+          height="100%"
+          [keepAspectRatio]="true"
+          fit="cover"
+        ></app-image>
+      </div>
+
+      <div class="options-wrapper">
         <app-options 
           [options]="options" 
           [groupname]="question.text"
@@ -19,5 +23,4 @@
       </div>
     </div>
   }
-  
 </div>
