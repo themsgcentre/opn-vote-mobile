@@ -1,15 +1,15 @@
 import { VotingTransaction } from "../interfaces/voting-transaction";
-import { ElectionCredentials } from "./election-credentials";
 import { validateCredentials, validateRecastingVotingTransaction, validateVotingTransaction } from "../utils/utils";
 import { RecastingVotingTransaction } from "../interfaces/recasting-voting-transaction";
 import { CallWithERC2771Request, ERC2771Type, GelatoRelay, SignatureData } from "@gelatonetwork/relay-sdk";
 import { ethers } from "ethers";
 import { ServerError } from "./server-error";
-import { UrlPaths } from "../globals/url-paths";
+import { UrlProperites } from "../globals/url-paths";
+import { VoterCredentials } from "../interfaces/voter-credentials";
 
 export async function createRelayRequest(
   votingTransaction: VotingTransaction | RecastingVotingTransaction,
-  credentials: ElectionCredentials,
+  credentials: VoterCredentials,
   opnVoteContractAddress: string,
   opnVoteABI: ethers.Interface | ethers.InterfaceAbi,
   provider: ethers.JsonRpcProvider,
@@ -81,7 +81,7 @@ export async function createRelayRequest(
 
 export async function createSignatureData(
   request: CallWithERC2771Request,
-  credentials: ElectionCredentials,
+  credentials: VoterCredentials,
   relay: GelatoRelay | null,
   provider: ethers.JsonRpcProvider): Promise<SignatureData> {
 
@@ -115,7 +115,7 @@ export async function gelatoForward(signatureDataInitialSerialized: string) {
 
     console.log(signatureDataInitialSerialized)
 
-    const response = await fetch(UrlPaths.gelatoForwardUrl, options);
+    const response = await fetch(UrlProperites.gelatoForwardUrl, options);
     const responseText = await response.text();
 
     if (response.status >= 500) {

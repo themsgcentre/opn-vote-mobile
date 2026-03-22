@@ -3,18 +3,18 @@ import { EncryptionType } from '../voting-system/encryption-type';
 import { ethers } from 'ethers';
 import { VoteOption } from '../voting-system/vote-option';
 import { addSVSSignatureToVotingTransaction, createVoteRecastTransaction, createVotingTransactionWithoutSVSSignature, encryptVotes, getAbi } from '../voting-system/voting';
-import { ElectionCredentials } from '../voting-system/election-credentials';
 import { signTransaction } from '../voting-system/transaction';
-import { UrlPaths } from '../globals/url-paths';
+import { UrlProperites } from '../globals/url-paths';
 import { createRelayRequest, createSignatureData, gelatoForward } from '../voting-system/gelato';
 import { GelatoRelay } from '@gelatonetwork/relay-sdk';
 import { replacer } from '../utils/utils';
+import { VoterCredentials } from '../interfaces/voter-credentials';
 
 @Injectable({
   providedIn: 'root',
 })
 export class VoteService {
-  async sendVotes(votes: Record<number, VoteOption>, votingCredentials: ElectionCredentials, electionPublicKey: string, isRecast: boolean) {
+  async sendVotes(votes: Record<number, VoteOption>, votingCredentials: VoterCredentials, electionPublicKey: string, isRecast: boolean) {
     // map votes into needed format
     const newVoteArray = Object.values(votes).map((vote) => ({ value: vote })) as Array<{ value: VoteOption }>;
 
@@ -41,8 +41,8 @@ export class VoteService {
     const abiData = await getAbi();
     const opnVoteInterface = new ethers.Interface(abiData);
 
-    const provider = new ethers.JsonRpcProvider(UrlPaths.rpcnodeUrl); 
-    const relayRequest = await createRelayRequest(votingTransactionFull, votingCredentials, UrlPaths.opnVoteContractAddress, opnVoteInterface, provider);
+    const provider = new ethers.JsonRpcProvider(UrlProperites.rpcnodeUrl); 
+    const relayRequest = await createRelayRequest(votingTransactionFull, votingCredentials, UrlProperites.opnVoteContractAddress, opnVoteInterface, provider);
     const relay = new GelatoRelay();
     const signatureDataInitial = await createSignatureData(relayRequest, votingCredentials, relay, provider);
 

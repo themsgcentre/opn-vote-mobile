@@ -11,8 +11,8 @@ import { IonContent } from "@ionic/angular/standalone";
 import { QuestionVote } from 'src/app/voting-system/vote';
 import { VoteOption } from 'src/app/voting-system/vote-option';
 import { VoteService } from 'src/app/services/vote-service';
-import { ElectionCredentials } from 'src/app/voting-system/election-credentials';
 import { LineComponent } from 'src/app/reusables/line/line.component';
+import { VoterCredentials } from 'src/app/interfaces/voter-credentials';
 
 @Component({
   selector: 'app-voting',
@@ -32,7 +32,7 @@ export class VotingComponent  implements OnInit {
   election$: Observable<ElectionInformation | null> = new Observable();
   questions$: Observable<Question[]> = new Observable();
   hasBallot$: Observable<boolean> = new Observable();
-  credentials$: Observable<ElectionCredentials | null> = new Observable();
+  credentials$: Observable<VoterCredentials | null> = new Observable();
   publicKey$: Observable<string | undefined> = new Observable();
 
   questionCount: number = 0;
@@ -52,7 +52,7 @@ export class VotingComponent  implements OnInit {
       });
       this.hasBallot$ = this.ballotService.hasBallot(electionId);
       this.publicKey$ = this.electionService.getPublicKey(electionId)
-      this.credentials$ = this.ballotService.getElectionCredentials(electionId);
+      this.credentials$ = this.ballotService.getCredentials(electionId);
     }
     else {
       this.error = "Ungültige Wahl-ID";

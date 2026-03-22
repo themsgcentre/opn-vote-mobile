@@ -6,8 +6,7 @@ import { Ballot } from '../voting-system/ballot';
 import { RSA_BIT_LENGTH } from '../utils/constants';
 import { TokenService } from './token-service';
 import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
-import { ElectionDTO } from '../interfaces/election-dto';
-import { ElectionCredentials } from '../voting-system/election-credentials';
+import { VoterCredentials } from '../interfaces/voter-credentials';
 
 @Injectable({
   providedIn: 'root',
@@ -98,7 +97,7 @@ export class BallotService {
     );
   }
 
-  getElectionCredentials(electionId: number): Observable<ElectionCredentials | null> {
+  getCredentials(electionId: number): Observable<VoterCredentials | null> {
   return combineLatest([
     this.loadBallot(electionId),
     this.masterKeyService.getMasterKey(),
@@ -109,7 +108,7 @@ export class BallotService {
       }
 
       return from(
-        this.tokenService.createElectionCredentialsFromStoredData(
+        this.tokenService.createVoterCredentialsFromStoredData(
           electionId,
           ballot,
           masterKey.masterToken
