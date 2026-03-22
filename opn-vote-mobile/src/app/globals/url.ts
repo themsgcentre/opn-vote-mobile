@@ -8,7 +8,7 @@ export const UrlPaths = {
 
 export const UrlProperties = {
     signVotingTransaction: '/api/votingTransaction/sign',
-    opnVoteContractAddress: ' 0xa36f6cf07ef1ded3b8b4283e779a4514e30576a8',
+    opnVoteContractAddress: '0xa36f6cf07ef1ded3b8b4283e779a4514e30576a8',
     sponsor: '/api/userOp/sponsor',
 }
 
