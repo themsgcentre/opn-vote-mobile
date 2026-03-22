@@ -1,5 +1,8 @@
 {
   "dependencies": {
+    "@apollo/client": "^4.1.6",
+    "apollo-angular": "^13.0.0",
+    "graphql": "^16.13.1",
     "permissionless": "^0.3.4",
     "viem": "^2.47.6"
   }
