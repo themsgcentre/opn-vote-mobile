@@ -9,46 +9,46 @@ import { createRelayRequest, createSignatureData, gelatoForward } from '../votin
 import { GelatoRelay } from '@gelatonetwork/relay-sdk';
 import { replacer } from '../utils/utils';
 import { VoterCredentials } from '../interfaces/voter-credentials';
+import { Hex } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
 
 @Injectable({
   providedIn: 'root',
 })
 export class VoteService {
-  async sendVotes(votes: Record<number, VoteOption>, votingCredentials: VoterCredentials, electionPublicKey: string, isRecast: boolean) {
-    // map votes into needed format
-    const newVoteArray = Object.values(votes).map((vote) => ({ value: vote })) as Array<{ value: VoteOption }>;
+  async sendVotes(votes: Record<number, VoteOption>, voterCredentials: VoterCredentials, electionPublicKey: string, isRecast: boolean) {
+    const voterAccount = privateKeyToAccount(voterCredentials.voterWallet.privateKey as Hex)
 
-    const encryptedVotesAES = await encryptVotes(newVoteArray, votingCredentials.encryptionKey, EncryptionType.AES);
-    const encryptedVotesRSA = await encryptVotes(newVoteArray, { hexString: electionPublicKey, encryptionType: EncryptionType.RSA }, EncryptionType.RSA);
+    // SVS sign
+    const encryptedVotesRSA = await encryptVotes(votes, coordinatorKey, EncryptionType.RSA)
+    const encryptedVotesAES = await encryptVotes(
+      votes,
+      voterCredentials.encryptionKey,
+      EncryptionType.AES,
+    )
+    const votingTransaction = createVotingTransactionWithoutSVSSignature(
+      voterCredentials,
+      encryptedVotesRSA,
+      encryptedVotesAES,
+    )
 
-    let votingTransaction, votingTransactionFull;
-    if (isRecast) {
-        votingTransactionFull = createVoteRecastTransaction(votingCredentials, encryptedVotesRSA, encryptedVotesAES);
-    } else {
-        votingTransaction = createVotingTransactionWithoutSVSSignature(votingCredentials, encryptedVotesRSA, encryptedVotesAES);
-        const voterWallet = new ethers.Wallet(votingCredentials.voterWallet.privateKey);
-        const message = JSON.stringify(votingTransaction);
-        const messageHash = ethers.hashMessage(message);
+    const msgHash = hashMessage(JSON.stringify(votingTransaction))
+    const voterSig = await voterAccount.signMessage({ message: msgHash })
+    const voterSignature: EthSignature = { hexString: voterSig }
 
-        const voterSignature = await voterWallet.signMessage(messageHash);
-        const voterSignatureObject = {
-            hexString: voterSignature
-        };
-        const svsSignature = await signTransaction(votingTransaction, voterSignatureObject);
-        votingTransactionFull = addSVSSignatureToVotingTransaction(votingTransaction, svsSignature);
-    }
+    const svsSignData = await postJson<Record<string, unknown>>(
+      `${svsUrl}/api/votingTransaction/sign`,
+      { votingTransaction, voterSignature },
+    )
+    const svsSignatureRaw = ((svsSignData as any).blindedSignature ??
+      (svsSignData as any).svsSignature) as EthSignature
+    if (!svsSignatureRaw?.hexString)
+      throw new Error(`SVS sign: unexpected response shape: ${JSON.stringify(svsSignData)}`)
+    log('SVS signature received ✓', svsSignatureRaw.hexString.slice(0, 20) + '...')
 
-    const abiData = await getAbi();
-    const opnVoteInterface = new ethers.Interface(abiData);
-
-    const provider = new ethers.JsonRpcProvider(UrlProperites.rpcnodeUrl); 
-    const relayRequest = await createRelayRequest(votingTransactionFull, votingCredentials, UrlProperites.opnVoteContractAddress, opnVoteInterface, provider);
-    const relay = new GelatoRelay();
-    const signatureDataInitial = await createSignatureData(relayRequest, votingCredentials, relay, provider);
-
-    const signatureDataInitialSerialized = JSON.stringify(signatureDataInitial, replacer);
-    const gelatoForwardResult = await gelatoForward(signatureDataInitialSerialized);
-
-    return gelatoForwardResult.data.taskId;
+    const signedVotingTransaction = addSVSSignatureToVotingTransaction(
+      votingTransaction,
+      svsSignatureRaw,
+    )
   }
 }
