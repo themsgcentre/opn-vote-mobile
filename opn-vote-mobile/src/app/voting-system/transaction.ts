@@ -1,4 +1,4 @@
-import { UrlProperites } from "../globals/url-paths";
+import { UrlPaths } from "../globals/url";
 import { VotingTransaction } from "../interfaces/voting-transaction";
 import { EthSignature } from "./eth-signature";
 import { ServerError } from "./server-error";
@@ -13,7 +13,7 @@ export async function signTransaction(votingTransaction: VotingTransaction, vote
         body: JSON.stringify({ votingTransaction, voterSignature: voterSignatureObject }),
     };
 
-    const response = await fetch(UrlProperites.signVotingTransactionUrl, signOptions);
+    const response = await fetch(UrlPaths.signVotingTransactionUrl, signOptions);
     if (response.status !== 200) {
         throw new ServerError("3");
     }

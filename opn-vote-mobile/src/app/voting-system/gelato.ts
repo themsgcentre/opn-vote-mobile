@@ -4,7 +4,7 @@ import { RecastingVotingTransaction } from "../interfaces/recasting-voting-trans
 import { CallWithERC2771Request, ERC2771Type, GelatoRelay, SignatureData } from "@gelatonetwork/relay-sdk";
 import { ethers } from "ethers";
 import { ServerError } from "./server-error";
-import { UrlProperites } from "../globals/url-paths";
+import { UrlPaths } from "../globals/url";
 import { VoterCredentials } from "../interfaces/voter-credentials";
 
 export async function createRelayRequest(
@@ -115,7 +115,7 @@ export async function gelatoForward(signatureDataInitialSerialized: string) {
 
     console.log(signatureDataInitialSerialized)
 
-    const response = await fetch(UrlProperites.gelatoForwardUrl, options);
+    const response = await fetch(UrlPaths.gelatoForwardUrl, options);
     const responseText = await response.text();
 
     if (response.status >= 500) {

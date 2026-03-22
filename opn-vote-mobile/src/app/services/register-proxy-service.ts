@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { UrlProperites } from '../globals/url-paths';
+import { UrlPaths } from '../globals/url';
 import { Signature } from '../voting-system/signature';
 import { Token } from '../voting-system/token';
 import { numberToHex32, sha256Hex, validateCredentials, validateHexString, validateSignature, validateToken } from '../utils/utils';
@@ -27,7 +27,7 @@ export class RegisterProxyService {
 
     return this.http
       .post<BlindedSignatureResponse>(
-        UrlProperites.blindedSignatureUrl,
+        UrlPaths.blindedSignatureUrl,
         { token: blindedElectionToken },
         { headers }
       )

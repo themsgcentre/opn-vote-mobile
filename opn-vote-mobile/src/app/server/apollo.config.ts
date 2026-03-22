@@ -1,9 +1,9 @@
 import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client/core';
-import { UrlProperites } from './globals/url-paths';
+import { UrlPaths } from '../globals/url';
 
 export const graphClient = new ApolloClient({
   link: new HttpLink({
-    uri: UrlProperites.graphUrl,
+    uri: UrlPaths.graphUrl,
   }),
   cache: new InMemoryCache(),
 });

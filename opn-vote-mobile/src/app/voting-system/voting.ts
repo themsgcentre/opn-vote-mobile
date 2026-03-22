@@ -8,7 +8,7 @@ import { VoteOption } from "./vote-option"
 import { VotingTransaction } from "../interfaces/voting-transaction"
 import { EthSignature } from "./eth-signature"
 import { ServerError } from "./server-error"
-import { UrlProperites } from "../globals/url-paths"
+import { UrlPaths } from "../globals/url"
 import { VoterCredentials } from "../interfaces/voter-credentials"
 
 export async function encryptVotes(
