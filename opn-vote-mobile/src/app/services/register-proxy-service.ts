@@ -25,36 +25,22 @@ export class RegisterProxyService {
       Authorization: `Bearer ${jwt}`,
     });
 
-    console.log('?????')
-
     return this.http
-      .post<BlindedSignatureResponse>(
+      .post<{ blindedSignature: string }>(
         UrlPaths.blindedSignatureUrl,
         { token: blindedElectionToken },
         { headers }
       )
       .pipe(
         map((res) => {
-          const err = (res.error ?? '').toLowerCase();
-
-          if (err.includes('already registered')) {
-            throw new RegisterError(RegisterErrorType.ALREADYREGISTERED);
-          }
-
-          if (err.includes('failed to authenticate jwt')) {
-            throw new RegisterError(RegisterErrorType.JWTAUTH);
-          }
-
-          if (err) {
+          if (!res.blindedSignature) {
             throw new RegisterError(RegisterErrorType.GENERAL);
           }
 
-          const sig = res.data?.blindedSignature;
-          if (!sig) {
-            throw new RegisterError(RegisterErrorType.GENERAL);
-          }
-
-          return { hexString: sig, isBlinded: true as const };
+          return {
+            hexString: res.blindedSignature,
+            isBlinded: true as const,
+          };
         })
       );
   }
