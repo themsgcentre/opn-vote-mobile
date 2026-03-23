@@ -1,0 +1,10 @@
+{
+  "appId": "com.opnvote.com",
+  "appName": "opn-vote-mobile",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": false
+    }
+  }
+}

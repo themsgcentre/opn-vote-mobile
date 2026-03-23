@@ -25,6 +25,8 @@ export class RegisterProxyService {
       Authorization: `Bearer ${jwt}`,
     });
 
+    console.log('?????')
+
     return this.http
       .post<BlindedSignatureResponse>(
         UrlPaths.blindedSignatureUrl,
