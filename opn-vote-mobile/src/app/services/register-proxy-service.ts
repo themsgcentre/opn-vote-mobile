@@ -26,19 +26,25 @@ export class RegisterProxyService {
     });
 
     return this.http
-      .post<{ blindedSignature: string }>(
+      .post<{ data: { blindedSignature: string }; error: string | null }>(
         UrlPaths.blindedSignatureUrl,
         { token: blindedElectionToken },
         { headers }
       )
       .pipe(
         map((res) => {
-          if (!res.blindedSignature) {
+          if (res.error) {
+            throw new RegisterError(RegisterErrorType.GENERAL);
+          }
+
+          const blindedSignature = res.data?.blindedSignature;
+
+          if (!blindedSignature) {
             throw new RegisterError(RegisterErrorType.GENERAL);
           }
 
           return {
-            hexString: res.blindedSignature,
+            hexString: blindedSignature,
             isBlinded: true as const,
           };
         })
