@@ -89,7 +89,7 @@ export class VotingComponent  implements OnInit {
         false
       );
 
-      console.log('Vote erfolgreich gesendet. Task ID:', taskId);
+      console.log('Vote erfolgreich gesendet.');
     } catch (err) {
       console.error('Fehler beim Senden des Votes:', err);
       this.error = 'Fehler beim Senden des Votes';

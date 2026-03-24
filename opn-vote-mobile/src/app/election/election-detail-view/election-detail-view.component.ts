@@ -55,8 +55,6 @@ export class ElectionDetailViewComponent  implements OnInit {
       const data = await response.json();
       const JWT = data.token;
 
-      console.log("JWT:", JWT);
-
       this.router.navigate(['/election/register', electionId, JWT]);
 
     } catch (error) {
