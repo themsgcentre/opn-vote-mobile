@@ -5,8 +5,8 @@ import { ElectionDetailComponent } from "../election-detail/election-detail.comp
 import { CommonModule } from '@angular/common';
 import { ElectionService } from 'src/app/services/election-service';
 import { ElectionInformation } from 'src/app/interfaces/election';
-import { IonCol, IonContent } from "@ionic/angular/standalone";
-import { JWT } from 'src/app/jwt';
+import { IonContent } from "@ionic/angular/standalone";
+import { createJwt, createPayload } from 'src/app/jwt';
 
 @Component({
   selector: 'app-election-detail-view',
@@ -34,6 +34,7 @@ export class ElectionDetailViewComponent  implements OnInit {
 
   onParticipateClicked() {
     const electionId = this.route.snapshot.paramMap.get('id');
+    const JWT = ''
     this.router.navigate( ['/election/register', electionId, JWT]);
   }
 }

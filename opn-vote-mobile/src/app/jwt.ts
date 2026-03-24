@@ -1,1 +1,16 @@
-export const JWT = 'eyJhbGciOiJSUzI1NiJ9.eyJ2b3RlcklkIjo5NTE4ODY5LCJlbGVjdGlvbklkIjowLCJleHAiOjE3NzQzMDQ0OTUsImlhdCI6MTc3NDIxODA5NSwiaXAiOiIyYTAyOjgwNzE6MmM4NjoyNWEwOjE1Zjc6YmY4YTo0MmQ0OmI0YjkifQ.NMAxkZyTXqOlEiRHKWw2os7Y95C0bIYW6DpnGKMS1sJA7frsh0hKM79-nmaX63shT44nLlYl79YmfqAfuCbAO6snDwHUO2XsPIKb4GWda0S-UbqJRx6sr1vLWNFx6RsB_FIQLE6BeEfSsiZczkZUQ0TvgEITBYa2ao2RQDcCV-8B98RmOn68GNymN5nCh366eK2pc6ym9gnU8gMJEenYT2QOZ6ah3udc10B814TB5QnbcFaXTiI1FmuAspu7HO0G00KlGizu49ZZK-KSQl_eH_P1zkVyfDWc8vdWS1MCblBw6Y4w1Tg2VSpvqted5QeKsgSiKVsBNpl5J9NT21oj_g'
+import { createSign } from 'node:crypto'
+
+export function createJwt(payload: object, rsaPrivKeyPem: string): string {
+  const b64url = (s: string) => Buffer.from(s).toString('base64url')
+  const header = { alg: 'RS256', typ: 'JWT' }
+  const sigInput = `${b64url(JSON.stringify(header))}.${b64url(JSON.stringify(payload))}`
+  const sign = createSign('RSA-SHA256')
+  sign.update(sigInput)
+  return `${sigInput}.${sign.sign(rsaPrivKeyPem, 'base64url')}`
+}
+
+// TODO: only for testing, replace later
+export function createPayload(electionId: number) {
+    const voterId = Date.now()
+    return { electionId: electionId, voterId: voterId }
+}
