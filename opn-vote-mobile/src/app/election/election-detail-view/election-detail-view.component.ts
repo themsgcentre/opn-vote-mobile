@@ -6,7 +6,6 @@ import { CommonModule } from '@angular/common';
 import { ElectionService } from 'src/app/services/election-service';
 import { ElectionInformation } from 'src/app/interfaces/election';
 import { IonContent } from "@ionic/angular/standalone";
-import { createJwt, createPayload } from 'src/app/jwt';
 
 @Component({
   selector: 'app-election-detail-view',
@@ -32,9 +31,36 @@ export class ElectionDetailViewComponent  implements OnInit {
     );
   }
 
-  onParticipateClicked() {
+  async onParticipateClicked() {
     const electionId = this.route.snapshot.paramMap.get('id');
-    const JWT = ''
-    this.router.navigate( ['/election/register', electionId, JWT]);
+
+    if (!electionId) {
+      console.error("Keine electionId gefunden");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:3000/api/jwt", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ electionId }),
+      });
+
+      if (!response.ok) {
+        throw new Error("JWT konnte nicht geladen werden");
+      }
+
+      const data = await response.json();
+      const JWT = data.token;
+
+      console.log("JWT:", JWT);
+
+      this.router.navigate(['/election/register', electionId, JWT]);
+
+    } catch (error) {
+      console.error("Fehler beim Laden der JWT:", error);
+    }
   }
 }
