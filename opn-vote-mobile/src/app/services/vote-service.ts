@@ -77,7 +77,6 @@ export class VoteService {
       (svsSignData as any).svsSignature) as EthSignature
     if (!svsSignatureRaw?.hexString)
       throw new Error(`SVS sign: unexpected response shape: ${JSON.stringify(svsSignData)}`)
-    console.log(svsSignatureRaw)
 
     const signedVotingTransaction = addSVSSignatureToVotingTransaction(
       votingTransaction,
