@@ -1,0 +1,63 @@
+@import '../styles/colors.scss';
+@import '../styles/sizes.scss';
+@import '../styles/font-weights.scss';
+
+
+.import-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(0, 0, 0, 0.55);
+}
+
+.import-dialog {
+    width: 100%;
+    max-width: 340px;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: $opn-slategray;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    box-sizing: border-box;
+}
+
+.import-title {
+    font-size: $text-medium;
+    font-weight: $bold;
+    color: $opn-white;
+}
+
+.import-text {
+    margin: 0;
+    font-size: $text-medium;
+    color: $opn-textgray;
+    line-height: 1.4;
+}
+
+.button {
+    width: 85%;
+    min-height: 44px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-align: center;
+    padding: 0 14px;
+    font-size: $text-medium;
+    font-weight: $regular;
+    color: $opn-white;
+    background-color: $opn-lightblue;
+}
+
+.import-button-icon {
+    flex-shrink: 0;
+    font-size: 1.2em;
+    line-height: 1;
+}

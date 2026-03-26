@@ -9,12 +9,13 @@ import { PdfService } from 'src/app/services/pdf-service';
 import { FileSaveService } from 'src/app/services/file-save-service';
 import { formatDate } from 'src/app/formatting/date-formatting';
 import { MasterKeySetupComponent } from "../master-key-setup/master-key-setup.component";
+import { ImportDialogComponent } from 'src/app/import-dialog/import-dialog.component';
 
 @Component({
   selector: 'app-master-key-management',
   templateUrl: './master-key-management.component.html',
   styleUrls: ['./master-key-management.component.scss'],
-  imports: [AsyncPipe, MasterKeySetupComponent],
+  imports: [AsyncPipe, MasterKeySetupComponent, ImportDialogComponent],
 })
 export class MasterKeyManagementComponent implements OnInit {
   constructor(
@@ -23,8 +24,10 @@ export class MasterKeyManagementComponent implements OnInit {
     private pdfService: PdfService,
     private fileSaveService: FileSaveService
   ) {}
+
   hasMasterKey$: Observable<boolean> = new Observable<boolean>(); 
   @Output() openInfoPopup: EventEmitter<void> = new EventEmitter<void>();
+  importDialogOpened = false;
 
   ngOnInit() {
     this.refresh();
@@ -83,7 +86,15 @@ export class MasterKeyManagementComponent implements OnInit {
   }
 
   onImportMasterKey() {
-    throw new Error('Method not implemented.');
+    this.importDialogOpened = true;
+  }
+
+  importViaScan() {
+    this.importDialogOpened = false;
+  }
+
+  importViaUpload() {
+    this.importDialogOpened = false;
   }
 
   onDeleteMasterKey() {
