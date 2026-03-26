@@ -1,24 +1,15 @@
 <div class="registration-container">
-  @switch (step$ | async) {
-    @case (RegistrationState.MASTERKEY) {
+  @switch (view) {
+    @case ('checking') {
+      <div class="busy-message" aria-busy="true">Laden …</div>
+    }
+    @case ('masterkey') {
       <app-master-key-setup (createClicked)="onCreateMasterKey()"></app-master-key-setup>
     }
-
-    @case (RegistrationState.SECRET_CREATED) {
-      <div>Masterkey erstellt. Fahre zur Wahlschein-Erstellung fort.</div>
-      <div class="proceed-button" (click)="onProceedToBallotCreation()">Weiter zur Wahlscheinerstellung</div>
+    @case ('busy') {
+      <div class="busy-message">Wahlschein wird erstellt …</div>
     }
-    @case (RegistrationState.BALLOT) {
-      <button (click)="onCreateBallot()">create ballot</button>
-    }
-    @case (RegistrationState.BALLOT_CREATED) {
-        <div class="text">Wahlschein erstellt. Fahren Sie jetzt zur Wahl fort.</div>
-        <div class="proceed-button" (click)="onProceedToVoting()">Weiter zur Stimmabgabe</div>
-    }
-    @case (RegistrationState.READY) {
-      <div>WEiterleitung zur Stimmabgabe...</div>
-    }
-    @case (RegistrationState.ERROR) {
+    @case ('error') {
       <div class="error-display">{{ error }}</div>
     }
   }

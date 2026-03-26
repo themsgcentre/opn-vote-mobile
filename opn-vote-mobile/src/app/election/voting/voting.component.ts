@@ -42,7 +42,7 @@ export class VotingComponent  implements OnInit {
   canSubmit = false;
   votes: Record<number, VoteOption> = {};
 
-  /** Set after a successful vote; drives the success dialog. */
+  voteSubmitting = false;
   voteSuccessTxHash: string | null = null;
 
   private static readonly GNOSISSCAN_TX_BASE = 'https://gnosisscan.io/tx/';
@@ -79,7 +79,12 @@ export class VotingComponent  implements OnInit {
   }
 
   async submitVote() {
+    if (this.voteSubmitting) {
+      return;
+    }
+
     this.error = null;
+    this.voteSubmitting = true;
 
     try {
       const [credentials, publicKey] = await firstValueFrom(
@@ -106,6 +111,8 @@ export class VotingComponent  implements OnInit {
       this.voteSuccessTxHash = txHash;
     } catch (err) {
       this.error = 'Fehler beim Senden des Votes';
+    } finally {
+      this.voteSubmitting = false;
     }
   }
 

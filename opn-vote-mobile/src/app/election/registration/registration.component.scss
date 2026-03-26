@@ -27,4 +27,20 @@
     text-align: center;
     font-weight: $bold;
   }
+
+  .busy-message {
+    font-size: $text-medium;
+    color: $opn-textgray;
+    text-align: center;
+    padding: 24px;
+  }
+
+  .error-display {
+    font-size: $text-medium;
+    color: $opn-no;
+    text-align: center;
+    padding: 24px;
+    width: 90%;
+    max-width: 400px;
+  }
 }

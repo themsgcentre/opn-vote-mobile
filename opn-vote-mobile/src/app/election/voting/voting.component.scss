@@ -50,6 +50,22 @@
     .voting-area {
         padding-top: 15px;
         background-color: $opn-slategray;
+        width: 100%;
+
+        &--locked {
+            pointer-events: none;
+            opacity: 0.85;
+        }
+    }
+
+    .submit-status {
+        font-size: $text-small;
+        color: $opn-textgray;
+        text-align: center;
+        width: 90%;
+        max-width: 320px;
+        margin: 0 0 16px 0;
+        line-height: 1.4;
     }
 
     .submit-button {
