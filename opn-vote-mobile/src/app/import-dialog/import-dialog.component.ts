@@ -22,7 +22,6 @@ export class ImportDialogComponent {
   protected onUploadInputChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     const list = input.files;
-    input.value = '';
     this.ngZone.run(() => {
       if (!list?.length) {
         return;
@@ -33,5 +32,6 @@ export class ImportDialogComponent {
         this.fileSelected.emit(list[0]);
       }
     });
+    input.value = '';
   }
 }

@@ -388,7 +388,6 @@ export class UserSettingsComponent {
   private processBallotImportPayload(raw: string): void {
     try {
       const payload = this.importService.parseQrString(raw);
-      alert(raw)
       if (!this.importService.isBallotPayload(payload)) {
         this.ballotImportError =
           'Der Inhalt ist kein gültiger Wahlschein. Bitte den Export-QR dieser Wahl verwenden.';

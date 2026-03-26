@@ -29,7 +29,7 @@ export class RegistrationComponent implements OnInit {
   electionId: number = NaN;
   jwt: string | null = null;
   error: string | null = null;
-  /** Until the first async key/ballot check completes, avoid flashing the master-key UI. */
+  
   view: RegistrationView = 'checking';
 
   private readonly refresh$ = new BehaviorSubject<void>(undefined);
@@ -42,7 +42,6 @@ export class RegistrationComponent implements OnInit {
     switchMap(() => this.ballotService.hasBallot(this.electionId))
   );
 
-  /** Prevents duplicate auto ballot requests while one is in flight or after a hard failure. */
   private autoBallotRequestStarted = false;
 
   ngOnInit(): void {
