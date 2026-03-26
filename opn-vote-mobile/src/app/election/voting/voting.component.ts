@@ -151,7 +151,7 @@ export class VotingComponent  implements OnInit {
 
       switchMap(([ballot, electionInfo]) => {
         const qrCodeString = JSON.stringify({
-          type: "master-key",
+          type: "ballot",
           version: 1,
           data: ballot,
         });
@@ -194,9 +194,6 @@ export class VotingComponent  implements OnInit {
         );
       })
     ).subscribe({
-      next: () => {
-        console.log("PDF erfolgreich erstellt & gespeichert");
-      },
       error: (err) => {
         console.error("Fehler beim Export:", err);
       }

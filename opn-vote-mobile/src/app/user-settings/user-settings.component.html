@@ -8,6 +8,13 @@
     (exportClicked)="onExportMasterKey()"
     (deleteClicked)="masterKeyDeleteDialogOpen = true"
   ></app-master-key-management>
+  @if ((masterKeyPanelState$ | async) === 'present') {
+    <app-ballot-import
+      [importError]="ballotImportError"
+      (infoClicked)="openInfoPopup('ballot')"
+      (importClicked)="onOpenBallotImport()"
+    ></app-ballot-import>
+  }
   <app-provider-picker (openInfoPopup)="openInfoPopup('provider')"></app-provider-picker>
 </div>
 
@@ -26,12 +33,14 @@
 @if (masterKeyImportDialogOpened) {
   <app-import-dialog
     item="Masterschlüssel"
+    [allowMultipleFiles]="false"
     (scanSelected)="masterKeyImportViaScan()"
     (fileSelected)="onMasterKeyImportPdfFromDialog($event)"
   ></app-import-dialog>
 }
 @if (masterKeyQrScanOpened) {
   <app-qr-scan-dialog
+    readerElementId="mk-import-qr-reader"
     (scanSuccess)="onMasterKeyQrScanSuccess($event)"
     (cancel)="onMasterKeyQrScanCancel()"
   ></app-qr-scan-dialog>
@@ -50,4 +59,28 @@
     (yesClicked)="onConfirmDeleteMasterKey()"
     (noClicked)="masterKeyDeleteDialogOpen = false"
   ></app-question-dialog>
+}
+
+@if (ballotImportDialogOpened) {
+  <app-import-dialog
+    item="Wahlschein"
+    [additionalInfo]="ballotImportDialogInfo"
+    [allowMultipleFiles]="true"
+    (scanSelected)="ballotImportViaScan()"
+    (filesSelected)="onBallotImportPdfsFromDialog($event)"
+  ></app-import-dialog>
+}
+@if (ballotQrScanOpened) {
+  <app-qr-scan-dialog
+    readerElementId="ballot-import-qr-reader"
+    (scanSuccess)="onBallotQrScanSuccess($event)"
+    (cancel)="onBallotQrScanCancel()"
+  ></app-qr-scan-dialog>
+}
+@if (ballotImportFeedbackOpen) {
+  <app-message-dialog
+    [title]="ballotImportFeedbackTitle"
+    [message]="ballotImportFeedbackMessage"
+    (okClicked)="closeBallotImportFeedback()"
+  ></app-message-dialog>
 }

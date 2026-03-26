@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   EventEmitter,
+  Input,
   NgZone,
   OnDestroy,
   Output,
@@ -18,8 +19,8 @@ import { Html5Qrcode, Html5QrcodeScannerState } from 'html5-qrcode';
 export class QrScanDialogComponent implements AfterViewInit, OnDestroy {
   private readonly ngZone = inject(NgZone);
   private html5QrCode: Html5Qrcode | null = null;
-  /** Must match the element `id` in the template (Html5Qrcode resolves by id). */
-  readonly readerElementId = 'mk-import-qr-reader';
+  
+  @Input() readerElementId = 'mk-import-qr-reader';
   private decodeHandled = false;
 
   @Output() readonly scanSuccess = new EventEmitter<string>();

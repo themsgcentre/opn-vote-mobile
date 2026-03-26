@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { combineLatest, from, map, Observable, of, switchMap, throwError } from 'rxjs';
+import { combineLatest, from, map, Observable, of, switchMap, take, throwError } from 'rxjs';
 import { RegisterProxyService } from './register-proxy-service';
 import { MasterKeyService } from './master-key-service';
 import { Ballot } from '../voting-system/ballot';
@@ -41,6 +41,25 @@ export class BallotService {
 
   loadBallot(electionId: number): Observable<Ballot | null> {
     return from(this.loadBallotInternal(electionId));
+  }
+
+  importBallot(ballot: Ballot): Observable<void> {
+    return this.masterKeyService.getMasterKey().pipe(
+      take(1),
+      switchMap((mk) => {
+        if (!mk) {
+          return throwError(() => new Error('NO_MASTERKEY'));
+        }
+        return from(this.ballotMatchesMasterKey(ballot.electionId, ballot, mk)).pipe(
+          switchMap((matches) => {
+            if (!matches) {
+              return throwError(() => new Error('BALLOT_MASTER_MISMATCH'));
+            }
+            return from(this.saveBallotInternal(ballot));
+          })
+        );
+      })
+    );
   }
 
   createBallot(electionId: number, jwt: string, n: string, e: string): Observable<Ballot> {
@@ -134,7 +153,7 @@ export class BallotService {
     );
   }
 
-  private async ballotMatchesMasterKey(
+  async ballotMatchesMasterKey(
     electionId: number,
     ballot: Ballot,
     masterKey: MasterKey

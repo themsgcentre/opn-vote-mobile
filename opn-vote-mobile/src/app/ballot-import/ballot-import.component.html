@@ -1,0 +1,25 @@
+<div class="ballot-import-container">
+  <div class="section-title">
+    <span class="title-with-icon">
+      <i class="bi bi-envelope-fill"></i>
+      <span>Wahlschein</span>
+      <i
+        class="bi bi-question-circle-fill info-icon"
+        (click)="infoClicked.emit()"
+      ></i>
+    </span>
+  </div>
+  <div class="section-description">
+    Importieren Sie Ihre bestehenden Wahlscheine, um diese direkt wiederzuverwenden. Bitte beachten, dass der Wahlschein zu Ihrem Masterschlüssel passen muss.
+  </div>
+
+  @if (importError) {
+    <div class="import-feedback import-feedback--error" role="alert">
+      {{ importError }}
+    </div>
+  }
+
+  <button type="button" class="action-button primary" (click)="importClicked.emit()">
+    Wahlschein importieren
+  </button>
+</div>
