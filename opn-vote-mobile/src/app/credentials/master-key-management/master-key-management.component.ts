@@ -12,7 +12,6 @@ type InfoPopupType = 'masterkey' | 'provider' | null;
   imports: [AsyncPipe],
 })
 export class MasterKeyManagementComponent implements OnInit {
-
   constructor(
     private masterKeyService: MasterKeyService
   ) {}
@@ -29,6 +28,14 @@ export class MasterKeyManagementComponent implements OnInit {
 
   onCreateMasterKey() {
     this.masterKeyService.createNewMasterKey().subscribe(() => this.refresh());
+  }
+
+  onExportMasterKey() {
+    throw new Error('Method not implemented.');
+  }
+
+  onImportMasterKey() {
+    throw new Error('Method not implemented.');
   }
 
   onDeleteMasterKey() {

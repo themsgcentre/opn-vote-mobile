@@ -1,0 +1,4 @@
+export enum PdfType {
+  VOTING_KEY = "VOTING_KEY",
+  ELECTION_PERMIT = "ELECTION_PERMIT",
+}
