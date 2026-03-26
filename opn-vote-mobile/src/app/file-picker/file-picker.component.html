@@ -1,0 +1,10 @@
+<input
+  #fileInput
+  type="file"
+  class="file-picker-input"
+  [accept]="accept"
+  [attr.multiple]="multiple ? '' : null"
+  aria-hidden="true"
+  tabindex="-1"
+  (change)="onNativeChange($event)"
+/>

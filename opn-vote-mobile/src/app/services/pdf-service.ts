@@ -14,10 +14,28 @@ import { PdfContentItem } from "../qr-code/pdf-content-item";
 import { ElectionPdfInformation } from "../qr-code/election-pdf-info";
 import { Injectable } from "@angular/core";
 
+const PDF_SUBJECT_QR_PREFIX = 'QRCODE:';
+
 @Injectable({
   providedIn: 'root',
 })
 export class PdfService {
+  async extractQrImportStringFromPdf(pdfBytes: Uint8Array): Promise<string | null> {
+    let pdfDoc: PDFDocument;
+    try {
+      pdfDoc = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
+    } catch {
+      throw new Error('Die Datei ist keine gültige PDF.');
+    }
+
+    const subject = pdfDoc.getSubject();
+    if (!subject?.startsWith(PDF_SUBJECT_QR_PREFIX)) {
+      return null;
+    }
+
+    return subject.slice(PDF_SUBJECT_QR_PREFIX.length);
+  }
+
   public async createPdf(options: CreatePdfOptions): Promise<Uint8Array> {
     const {
       qrCodeString,
@@ -69,7 +87,7 @@ export class PdfService {
     pdfDoc.setTitle(downloadHeadline);
     pdfDoc.setAuthor("opn.vote");
     pdfDoc.setCreationDate(new Date());
-    pdfDoc.setSubject(`QRCODE:${qrCodeString}`);
+    pdfDoc.setSubject(`${PDF_SUBJECT_QR_PREFIX}${qrCodeString}`);
     pdfDoc.setKeywords(["QR Code", "Metadata", downloadHeadline]);
 
     return await pdfDoc.save();

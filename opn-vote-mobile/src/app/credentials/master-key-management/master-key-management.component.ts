@@ -14,7 +14,6 @@ import { ImportService } from 'src/app/services/import-service';
 import { QrScanDialogComponent } from 'src/app/qr-scan-dialog/qr-scan-dialog.component';
 import { MessageDialogComponent } from 'src/app/message-dialog/message-dialog.component';
 import { QuestionDialogComponent } from 'src/app/question-dialog/question-dialog.component';
-
 @Component({
   selector: 'app-master-key-management',
   templateUrl: './master-key-management.component.html',
@@ -105,8 +104,33 @@ export class MasterKeyManagementComponent implements OnInit {
     this.qrScanOpened = true;
   }
 
-  importViaUpload() {
+  onImportPdfFromDialog(file: File): void {
     this.importDialogOpened = false;
+    this.importError = null;
+    void this.onMasterKeyPdfFile(file);
+  }
+
+  async onMasterKeyPdfFile(file: File): Promise<void> {
+    const isPdf =
+      file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+    if (!isPdf) {
+      this.importError = 'Bitte eine PDF-Datei wählen.';
+      return;
+    }
+
+    try {
+      const bytes = new Uint8Array(await file.arrayBuffer());
+      const qrString = await this.pdfService.extractQrImportStringFromPdf(bytes);
+      if (!qrString) {
+        this.importError =
+          'In dieser PDF wurden keine Schlüsseldaten gefunden. Bitte die exportierte Wahlschlüssel-PDF verwenden.';
+        return;
+      }
+      this.processMasterKeyImport(qrString);
+    } catch (e) {
+      this.importError =
+        e instanceof Error ? e.message : 'Die PDF konnte nicht gelesen werden.';
+    }
   }
 
   onQrScanCancel(): void {
@@ -115,11 +139,15 @@ export class MasterKeyManagementComponent implements OnInit {
 
   onQrScanSuccess(raw: string): void {
     this.qrScanOpened = false;
+    this.processMasterKeyImport(raw);
+  }
+
+  private processMasterKeyImport(raw: string): void {
     try {
       const payload = this.importService.parseQrString(raw);
       if (!this.importService.isMasterKeyPayload(payload)) {
         this.importError =
-          'Dieser QR-Code enthält keinen Masterschlüssel. Bitte den Export-QR des Wahlschlüssels verwenden.';
+          'Dieser Inhalt enthält keinen Masterschlüssel. Bitte den Export (QR oder Wahlschlüssel-PDF) verwenden.';
         return;
       }
       this.masterKeyService
@@ -127,8 +155,8 @@ export class MasterKeyManagementComponent implements OnInit {
         .pipe(take(1))
         .subscribe({
           next: () => {
-            this.scanSuccess = true
-            this.refresh()
+            this.scanSuccess = true;
+            this.refresh();
           },
           error: () => {
             this.importError = 'Der Masterschlüssel konnte nicht gespeichert werden.';
@@ -136,7 +164,7 @@ export class MasterKeyManagementComponent implements OnInit {
         });
     } catch (e) {
       this.importError =
-        e instanceof Error ? e.message : 'Der QR-Code konnte nicht gelesen werden.';
+        e instanceof Error ? e.message : 'Die Schlüsseldaten konnten nicht gelesen werden.';
     }
   }
 

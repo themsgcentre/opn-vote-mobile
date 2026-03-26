@@ -9,7 +9,14 @@
         <i class="bi bi-camera-fill import-button-icon" aria-hidden="true"></i>
         <span>QR-Code scannen</span>
       </div>
-      <div class="button" (click)="uploadSelected.emit()">
+      <input
+        #importFileInput
+        type="file"
+        class="import-dialog-file-input"
+        [accept]="uploadAccept"
+        (change)="onUploadInputChange($event)"
+      />
+      <div class="button" (click)="importFileInput.click()">
         <i class="bi bi-file-earmark-arrow-up import-button-icon" aria-hidden="true"></i>
         <span>PDF hochladen</span>
       </div>

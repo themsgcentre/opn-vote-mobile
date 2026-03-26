@@ -9,8 +9,7 @@ describe('ImportDialogComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ImportDialogComponent ],
-      imports: [IonicModule.forRoot()]
+      imports: [ImportDialogComponent, IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ImportDialogComponent);
