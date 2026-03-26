@@ -28,6 +28,10 @@ export class MasterKeyService {
     return from(this.remove());
   }
 
+  importMasterKey(masterKey: MasterKey): Observable<void> {
+    return from(this.persistMasterKey(masterKey));
+  }
+
   private async createAndStore(): Promise<void> {
     const tokenBytes = crypto.getRandomValues(new Uint8Array(32));
     const rBytes = crypto.getRandomValues(new Uint8Array(32));
@@ -51,6 +55,14 @@ export class MasterKeyService {
     });
 
     this.cached = value;
+  }
+
+  private async persistMasterKey(masterKey: MasterKey): Promise<void> {
+    await SecureStoragePlugin.set({
+      key: this.STORAGE_KEY,
+      value: JSON.stringify(masterKey),
+    });
+    this.cached = masterKey;
   }
 
   private async load(): Promise<MasterKey | null> {
