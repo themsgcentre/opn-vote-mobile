@@ -8,5 +8,4 @@ export interface CreatePdfOptions {
   downloadSubHeadline?: string;
   pdfType: PdfType;
   pdfInformation?: ElectionPdfInformation;
-  creatorLabel?: string;
 }

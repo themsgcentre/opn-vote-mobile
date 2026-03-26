@@ -26,7 +26,6 @@ export class PdfService {
       downloadSubHeadline,
       pdfType,
       pdfInformation,
-      creatorLabel,
     } = options;
 
     const pdfDoc = await PDFDocument.create();
@@ -43,7 +42,6 @@ export class PdfService {
       font,
       boldFont,
       downloadHeadline,
-      creatorLabel
     );
 
     let additionalContent: PdfContentItem[] = [];
@@ -66,8 +64,6 @@ export class PdfService {
       default:
         throw new Error(`Unsupported pdfType: ${String(pdfType)}`);
     }
-
-    console.log(additionalContent),
     this.drawContent(page, [...headerContent, ...additionalContent], font);
 
     pdfDoc.setTitle(downloadHeadline);
@@ -84,7 +80,6 @@ export class PdfService {
     font: PDFFont,
     boldFont: PDFFont,
     downloadHeadline: string,
-    creatorLabel?: string
   ): PdfContentItem[] {
     return [
       {
@@ -113,13 +108,6 @@ export class PdfService {
         path: "M 0,0 L520,0",
         moveX: 40,
         yPos: 670,
-      },
-      {
-        type: "text",
-        text: creatorLabel ? `ERstellt mit: ${creatorLabel}` : "Erstellt mit unbekannt",
-        yPos: 10,
-        font,
-        fontSize: 7,
       },
     ];
   }
@@ -224,7 +212,7 @@ export class PdfService {
       },
       {
         type: "text",
-        text: (pdfInformation?.STARTDATE ?? "unbekannt") + " bis " + (pdfInformation?.ENDDATE ?? "unbekannt"),
+        text: `${(pdfInformation?.STARTDATE ?? "unbekannt")} bis ${(pdfInformation?.ENDDATE ?? "unbekannt")}`,
         xPos: 200,
         fontSize: 10,
         marginTop: 1,

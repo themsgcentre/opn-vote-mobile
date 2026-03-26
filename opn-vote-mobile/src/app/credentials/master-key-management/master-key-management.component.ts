@@ -7,6 +7,7 @@ import { PdfType } from 'src/app/qr-code/pdf-type';
 import { QrCodeService } from 'src/app/services/qr-code-service';
 import { PdfService } from 'src/app/services/pdf-service';
 import { FileSaveService } from 'src/app/services/file-save-service';
+import { formatDate } from 'src/app/formatting/date-formatting';
 type InfoPopupType = 'masterkey' | 'provider' | null;
 
 @Component({
@@ -62,7 +63,7 @@ export class MasterKeyManagementComponent implements OnInit {
       }),
 
       switchMap((pdfBytes) => {
-        const formattedDate = new Date().toLocaleDateString("de-DE").replace(/\./g, "-");
+        const formattedDate = formatDate(new Date())
         return from(
           this.fileSaveService.savePdf({
             fileName: "wahlschluessel-" + formattedDate,
@@ -71,9 +72,6 @@ export class MasterKeyManagementComponent implements OnInit {
         );
       })
     ).subscribe({
-      next: () => {
-        console.log("PDF erfolgreich erstellt & gespeichert");
-      },
       error: (err) => {
         console.error("Fehler beim Export:", err);
       }
