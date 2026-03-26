@@ -4,7 +4,6 @@ import { VoteHistoryComponent } from './vote-history/vote-history.component';
 import { ElectionDetailViewComponent } from './election/election-detail-view/election-detail-view.component';
 import { VotingComponent } from './election/voting/voting.component';
 import { RegistrationComponent } from './election/registration/registration.component';
-import { MasterKeyManagementComponent } from './credentials/master-key-management/master-key-management.component';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
 
 export const routes: Routes = [

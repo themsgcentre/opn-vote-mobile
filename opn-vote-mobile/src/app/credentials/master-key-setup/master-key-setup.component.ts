@@ -2,6 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-master-key-setup',
+  standalone: true,
   templateUrl: './master-key-setup.component.html',
   styleUrls: ['./master-key-setup.component.scss'],
 })

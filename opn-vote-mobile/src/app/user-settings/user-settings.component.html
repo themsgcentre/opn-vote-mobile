@@ -1,5 +1,13 @@
 <div class="management-container">
-  <app-master-key-management (openInfoPopup)="openInfoPopup('masterkey')"></app-master-key-management>
+  <app-master-key-management
+    [state]="(masterKeyPanelState$ | async) ?? 'loading'"
+    [importError]="masterKeyImportError"
+    (infoClicked)="openInfoPopup('masterkey')"
+    (createClicked)="onCreateMasterKey()"
+    (importClicked)="onOpenMasterKeyImport()"
+    (exportClicked)="onExportMasterKey()"
+    (deleteClicked)="masterKeyDeleteDialogOpen = true"
+  ></app-master-key-management>
   <app-provider-picker (openInfoPopup)="openInfoPopup('provider')"></app-provider-picker>
 </div>
 
@@ -13,4 +21,33 @@
       </div>
     </div>
   </div>
+}
+
+@if (masterKeyImportDialogOpened) {
+  <app-import-dialog
+    item="Masterschlüssel"
+    (scanSelected)="masterKeyImportViaScan()"
+    (fileSelected)="onMasterKeyImportPdfFromDialog($event)"
+  ></app-import-dialog>
+}
+@if (masterKeyQrScanOpened) {
+  <app-qr-scan-dialog
+    (scanSuccess)="onMasterKeyQrScanSuccess($event)"
+    (cancel)="onMasterKeyQrScanCancel()"
+  ></app-qr-scan-dialog>
+}
+@if (masterKeyImportSuccess) {
+  <app-message-dialog
+    title="Masterkey Import"
+    message="Import erfolgreich!"
+    (okClicked)="closeMasterKeyImportSuccess()"
+  ></app-message-dialog>
+}
+@if (masterKeyDeleteDialogOpen) {
+  <app-question-dialog
+    title="Masterschlüssel löschen"
+    question="Masterschlüssel wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden."
+    (yesClicked)="onConfirmDeleteMasterKey()"
+    (noClicked)="masterKeyDeleteDialogOpen = false"
+  ></app-question-dialog>
 }

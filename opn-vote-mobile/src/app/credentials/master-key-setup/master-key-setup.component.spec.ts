@@ -9,8 +9,7 @@ describe('MasterkeySetupComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ MasterKeySetupComponent ],
-      imports: [IonicModule.forRoot()]
+      imports: [MasterKeySetupComponent, IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MasterKeySetupComponent);

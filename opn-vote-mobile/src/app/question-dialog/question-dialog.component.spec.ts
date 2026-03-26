@@ -9,8 +9,7 @@ describe('QuestionDialogComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ QuestionDialogComponent ],
-      imports: [IonicModule.forRoot()]
+      imports: [QuestionDialogComponent, IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(QuestionDialogComponent);

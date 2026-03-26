@@ -2,6 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-provider-picker',
+  standalone: true,
   templateUrl: './provider-picker.component.html',
   styleUrls: ['./provider-picker.component.scss'],
 })

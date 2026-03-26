@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-question-dialog',
+  standalone: true,
   templateUrl: './question-dialog.component.html',
   styleUrls: ['./question-dialog.component.scss'],
 })

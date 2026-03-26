@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-message-dialog',
+  standalone: true,
   templateUrl: './message-dialog.component.html',
   styleUrls: ['./message-dialog.component.scss'],
 })
