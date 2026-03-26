@@ -5,7 +5,6 @@ import { Token } from "../voting-system/token"
 import { PREFIX_BLINDED_TOKEN, PREFIX_UNBLINDED_TOKEN, RSA_BIT_LENGTH } from "./constants"
 import { Signature } from "../voting-system/signature"
 import { EncryptionType } from "../voting-system/encryption-type"
-import { ElectionCredentials } from "../voting-system/election-credentials"
 import { EncryptionKey } from "../voting-system/encryption-key"
 import { ethers } from "ethers"
 //import { webcrypto } from "node:crypto"
@@ -13,6 +12,7 @@ import { EncryptedVotes } from "../voting-system/vote"
 import { VotingTransaction } from "../interfaces/voting-transaction"
 import { EthSignature } from "../voting-system/eth-signature"
 import { RecastingVotingTransaction } from "../interfaces/recasting-voting-transaction"
+import { VoterCredentials } from "../interfaces/voter-credentials"
 
 export function validateElectionID(electionID: number) {
     if (!Number.isInteger(electionID)) {
@@ -208,10 +208,10 @@ export function validateSignature(signature: Signature): void {
   }
 }
 
-export function validateCredentials(credentials: ElectionCredentials): void {
+export function validateCredentials(credentials: VoterCredentials): void {
     validateSignature(credentials.unblindedSignature)
     validateToken(credentials.unblindedElectionToken)
-    validateElectionID(credentials.electionID)
+    validateElectionID(credentials.electionId)
 
     const voterWalletPrivKey = credentials.voterWallet.privateKey
     validateHexString({ hexString: voterWalletPrivKey }, 66)

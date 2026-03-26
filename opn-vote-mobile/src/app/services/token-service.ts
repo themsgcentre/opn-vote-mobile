@@ -9,7 +9,7 @@ import { Signature } from '../voting-system/signature';
 import { Ballot } from '../voting-system/ballot';
 import { EncryptionType } from '../voting-system/encryption-type';
 import { Wallet } from 'ethers';
-import { ElectionCredentials } from '../voting-system/election-credentials';
+import { VoterCredentials } from '../interfaces/voter-credentials';
 
 @Injectable({
   providedIn: 'root',
@@ -126,11 +126,11 @@ export class TokenService {
       return electionR;
   }
 
-  async createElectionCredentialsFromStoredData(
+  async createVoterCredentialsFromStoredData(
     electionId: number,
     ballot: Ballot,
     masterToken: Token
-  ): Promise<ElectionCredentials> {
+  ): Promise<VoterCredentials> {
     const electionIDHex = {
       hexString: numberToHex32(electionId),
     };
@@ -163,7 +163,7 @@ export class TokenService {
     const voterWallet = new Wallet(walletPrivKey.hexString);
 
     return {
-      electionID: electionId,
+      electionId: electionId,
       unblindedElectionToken: {
         hexString: ballot.unblindedElectionTokenHex,
         isMaster: false,

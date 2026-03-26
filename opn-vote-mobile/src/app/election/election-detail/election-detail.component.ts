@@ -9,11 +9,7 @@ import { ElectionInformation } from 'src/app/interfaces/election';
   styleUrls: ['./election-detail.component.scss'],
   imports: [ImageComponent]
 })
-export class ElectionDetailComponent implements OnChanges{
+export class ElectionDetailComponent{
   @Input() election: ElectionInformation | null = null;
   @Output() participateClicked: EventEmitter<void> = new EventEmitter<void>();
-
-  ngOnChanges(): void {
-    
-  }
 }

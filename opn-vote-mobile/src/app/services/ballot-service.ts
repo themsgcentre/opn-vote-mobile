@@ -6,15 +6,17 @@ import { Ballot } from '../voting-system/ballot';
 import { RSA_BIT_LENGTH } from '../utils/constants';
 import { TokenService } from './token-service';
 import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
-import { ElectionDTO } from '../interfaces/election-dto';
-import { ElectionCredentials } from '../voting-system/election-credentials';
+import { VoterCredentials } from '../interfaces/voter-credentials';
+import { MasterKey } from '../voting-system/masterkey';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BallotService {
+  private readonly BALLOT_INDEX_KEY = 'opnvote_ballot_index_v2';
+
   private keyFor(electionId: number) {
-    return `opnvote_ballot_v1_${electionId}`;
+    return `${this.BALLOT_INDEX_KEY}_${electionId}`;
   }
 
   constructor(
@@ -24,15 +26,21 @@ export class BallotService {
   ) {}
 
   hasBallot(electionId: number): Observable<boolean> {
-    return this.loadBallot(electionId).pipe(map((b) => !!b));
+    return combineLatest([
+      from(this.loadBallotInternal(electionId)),
+      this.masterKeyService.getMasterKey(),
+    ]).pipe(
+      switchMap(([ballot, masterKey]) => {
+        if (!ballot || !masterKey) {
+          return of(false);
+        }
+        return from(this.ballotMatchesMasterKey(electionId, ballot, masterKey));
+      })
+    );
   }
 
   loadBallot(electionId: number): Observable<Ballot | null> {
     return from(this.loadBallotInternal(electionId));
-  }
-
-  deleteBallot(electionId: number): Observable<void> {
-    return from(this.deleteBallotInternal(electionId));
   }
 
   createBallot(electionId: number, jwt: string, n: string, e: string): Observable<Ballot> {
@@ -98,28 +106,55 @@ export class BallotService {
     );
   }
 
-  getElectionCredentials(electionId: number): Observable<ElectionCredentials | null> {
-  return combineLatest([
-    this.loadBallot(electionId),
-    this.masterKeyService.getMasterKey(),
-  ]).pipe(
-    switchMap(([ballot, masterKey]) => {
-      if (!ballot || !masterKey) {
-        return of(null);
-      }
+  getCredentials(electionId: number): Observable<VoterCredentials | null> {
+    return combineLatest([
+      this.loadBallot(electionId),
+      this.masterKeyService.getMasterKey(),
+    ]).pipe(
+      switchMap(([ballot, masterKey]) => {
+        if (!ballot || !masterKey) {
+          return of(null);
+        }
 
-      return from(
-        this.tokenService.createElectionCredentialsFromStoredData(
-          electionId,
-          ballot,
-          masterKey.masterToken
-        )
-      );
-    })
-  );
-}
+        return from(this.ballotMatchesMasterKey(electionId, ballot, masterKey)).pipe(
+          switchMap((matches) => {
+            if (!matches) {
+              return of(null);
+            }
+            return from(
+              this.tokenService.createVoterCredentialsFromStoredData(
+                electionId,
+                ballot,
+                masterKey.masterToken
+              )
+            );
+          })
+        );
+      })
+    );
+  }
+
+  private async ballotMatchesMasterKey(
+    electionId: number,
+    ballot: Ballot,
+    masterKey: MasterKey
+  ): Promise<boolean> {
+    const derived = await this.tokenService.deriveElectionUnblindedToken(
+      electionId,
+      masterKey.masterToken
+    );
+    return (
+      derived.hexString.toLowerCase() === ballot.unblindedElectionTokenHex.toLowerCase()
+    );
+  }
 
   private async saveBallotInternal(ballot: Ballot): Promise<void> {
+    const ballotIndex = await this.loadBallotIndex();
+    if (!ballotIndex.includes(ballot.electionId)) {
+      ballotIndex.push(ballot.electionId);
+      await this.saveBallotIndex(ballotIndex);
+    }
+
     await SecureStoragePlugin.set({
       key: this.keyFor(ballot.electionId),
       value: JSON.stringify(ballot),
@@ -136,10 +171,24 @@ export class BallotService {
     }
   }
 
-  private async deleteBallotInternal(electionId: number): Promise<void> {
+  private async loadBallotIndex(): Promise<number[]> {
     try {
-      await SecureStoragePlugin.remove({ key: this.keyFor(electionId) });
+      const res = await SecureStoragePlugin.get({ key: this.BALLOT_INDEX_KEY });
+      if (!res.value) return [];
+
+      const parsed = JSON.parse(res.value);
+      if (!Array.isArray(parsed)) return [];
+
+      return parsed.filter((id): id is number => Number.isInteger(id));
     } catch {
+      return [];
     }
+  }
+
+  private async saveBallotIndex(index: number[]): Promise<void> {
+    await SecureStoragePlugin.set({
+      key: this.BALLOT_INDEX_KEY,
+      value: JSON.stringify(index),
+    });
   }
 }

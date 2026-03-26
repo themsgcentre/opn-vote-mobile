@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, firstValueFrom, Observable } from 'rxjs';
 import { ElectionInformation } from 'src/app/interfaces/election';
 import { Question } from 'src/app/interfaces/question';
@@ -11,8 +11,8 @@ import { IonContent } from "@ionic/angular/standalone";
 import { QuestionVote } from 'src/app/voting-system/vote';
 import { VoteOption } from 'src/app/voting-system/vote-option';
 import { VoteService } from 'src/app/services/vote-service';
-import { ElectionCredentials } from 'src/app/voting-system/election-credentials';
 import { LineComponent } from 'src/app/reusables/line/line.component';
+import { VoterCredentials } from 'src/app/interfaces/voter-credentials';
 
 @Component({
   selector: 'app-voting',
@@ -27,24 +27,38 @@ export class VotingComponent  implements OnInit {
     private electionService: ElectionService,
     private voteService: VoteService,
     private ballotService: BallotService,
+    private router: Router
   ) { }
 
   election$: Observable<ElectionInformation | null> = new Observable();
   questions$: Observable<Question[]> = new Observable();
   hasBallot$: Observable<boolean> = new Observable();
-  credentials$: Observable<ElectionCredentials | null> = new Observable();
+  credentials$: Observable<VoterCredentials | null> = new Observable();
   publicKey$: Observable<string | undefined> = new Observable();
+  electionId: number  | null = null;
 
   questionCount: number = 0;
   error: string | null = null;
   canSubmit = false;
   votes: Record<number, VoteOption> = {};
 
+  voteSubmitting = false;
+  voteSuccessTxHash: string | null = null;
+
+  private static readonly GNOSISSCAN_TX_BASE = 'https://gnosisscan.io/tx/';
+
+  get gnosisscanTxUrl(): string | null {
+    return this.voteSuccessTxHash
+      ? `${VotingComponent.GNOSISSCAN_TX_BASE}${this.voteSuccessTxHash}`
+      : null;
+  }
+
   ngOnInit() {
     const idParam = this.route.snapshot.paramMap.get('id');
     const electionId = idParam ? Number(idParam) : NaN;
 
     if(!isNaN(electionId)) {
+      this.electionId = electionId
       this.election$ = this.electionService.getElectionInformation(electionId);
       this.questions$ = this.electionService.loadQuestions(electionId);
       this.questions$.subscribe(questions => {
@@ -52,7 +66,7 @@ export class VotingComponent  implements OnInit {
       });
       this.hasBallot$ = this.ballotService.hasBallot(electionId);
       this.publicKey$ = this.electionService.getPublicKey(electionId)
-      this.credentials$ = this.ballotService.getElectionCredentials(electionId);
+      this.credentials$ = this.ballotService.getCredentials(electionId);
     }
     else {
       this.error = "Ungültige Wahl-ID";
@@ -65,7 +79,12 @@ export class VotingComponent  implements OnInit {
   }
 
   async submitVote() {
+    if (this.voteSubmitting) {
+      return;
+    }
+
     this.error = null;
+    this.voteSubmitting = true;
 
     try {
       const [credentials, publicKey] = await firstValueFrom(
@@ -82,17 +101,27 @@ export class VotingComponent  implements OnInit {
         return;
       }
 
-      const taskId = await this.voteService.sendVotes(
+      const txHash = await this.voteService.sendVotes(
         this.votes,
         credentials,
         publicKey,
         false
       );
 
-      console.log('Vote erfolgreich gesendet. Task ID:', taskId);
+      this.voteSuccessTxHash = txHash;
     } catch (err) {
-      console.error('Fehler beim Senden des Votes:', err);
       this.error = 'Fehler beim Senden des Votes';
+    } finally {
+      this.voteSubmitting = false;
     }
+  }
+
+  onVoteSuccessOkay(): void {
+    this.voteSuccessTxHash = null;
+    this.onVoteSuccessAcknowledged();
+  }
+
+  onVoteSuccessAcknowledged(): void {
+    this.router.navigateByUrl('election/detail/' + this.electionId);
   }
 }

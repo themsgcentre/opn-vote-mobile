@@ -1,20 +1,22 @@
-import { AsyncPipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, combineLatest, forkJoin, map, Observable, of, switchMap, throwError } from 'rxjs';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { BehaviorSubject, combineLatest, forkJoin, Observable, switchMap, throwError } from 'rxjs';
 import { MasterKeySetupComponent } from 'src/app/credentials/master-key-setup/master-key-setup.component';
 import { BallotService } from 'src/app/services/ballot-service';
 import { MasterKeyService } from 'src/app/services/master-key-service';
-import { RegistrationState } from 'src/app/globals/registration.state';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectionService } from 'src/app/services/election-service';
+
+type RegistrationView = 'checking' | 'masterkey' | 'busy' | 'error';
 
 @Component({
   selector: 'app-registration',
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.scss'],
-  imports: [AsyncPipe, MasterKeySetupComponent]
+  imports: [MasterKeySetupComponent],
 })
 export class RegistrationComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor(
     private route: ActivatedRoute,
@@ -24,101 +26,101 @@ export class RegistrationComponent implements OnInit {
     private electionService: ElectionService
   ) {}
 
-  RegistrationState = RegistrationState;
   electionId: number = NaN;
   jwt: string | null = null;
   error: string | null = null;
+  /** Until the first async key/ballot check completes, avoid flashing the master-key UI. */
+  view: RegistrationView = 'checking';
 
-  private refresh$ = new BehaviorSubject<void>(undefined);
+  private readonly refresh$ = new BehaviorSubject<void>(undefined);
 
-  hasMasterKey$: Observable<boolean> = this.refresh$.pipe(
+  private hasMasterKey$: Observable<boolean> = this.refresh$.pipe(
     switchMap(() => this.masterKeyService.hasMasterKey())
   );
 
-  hasBallot$: Observable<boolean> = this.refresh$.pipe(
+  private hasBallot$: Observable<boolean> = this.refresh$.pipe(
     switchMap(() => this.ballotService.hasBallot(this.electionId))
   );
 
-  step$: Observable<RegistrationState> = combineLatest([
-      this.hasMasterKey$,
-      this.hasBallot$,
-    ]).pipe(
-      map(([hasMasterKey, hasBallot]) => {
-        if (!hasMasterKey) return RegistrationState.MASTERKEY;
-        if (!hasBallot) return RegistrationState.BALLOT;
-        return RegistrationState.BALLOT_CREATED;
-      })
-    );
+  /** Prevents duplicate auto ballot requests while one is in flight or after a hard failure. */
+  private autoBallotRequestStarted = false;
 
   ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
     this.electionId = idParam ? Number(idParam) : NaN;
-
     this.jwt = this.route.snapshot.paramMap.get('jwt');
 
     if (!Number.isFinite(this.electionId)) {
-      this.step$ = of(RegistrationState.ERROR);
+      this.error = 'Ungültige Wahl-ID';
+      this.view = 'error';
       return;
     }
 
-    this.hasBallot$ = this.ballotService.hasBallot(this.electionId);
+    combineLatest([this.hasMasterKey$, this.hasBallot$])
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(([hasMasterKey, hasBallot]) => {
+        if (!hasMasterKey) {
+          this.view = 'masterkey';
+          this.autoBallotRequestStarted = false;
+          return;
+        }
+
+        if (hasBallot) {
+          this.redirectToVoting();
+          return;
+        }
+
+        if (!this.jwt) {
+          this.error =
+            'Kein Registrierungs-Token in der URL. Bitte den Link aus der Einladung verwenden.';
+          this.view = 'error';
+          return;
+        }
+
+        if (this.autoBallotRequestStarted) {
+          return;
+        }
+
+        this.autoBallotRequestStarted = true;
+        this.view = 'busy';
+        this.error = null;
+        this.runAutoBallotCreation();
+      });
   }
 
-  createBallot() {
-    if (!this.jwt) {
-      this.step$ = of(RegistrationState.ERROR);
-      return;
-    }
-
+  private runAutoBallotCreation(): void {
     forkJoin({
       n: this.electionService.getN(this.electionId),
-      e: this.electionService.getE(this.electionId)
-      }).pipe(
+      e: this.electionService.getE(this.electionId),
+    })
+      .pipe(
         switchMap(({ n, e }) => {
           if (!n || !e) {
             return throwError(() => new Error('ELECTION_NOT_FOUND'));
           }
-          return this.ballotService.createBallot(this.electionId,this.jwt!, n, e);
+          return this.ballotService.createBallot(this.electionId, this.jwt!, n, e);
         })
-      ).subscribe({
-        next: () => {
-          this.refresh$.next();
+      )
+      .subscribe({
+        next: () => this.refresh$.next(),
+        error: (err: { message?: string }) => {
+          this.error = err?.message || 'Wahlschein konnte nicht erstellt werden.';
+          this.view = 'error';
         },
-
-        error: (err) => {
-          this.error = err?.message || 'An unknown error occurred';
-          this.step$ = of(RegistrationState.ERROR);
-        }
       });
   }
 
-  createMasterKey() {
+  onCreateMasterKey(): void {
     this.masterKeyService.createNewMasterKey().subscribe({
       next: () => this.refresh$.next(),
-      error: () => this.step$ = of(RegistrationState.ERROR)
+      error: () => {
+        this.error = 'Master-Key konnte nicht erstellt werden.';
+        this.view = 'error';
+      },
     });
   }
 
-  redirectToVoting() {
-    this.router.navigate([`/election/vote/${this.electionId}`]);
+  private redirectToVoting(): void {
+    void this.router.navigate([`/election/vote/${this.electionId}`]);
   }
-
-
-  //#region button listeners
-  onCreateMasterKey() {
-    this.createMasterKey();
-  }
-
-  onCreateBallot() {
-    this.createBallot();
-  }
-
-  onProceedToVoting() {
-    this.redirectToVoting();
-  }
-
-  onProceedToBallotCreation() {
-    this.step$ = of(RegistrationState.BALLOT);
-  }
-  //#endregion
 }

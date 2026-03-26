@@ -62,3 +62,11 @@ coverage/
 # ======================
 logs/
 *.log
+
+# Env files
+development.env
+.env
+
+# Secrets
+secrets/
+*.pem

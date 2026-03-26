@@ -5,11 +5,11 @@ import { EncryptedVotes, Vote } from "./vote"
 import { bytesToHex, getSubtleCrypto, hexToBuffer, hexToBytes, validateCredentials, validateElectionID, validateEncryptedVotes, validateEncryptionKey, validateEthAddress, validateEthSignature, validateRecastingVotingTransaction, validateSignature, validateToken } from "../utils/utils"
 import { RSA_BIT_LENGTH } from "../utils/constants"
 import { VoteOption } from "./vote-option"
-import { ElectionCredentials } from "./election-credentials"
 import { VotingTransaction } from "../interfaces/voting-transaction"
 import { EthSignature } from "./eth-signature"
 import { ServerError } from "./server-error"
-import { UrlPaths } from "../globals/url-paths"
+import { UrlPaths } from "../globals/url"
+import { VoterCredentials } from "../interfaces/voter-credentials"
 
 export async function encryptVotes(
   votes: Array<Vote>,
@@ -189,12 +189,12 @@ export function votesToString(votes: Array<Vote>): string {
     .join(',')
 }
 
-export function createVoteRecastTransaction(voterCredentials: ElectionCredentials, encryptedVotesRSA: EncryptedVotes, encryptedVotesAES: EncryptedVotes): VotingTransaction {
+export function createVoteRecastTransaction(voterCredentials: VoterCredentials, encryptedVotesRSA: EncryptedVotes, encryptedVotesAES: EncryptedVotes): VotingTransaction {
     validateCredentials(voterCredentials);
     validateEncryptedVotes(encryptedVotesRSA, EncryptionType.RSA);
     validateEncryptedVotes(encryptedVotesAES, EncryptionType.AES);
     const recastingVotingTransaction = {
-        electionID: voterCredentials.electionID,
+        electionID: voterCredentials.electionId,
         voterAddress: voterCredentials.voterWallet.address,
         encryptedVoteRSA: encryptedVotesRSA,
         encryptedVoteAES: encryptedVotesAES,
@@ -203,7 +203,7 @@ export function createVoteRecastTransaction(voterCredentials: ElectionCredential
     return recastingVotingTransaction;
 }
 
-export function createVotingTransactionWithoutSVSSignature(voterCredentials: ElectionCredentials, encryptedVotesRSA: EncryptedVotes, encryptedVotesAES: EncryptedVotes): VotingTransaction {
+export function createVotingTransactionWithoutSVSSignature(voterCredentials: VoterCredentials, encryptedVotesRSA: EncryptedVotes, encryptedVotesAES: EncryptedVotes): VotingTransaction {
     validateEncryptedVotes(encryptedVotesRSA, EncryptionType.RSA);
     validateEncryptedVotes(encryptedVotesAES, EncryptionType.AES);
     validateToken(voterCredentials.unblindedElectionToken);
@@ -219,7 +219,7 @@ export function createVotingTransactionWithoutSVSSignature(voterCredentials: Ele
         throw new Error('Voting transaction must not include a blinded Signature');
     }
     const votingTransaction = {
-        electionID: voterCredentials.electionID,
+        electionID: voterCredentials.electionId,
         voterAddress: voterCredentials.voterWallet.address,
         encryptedVoteRSA: encryptedVotesRSA,
         encryptedVoteAES: encryptedVotesAES,

@@ -1,5 +1,5 @@
 export type Token = {
     hexString: string;
-    isMaster: Boolean;
+    isMaster: boolean;
     isBlinded: Boolean
 };
