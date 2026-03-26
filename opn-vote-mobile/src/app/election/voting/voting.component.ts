@@ -150,7 +150,12 @@ export class VotingComponent  implements OnInit {
       ),
 
       switchMap(([ballot, electionInfo]) => {
-        const qrCodeString = JSON.stringify(ballot);
+        const qrCodeString = JSON.stringify({
+          type: "master-key",
+          version: 1,
+          data: ballot,
+        });
+        
         const pdfInformation = {
           STARTDATE: formatDate(electionInfo.votingStart),
           ENDDATE: formatDate(electionInfo.votingEnd),

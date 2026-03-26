@@ -8,13 +8,14 @@ import { QrCodeService } from 'src/app/services/qr-code-service';
 import { PdfService } from 'src/app/services/pdf-service';
 import { FileSaveService } from 'src/app/services/file-save-service';
 import { formatDate } from 'src/app/formatting/date-formatting';
+import { MasterKeySetupComponent } from "../master-key-setup/master-key-setup.component";
 type InfoPopupType = 'masterkey' | 'provider' | null;
 
 @Component({
   selector: 'app-master-key-management',
   templateUrl: './master-key-management.component.html',
   styleUrls: ['./master-key-management.component.scss'],
-  imports: [AsyncPipe],
+  imports: [AsyncPipe, MasterKeySetupComponent],
 })
 export class MasterKeyManagementComponent implements OnInit {
   constructor(
@@ -44,7 +45,11 @@ export class MasterKeyManagementComponent implements OnInit {
       filter((masterKey): masterKey is MasterKey => !!masterKey),
 
       switchMap((masterKey) => {
-        const qrCodeString = JSON.stringify(masterKey);
+        const qrCodeString = JSON.stringify({
+          type: "master-key",
+          version: 1,
+          data: masterKey,
+        });
 
         return from(this.qrCodeService.generateDataUrl(qrCodeString)).pipe(
           map((qrCodeDataUrl) => ({ masterKey, qrCodeString, qrCodeDataUrl }))
