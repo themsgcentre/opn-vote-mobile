@@ -13,6 +13,7 @@ import { createSmartAccountClient } from 'permissionless'
 import { to7702SimpleSmartAccount } from 'permissionless/accounts'
 import { gnosis } from "viem/chains"
 import { createSvsForwardTransport, createVoteCalldata } from '../voting-system/bundler';
+import { querySubgraph } from '../server/querySubgraph';
 
 const CHAIN = gnosis;
 const DELEGATION_ADDRESS = '0xe6Cae83BdE06E4c305530e199D7217f42808555B' as const
@@ -76,6 +77,7 @@ export class VoteService {
       (svsSignData as any).svsSignature) as EthSignature
     if (!svsSignatureRaw?.hexString)
       throw new Error(`SVS sign: unexpected response shape: ${JSON.stringify(svsSignData)}`)
+    console.log(svsSignatureRaw)
 
     const signedVotingTransaction = addSVSSignatureToVotingTransaction(
       votingTransaction,
@@ -171,6 +173,23 @@ export class VoteService {
 
     if (!receipt.success) {
       throw new Error(`UserOp reverted: ${txHash}`)
+    }
+    await this.verifyVotes(voterCredentials.electionId, voterAccount.address, txHash)
+    return txHash
+  }
+
+  async verifyVotes(electionId: number, voterAddress: string, txHash: string) {
+    for (let attempt = 1; attempt <= 10; attempt++) {
+      const { voteCasts } = await querySubgraph<{ voteCasts: { transactionHash: string }[] }>(
+        UrlPaths.graphUrl,
+        `{ voteCasts(where: { electionId: "${electionId}", voter: "${voterAddress}" }, first: 1) { transactionHash } }`,
+      )
+      if (voteCasts.length > 0) {
+        break
+      }
+      if (attempt === 10) {
+        throw Error('Vote not yet indexed after 10 attempts (subgraph may lag — tx succeeded)')
+      }
     }
   }
 }

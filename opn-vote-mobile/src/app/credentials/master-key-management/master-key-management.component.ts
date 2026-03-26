@@ -3,18 +3,19 @@ import { MasterKeySetupComponent } from "../master-key-setup/master-key-setup.co
 import { MasterKeyService } from 'src/app/services/master-key-service';
 import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
-
 type InfoPopupType = 'masterkey' | 'provider' | null;
 
 @Component({
   selector: 'app-master-key-management',
   templateUrl: './master-key-management.component.html',
   styleUrls: ['./master-key-management.component.scss'],
-  imports: [MasterKeySetupComponent, AsyncPipe],
+  imports: [AsyncPipe],
 })
 export class MasterKeyManagementComponent implements OnInit {
 
-  constructor(private masterKeyService: MasterKeyService) {}
+  constructor(
+    private masterKeyService: MasterKeyService
+  ) {}
   hasMasterKey$: Observable<boolean> = new Observable<boolean>(); 
   activeInfoPopup: InfoPopupType = null;
 
@@ -31,7 +32,9 @@ export class MasterKeyManagementComponent implements OnInit {
   }
 
   onDeleteMasterKey() {
-    this.masterKeyService.deleteMasterKey().subscribe(() => this.refresh());
+    this.masterKeyService
+      .deleteMasterKey()
+      .subscribe(() => this.refresh());
   }
 
   openInfoPopup(type: InfoPopupType) {
