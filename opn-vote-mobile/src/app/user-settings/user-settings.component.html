@@ -1,0 +1,16 @@
+<div class="management-container">
+  <app-master-key-management (openInfoPopup)="openInfoPopup('masterkey')"></app-master-key-management>
+  <app-provider-picker (openInfoPopup)="openInfoPopup('provider')"></app-provider-picker>
+</div>
+
+@if (activeInfoPopup) {
+  <div class="popup-backdrop" (click)="closeInfoPopup()">
+    <div class="info-modal" (click)="$event.stopPropagation()">
+      <div class="info-modal-title">{{ popupTitle }}</div>
+      <div class="info-modal-text">{{ popupText }}</div>
+      <div class="info-modal-button" (click)="closeInfoPopup()">
+        Verstanden
+      </div>
+    </div>
+  </div>
+}

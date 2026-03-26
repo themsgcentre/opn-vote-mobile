@@ -5,6 +5,7 @@ import { ElectionDetailViewComponent } from './election/election-detail-view/ele
 import { VotingComponent } from './election/voting/voting.component';
 import { RegistrationComponent } from './election/registration/registration.component';
 import { MasterKeyManagementComponent } from './credentials/master-key-management/master-key-management.component';
+import { UserSettingsComponent } from './user-settings/user-settings.component';
 
 export const routes: Routes = [
   {
@@ -17,7 +18,7 @@ export const routes: Routes = [
   },
   {
     path: 'user',
-    component: MasterKeyManagementComponent
+    component: UserSettingsComponent
   },
   {
     path: '',

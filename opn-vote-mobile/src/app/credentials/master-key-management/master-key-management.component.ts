@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { MasterKeyService } from 'src/app/services/master-key-service';
 import { filter, from, map, Observable, switchMap } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
@@ -9,7 +9,6 @@ import { PdfService } from 'src/app/services/pdf-service';
 import { FileSaveService } from 'src/app/services/file-save-service';
 import { formatDate } from 'src/app/formatting/date-formatting';
 import { MasterKeySetupComponent } from "../master-key-setup/master-key-setup.component";
-type InfoPopupType = 'masterkey' | 'provider' | null;
 
 @Component({
   selector: 'app-master-key-management',
@@ -25,7 +24,7 @@ export class MasterKeyManagementComponent implements OnInit {
     private fileSaveService: FileSaveService
   ) {}
   hasMasterKey$: Observable<boolean> = new Observable<boolean>(); 
-  activeInfoPopup: InfoPopupType = null;
+  @Output() openInfoPopup: EventEmitter<void> = new EventEmitter<void>();
 
   ngOnInit() {
     this.refresh();
@@ -91,37 +90,5 @@ export class MasterKeyManagementComponent implements OnInit {
     this.masterKeyService
       .deleteMasterKey()
       .subscribe(() => this.refresh());
-  }
-
-  openInfoPopup(type: InfoPopupType) {
-    this.activeInfoPopup = type;
-  }
-
-  closeInfoPopup() {
-    this.activeInfoPopup = null;
-  }
-
-  get popupTitle(): string {
-    if (this.activeInfoPopup === 'masterkey') {
-      return 'Masterkey';
-    }
-
-    if (this.activeInfoPopup === 'provider') {
-      return 'Authorization Provider';
-    }
-
-    return '';
-  }
-
-  get popupText(): string {
-    if (this.activeInfoPopup === 'masterkey') {
-      return 'Der Masterkey dient zur sicheren Verwaltung Ihrer Identität und wird für sensible Aktionen innerhalb der App benötigt.';
-    }
-
-    if (this.activeInfoPopup === 'provider') {
-      return 'Hier können später externe Authentifizierungsanbieter zur Identifikation und Autorisierung ausgewählt werden.';
-    }
-
-    return '';
   }
 }
