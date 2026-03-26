@@ -8,7 +8,6 @@ import {
   RGB,
   PDFName,
 } from "pdf-lib";
-import { t } from "i18next";
 import { CreatePdfOptions } from "../qr-code/create-pdf-options";
 import { PdfType } from "../qr-code/pdf-type";
 import { PdfContentItem } from "../qr-code/pdf-content-item";
@@ -68,6 +67,7 @@ export class PdfService {
         throw new Error(`Unsupported pdfType: ${String(pdfType)}`);
     }
 
+    console.log(additionalContent),
     this.drawContent(page, [...headerContent, ...additionalContent], font);
 
     pdfDoc.setTitle(downloadHeadline);
@@ -89,10 +89,7 @@ export class PdfService {
     return [
       {
         type: "text",
-        text: t("pdf.created", {
-          CREATIONDATE: new Date(),
-          interpolation: { escapeValue: false },
-        }),
+        text: 'Erstellt am: ' + new Date(),
         yPos: page.getHeight() - 50,
         font,
         fontSize: 10,
@@ -106,7 +103,7 @@ export class PdfService {
       },
       {
         type: "text",
-        text: t("pdf.keepsecrethint"),
+        text: "Dokument sicher aufbewahren. Weitergabe nicht erlaubt.",
         yPos: page.getHeight() - 120,
         font,
         fontSize: 10,
@@ -119,7 +116,7 @@ export class PdfService {
       },
       {
         type: "text",
-        text: creatorLabel ? `${t("pdf.createdwith")}${creatorLabel}` : t("pdf.createdwith"),
+        text: creatorLabel ? `ERstellt mit: ${creatorLabel}` : "Erstellt mit unbekannt",
         yPos: 10,
         font,
         fontSize: 7,
@@ -147,7 +144,7 @@ export class PdfService {
       },
       {
         type: "text",
-        text: t("pdf.votingkey.additionalinfo.votingkeyexplained.1"),
+        text: "Mit dem Wahlschlüssel können Sie einen Wahlschein für laufende und zukünftige Wahlen ausstellen lassen. Nur der Wahlschein berechtigt zur Teilnahme an einer Wahl.",
         marginTop: 20,
         fontSize: 10,
         lineHeight: 12,
@@ -157,7 +154,7 @@ export class PdfService {
       },
       {
         type: "text",
-        text: t("pdf.votingkey.additionalinfo.votingkeyexplained.2"),
+        text: "Sollten Sie Ihren Wahlschein verloren haben, können Sie sich mit diesem Wahlschlüssel einen neuen Wahlschein ausstellen lassen.",
         marginTop: 10,
         fontSize: 10,
         lineHeight: 12,
@@ -167,7 +164,7 @@ export class PdfService {
       },
       {
         type: "text",
-        text: t("pdf.votingkey.additionalinfo.electionoverviewlink"),
+        text: "Hier geht es zur Übersicht der laufenden Wahlen und Abstimmungen auf openPetition:",
         marginTop: 10,
         fontSize: 10,
         lineHeight: 12,
@@ -196,7 +193,7 @@ export class PdfService {
     return [
       {
         type: "text",
-        text: t("pdf.register.entitles"),
+        text: "Der Wahlschein berechtigt zur Teilnahme an:",
         fontSize: 10,
         start: 650,
         font,
@@ -219,7 +216,7 @@ export class PdfService {
       },
       {
         type: "text",
-        text: t("pdf.electionduration"),
+        text: "Zeitraum der Wahl: ",
         fontSize: 10,
         marginTop: 20,
         noPush: true,
@@ -227,11 +224,7 @@ export class PdfService {
       },
       {
         type: "text",
-        text: t("pdf.electionfromto", {
-          STARTDATE: pdfInformation?.STARTDATE ?? "",
-          ENDDATE: pdfInformation?.ENDDATE ?? "",
-          interpolation: { escapeValue: false },
-        }),
+        text: (pdfInformation?.STARTDATE ?? "unbekannt") + " bis " + (pdfInformation?.ENDDATE ?? "unbekannt"),
         xPos: 200,
         fontSize: 10,
         marginTop: 1,
@@ -239,7 +232,7 @@ export class PdfService {
       },
       {
         type: "text",
-        text: t("pdf.electionlink"),
+        text: "Link zur Wahl: ",
         fontSize: 10,
         marginTop: 10,
         noPush: true,
@@ -256,7 +249,7 @@ export class PdfService {
       },
       {
         type: "text",
-        text: t("pdf.register.electionpermit.digital"),
+        text: "Digitaler Wahlschein: ",
         fontSize: 10,
         marginTop: 10,
         noPush: true,
@@ -280,7 +273,7 @@ export class PdfService {
       },
       {
         type: "text",
-        text: t("pdf.register.registerexplained.1"),
+        text: "Die Anmeldung zur Wahl (Erstellung von Wahlschlüssel und Wahlschein) und der Wahlzeitraum sind getrennt, damit eine geheime Wahl sichergestellt werden kann. Es darf kein zeitlicher und örtlicher (IP-Adresse) Zusammenhang zwischen der Anmeldung und der Stimmabgabe hergestellt werden können.",
         fontSize: 10,
         marginTop: 20,
         maxWidth: 500,
@@ -290,7 +283,7 @@ export class PdfService {
       },
       {
         type: "text",
-        text: t("pdf.register.registerexplained.2"),
+        text: "Der Wahlschein ist während des Wahlzeitraums aktiv und muss zur Stimmabgabe hochgeladen oder eingescannt werden. Nutzen Sie den Link zur Wahl um Ihre Stimme abzugeben.",
         fontSize: 10,
         marginTop: 20,
         maxWidth: 500,
@@ -306,7 +299,7 @@ export class PdfService {
       },
       {
         type: "text",
-        text: t("pdf.register.lawhint"),
+        text: "Die Stimmabgabe muss persönlich und unbeeinflusst erfolgen. Wahlbeeinflussung, Weitergabe oder Kauf oder Verkauf des Wahlscheins sind verboten und werden entsprechend §107 und §108 b Strafgesetzbuch strafrechtlich verfolgt.",
         fontSize: 8,
         marginTop: 20,
         maxWidth: 500,

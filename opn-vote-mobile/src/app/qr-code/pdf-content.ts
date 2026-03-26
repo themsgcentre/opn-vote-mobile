@@ -1,4 +1,5 @@
 import { PDFFont, PDFImage, RGB } from "pdf-lib";
+import { PdfContentType } from "./pdf-content-type";
 
 interface BaseContent {
   type: PdfContentType;

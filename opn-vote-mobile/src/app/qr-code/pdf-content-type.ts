@@ -1,1 +1,1 @@
-type PdfContentType = "text" | "line" | "image";
+export type PdfContentType = "text" | "line" | "image";

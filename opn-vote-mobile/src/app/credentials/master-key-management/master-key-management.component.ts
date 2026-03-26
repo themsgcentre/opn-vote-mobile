@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { MasterKeySetupComponent } from "../master-key-setup/master-key-setup.component";
 import { MasterKeyService } from 'src/app/services/master-key-service';
-import { Observable } from 'rxjs';
+import { filter, from, map, Observable, switchMap } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
+import { MasterKey } from 'src/app/voting-system/masterkey';
+import { PdfType } from 'src/app/qr-code/pdf-type';
+import { QrCodeService } from 'src/app/services/qr-code-service';
+import { PdfService } from 'src/app/services/pdf-service';
+import { FileSaveService } from 'src/app/services/file-save-service';
 type InfoPopupType = 'masterkey' | 'provider' | null;
 
 @Component({
@@ -13,7 +17,10 @@ type InfoPopupType = 'masterkey' | 'provider' | null;
 })
 export class MasterKeyManagementComponent implements OnInit {
   constructor(
-    private masterKeyService: MasterKeyService
+    private masterKeyService: MasterKeyService,
+    private qrCodeService: QrCodeService,
+    private pdfService: PdfService,
+    private fileSaveService: FileSaveService
   ) {}
   hasMasterKey$: Observable<boolean> = new Observable<boolean>(); 
   activeInfoPopup: InfoPopupType = null;
@@ -31,7 +38,46 @@ export class MasterKeyManagementComponent implements OnInit {
   }
 
   onExportMasterKey() {
-    throw new Error('Method not implemented.');
+    this.masterKeyService.getMasterKey().pipe(
+      
+      filter((masterKey): masterKey is MasterKey => !!masterKey),
+
+      switchMap((masterKey) => {
+        const qrCodeString = JSON.stringify(masterKey);
+
+        return from(this.qrCodeService.generateDataUrl(qrCodeString)).pipe(
+          map((qrCodeDataUrl) => ({ masterKey, qrCodeString, qrCodeDataUrl }))
+        );
+      }),
+
+      switchMap(({ qrCodeString, qrCodeDataUrl }) => {
+        return from(
+          this.pdfService.createPdf({
+            qrCodeString,
+            qrCodeDataUrl,
+            downloadHeadline: "Wahlschlüssel",
+            pdfType: PdfType.VOTING_KEY,
+          })
+        );
+      }),
+
+      switchMap((pdfBytes) => {
+        const formattedDate = new Date().toLocaleDateString("de-DE").replace(/\./g, "-");
+        return from(
+          this.fileSaveService.savePdf({
+            fileName: "wahlschluessel-" + formattedDate,
+            pdfBytes,
+          })
+        );
+      })
+    ).subscribe({
+      next: () => {
+        console.log("PDF erfolgreich erstellt & gespeichert");
+      },
+      error: (err) => {
+        console.error("Fehler beim Export:", err);
+      }
+    });
   }
 
   onImportMasterKey() {
