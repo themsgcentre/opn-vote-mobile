@@ -147,7 +147,7 @@ export class MasterKeyManagementComponent implements OnInit {
       const payload = this.importService.parseQrString(raw);
       if (!this.importService.isMasterKeyPayload(payload)) {
         this.importError =
-          'Dieser Inhalt enthält keinen Masterschlüssel. Bitte den Export (QR oder Wahlschlüssel-PDF) verwenden.';
+          'Dieser Inhalt enthält keinen Masterschlüssel. Bitte den Export QR-Code verwenden.';
         return;
       }
       this.masterKeyService
