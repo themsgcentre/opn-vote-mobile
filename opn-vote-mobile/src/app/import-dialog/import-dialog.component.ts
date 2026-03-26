@@ -7,6 +7,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 })
 export class ImportDialogComponent {
   @Input() item: string | null = null;
+  @Input() additionalInfo: string | null = null;
   @Output() scanSelected: EventEmitter<void> = new EventEmitter<void>(); 
   @Output() uploadSelected: EventEmitter<void> = new EventEmitter<void>(); 
 }

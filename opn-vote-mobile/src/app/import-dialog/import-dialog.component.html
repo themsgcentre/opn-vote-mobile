@@ -1,6 +1,9 @@
 <div class="import-backdrop" role="dialog" aria-modal="true" aria-labelledby="import-title">
   <div class="import-dialog">
     <div id="import-title" class="import-title">{{item}} importieren.</div>
+      @if(additionalInfo) {
+        <div class="additional">{{additionalInfo}}</div>
+      }
       <div class="import-text">Wähle eine Option: </div>
       <div class="button" (click)="scanSelected.emit()">
         <i class="bi bi-camera-fill import-button-icon" aria-hidden="true"></i>

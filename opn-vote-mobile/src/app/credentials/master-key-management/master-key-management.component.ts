@@ -12,12 +12,14 @@ import { MasterKeySetupComponent } from "../master-key-setup/master-key-setup.co
 import { ImportDialogComponent } from 'src/app/import-dialog/import-dialog.component';
 import { ImportService } from 'src/app/services/import-service';
 import { QrScanDialogComponent } from 'src/app/qr-scan-dialog/qr-scan-dialog.component';
+import { MessageDialogComponent } from 'src/app/message-dialog/message-dialog.component';
+import { QuestionDialogComponent } from 'src/app/question-dialog/question-dialog.component';
 
 @Component({
   selector: 'app-master-key-management',
   templateUrl: './master-key-management.component.html',
   styleUrls: ['./master-key-management.component.scss'],
-  imports: [AsyncPipe, MasterKeySetupComponent, ImportDialogComponent, QrScanDialogComponent],
+  imports: [AsyncPipe, MasterKeySetupComponent, ImportDialogComponent, QrScanDialogComponent, MessageDialogComponent, QuestionDialogComponent],
 })
 export class MasterKeyManagementComponent implements OnInit {
   constructor(
@@ -32,6 +34,8 @@ export class MasterKeyManagementComponent implements OnInit {
   @Output() openInfoPopup: EventEmitter<void> = new EventEmitter<void>();
   importDialogOpened = false;
   qrScanOpened = false;
+  scanSuccess = false;
+  confirmDialog = false;
   importError: string | null = null;
 
   ngOnInit() {
@@ -122,7 +126,10 @@ export class MasterKeyManagementComponent implements OnInit {
         .importMasterKey(payload.data)
         .pipe(take(1))
         .subscribe({
-          next: () => this.refresh(),
+          next: () => {
+            this.scanSuccess = true
+            this.refresh()
+          },
           error: () => {
             this.importError = 'Der Masterschlüssel konnte nicht gespeichert werden.';
           },
@@ -137,5 +144,10 @@ export class MasterKeyManagementComponent implements OnInit {
     this.masterKeyService
       .deleteMasterKey()
       .subscribe(() => this.refresh());
+    this.confirmDialog = false;
+  }
+
+  closeMessage() {
+    this.scanSuccess = false;
   }
 }

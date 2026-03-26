@@ -113,7 +113,7 @@ export class ImportService {
     return (
       typeof value === "string" &&
       value.length > 0 &&
-      /^[0-9a-fA-F]+$/.test(value)
+      /^(0x)?[0-9a-fA-F]+$/.test(value)
     );
   }
 }
