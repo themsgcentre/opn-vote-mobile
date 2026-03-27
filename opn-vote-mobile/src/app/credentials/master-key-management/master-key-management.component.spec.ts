@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { MasterKeyManagementComponent } from './master-key-management.component';
+import { MasterKeySetupComponent } from '../master-key-setup/master-key-setup.component';
 
 describe('MasterKeyManagementComponent', () => {
   let component: MasterKeyManagementComponent;
@@ -9,8 +10,7 @@ describe('MasterKeyManagementComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ MasterKeyManagementComponent ],
-      imports: [IonicModule.forRoot()]
+      imports: [MasterKeyManagementComponent, MasterKeySetupComponent, IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MasterKeyManagementComponent);

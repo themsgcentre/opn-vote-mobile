@@ -1,0 +1,14 @@
+<div class="qr-scan-backdrop" role="dialog" aria-modal="true" aria-labelledby="qr-scan-title">
+  <div class="qr-scan-panel">
+    <div id="qr-scan-title" class="qr-scan-title">QR-Code scannen</div>
+    <p class="qr-scan-hint">Halte den Code ruhig im Rahmen.</p>
+    @if (cameraError) {
+      <p class="qr-scan-error">{{ cameraError }}</p>
+    } @else {
+      <div class="qr-reader-wrap">
+        <div [id]="readerElementId" class="qr-reader-host"></div>
+      </div>
+    }
+    <button type="button" class="qr-scan-cancel" (click)="onCancelClick()">Abbrechen</button>
+  </div>
+</div>

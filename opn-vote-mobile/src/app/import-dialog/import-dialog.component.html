@@ -1,0 +1,26 @@
+<div class="import-backdrop" role="dialog" aria-modal="true" aria-labelledby="import-title">
+  <div class="import-dialog">
+    <div id="import-title" class="import-title">{{item}} importieren.</div>
+      @if(additionalInfo) {
+        <div class="additional">{{additionalInfo}}</div>
+      }
+      <div class="import-text">Wähle eine Option: </div>
+      <div class="button" (click)="scanSelected.emit()">
+        <i class="bi bi-camera-fill import-button-icon" aria-hidden="true"></i>
+        <span>QR-Code scannen</span>
+      </div>
+      <label class="button import-file-label">
+        <span class="import-file-label-visible">
+          <i class="bi bi-file-earmark-arrow-up import-button-icon" aria-hidden="true"></i>
+          <span>{{ allowMultipleFiles ? 'PDF(s) hochladen' : 'PDF hochladen' }}</span>
+        </span>
+        <input
+          type="file"
+          class="import-dialog-file-input"
+          [accept]="uploadAccept"
+          [attr.multiple]="allowMultipleFiles ? '' : null"
+          (change)="onUploadInputChange($event)"
+        />
+      </label>
+  </div>
+</div>

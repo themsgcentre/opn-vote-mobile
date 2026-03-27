@@ -1,0 +1,88 @@
+@import '../styles/colors.scss';
+@import '../styles/font-weights.scss';
+@import '../styles/sizes.scss';
+
+.management-container {
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.info-popup {
+  width: 84%;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 5px;
+  background-color: $opn-slategray;
+  color: $opn-white;
+  font-size: $text-small;
+  text-align: center;
+  line-height: 1.35;
+}
+
+.info-icon {
+  color: $opn-lightblue;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.popup-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.55);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 24px;
+  z-index: 1000;
+}
+
+.info-modal {
+  width: 100%;
+  max-width: 320px;
+  background-color: $opn-slategray;
+  border-radius: 5px;
+  padding: 20px 18px 16px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+}
+
+.info-modal-title {
+  color: $opn-white;
+  font-size: $text-large;
+  font-weight: $semi-bold;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.info-modal-text {
+  color: $opn-lightgray;
+  font-size: $text-small;
+  text-align: center;
+  line-height: 1.45;
+  margin-bottom: 18px;
+}
+
+.info-modal-button {
+  min-width: 140px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 5px;
+  background-color: $opn-lightblue;
+  color: $opn-white;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: $text-small;
+  font-weight: $semi-bold;
+  cursor: pointer;
+}

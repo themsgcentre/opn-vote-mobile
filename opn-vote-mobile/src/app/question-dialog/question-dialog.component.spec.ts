@@ -1,19 +1,18 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { UserPageComponent } from './user-page.component';
+import { QuestionDialogComponent } from './question-dialog.component';
 
-describe('UserPageComponent', () => {
-  let component: UserPageComponent;
-  let fixture: ComponentFixture<UserPageComponent>;
+describe('QuestionDialogComponent', () => {
+  let component: QuestionDialogComponent;
+  let fixture: ComponentFixture<QuestionDialogComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ UserPageComponent ],
-      imports: [IonicModule.forRoot()]
+      imports: [QuestionDialogComponent, IonicModule.forRoot()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(UserPageComponent);
+    fixture = TestBed.createComponent(QuestionDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

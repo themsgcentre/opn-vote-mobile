@@ -1,0 +1,8 @@
+<div class="question-backdrop" role="dialog" aria-modal="true" aria-labelledby="question-title">
+  <div class="question-dialog">
+    <div id="question-title" class="question-title">{{title}}</div>
+    <div class="question-text"> {{question}}</div>
+    <button class="button" (click)="yesClicked.emit()"> Ja </button>
+    <button class="button" (click)="noClicked.emit()"> Nein </button>
+  </div>
+</div>
