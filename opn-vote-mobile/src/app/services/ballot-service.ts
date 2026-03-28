@@ -99,7 +99,7 @@ export class BallotService {
                   .getBlindedSignature(jwt, blindedElectionToken)
                   .pipe(
                     map((blindedSig) => {
-                      const unblindedSig = this.tokenService.unblindSignature(
+                      const unblindedSig = this.registerProxyService.unblindSignature(
                         blindedSig,
                         electionR,
                         rsaParams
@@ -141,7 +141,7 @@ export class BallotService {
               return of(null);
             }
             return from(
-              this.tokenService.createVoterCredentialsFromStoredData(
+              this.registerProxyService.createVoterCredentialsFromStoredData(
                 electionId,
                 ballot,
                 masterKey.masterToken
