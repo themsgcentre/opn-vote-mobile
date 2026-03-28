@@ -39,8 +39,9 @@ const OPNVOTE_ABI = [
   providedIn: 'root',
 })
 export class VoteService {
-  async sendVotes(votes: Record<number, VoteOption>, voterCredentials: VoterCredentials, electionPublicKey: string, isRecast: boolean) {
+  async sendVotes(votes: Record<number, VoteOption>, voterCredentials: VoterCredentials, electionPublicKey: string) {
     const voterAccount = privateKeyToAccount(voterCredentials.voterWallet.privateKey as Hex)
+    const isRecast = await this.hasExistingVote(voterCredentials.electionId, voterAccount.address)
     const voteArray = Object.values(votes).map((vote) => ({ value: vote })) as Array<{ value: VoteOption }>;
 
     const coordinatorKey: EncryptionKey = {
@@ -59,32 +60,36 @@ export class VoteService {
       voterCredentials.encryptionKey,
       EncryptionType.AES,
     )
-    const votingTransaction = createVotingTransactionWithoutSVSSignature(
+    let votingTransaction = createVotingTransactionWithoutSVSSignature(
       voterCredentials,
       encryptedVotesRSA,
       encryptedVotesAES,
     )
 
-    const msgHash = hashMessage(JSON.stringify(votingTransaction))
-    const voterSig = await voterAccount.signMessage({ message: msgHash })
-    const voterSignature: EthSignature = { hexString: voterSig }
+    let sponsorMsgHash: string = '';
+    if(!isRecast) {
+      const msgHash = hashMessage(JSON.stringify(votingTransaction))
+      const voterSig = await voterAccount.signMessage({ message: msgHash })
+      const voterSignature: EthSignature = { hexString: voterSig }
 
-    const svsSignData = await postJson<Record<string, unknown>>(
-      `${UrlPaths.svsUrl}${UrlProperties.signVotingTransaction}`,
-      { votingTransaction, voterSignature },
-    )
-    const svsSignatureRaw = ((svsSignData as any).blindedSignature ??
-      (svsSignData as any).svsSignature) as EthSignature
-    if (!svsSignatureRaw?.hexString)
-      throw new Error(`SVS sign: unexpected response shape: ${JSON.stringify(svsSignData)}`)
+      const svsSignData = await postJson<Record<string, unknown>>(
+        `${UrlPaths.svsUrl}${UrlProperties.signVotingTransaction}`,
+        { votingTransaction, voterSignature },
+      )
+      const svsSignatureRaw = ((svsSignData as any).blindedSignature ??
+        (svsSignData as any).svsSignature) as EthSignature
+      if (!svsSignatureRaw?.hexString)
+        throw new Error(`SVS sign: unexpected response shape: ${JSON.stringify(svsSignData)}`)
 
-    const signedVotingTransaction = addSVSSignatureToVotingTransaction(
-      votingTransaction,
-      svsSignatureRaw,
-    )
+      const signedVotingTransaction = addSVSSignatureToVotingTransaction(
+        votingTransaction,
+        svsSignatureRaw,
+      )
+      votingTransaction = signedVotingTransaction;
+    }
 
     // SVS sponsor
-    const sponsorMsgHash = hashMessage(JSON.stringify(signedVotingTransaction))
+    sponsorMsgHash = hashMessage(JSON.stringify(votingTransaction))
     const sponsorSig = await voterAccount.signMessage({ message: sponsorMsgHash })
 
     const { paymasterData, userOpParams } = await postJson<{
@@ -100,7 +105,7 @@ export class VoteService {
         maxPriorityFeePerGas: string
       }
     }>(`${UrlPaths.svsUrl}${UrlProperties.sponsor}`, {
-      votingTransaction: signedVotingTransaction,
+      votingTransaction: votingTransaction,
       voterSignature: { hexString: sponsorSig },
     })
 
@@ -116,7 +121,7 @@ export class VoteService {
       entryPoint: { address: ENTRY_POINT, version: '0.8' },
     })
 
-    const voteCalldata = createVoteCalldata(signedVotingTransaction, OPNVOTE_ABI) as Hex
+    const voteCalldata = createVoteCalldata(votingTransaction, OPNVOTE_ABI) as Hex
 
     const smartAccountClient = createSmartAccountClient({
       client: publicClient,
@@ -175,6 +180,14 @@ export class VoteService {
     }
     await this.verifyVotes(voterCredentials.electionId, voterAccount.address, txHash)
     return txHash
+  }
+
+  async hasExistingVote(electionId: number, voterAddress: string): Promise<boolean> {
+    const { voteCasts } = await querySubgraph<{ voteCasts: { transactionHash: string }[] }>(
+      UrlPaths.graphUrl,
+      `{ voteCasts(where: { electionId: "${electionId}", voter: "${voterAddress}" }, first: 1) { transactionHash } }`,
+    )
+    return voteCasts.length > 0
   }
 
   async verifyVotes(electionId: number, voterAddress: string, txHash: string) {
