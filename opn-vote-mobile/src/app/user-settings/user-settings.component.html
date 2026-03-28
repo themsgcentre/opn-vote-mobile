@@ -65,9 +65,9 @@
   <app-import-dialog
     item="Wahlschein"
     [additionalInfo]="ballotImportDialogInfo"
-    [allowMultipleFiles]="true"
+    [allowMultipleFiles]="false"
     (scanSelected)="ballotImportViaScan()"
-    (filesSelected)="onBallotImportPdfsFromDialog($event)"
+    (fileSelected)="onBallotImportPdfFromDialog($event)"
   ></app-import-dialog>
 }
 @if (ballotQrScanOpened) {
