@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { ImageComponent } from 'src/app/home-page/image/image.component';
 import { ElectionInformation } from 'src/app/interfaces/election';
 
@@ -9,7 +9,20 @@ import { ElectionInformation } from 'src/app/interfaces/election';
   styleUrls: ['./election-detail.component.scss'],
   imports: [ImageComponent]
 })
-export class ElectionDetailComponent{
+export class ElectionDetailComponent implements OnChanges {
+  ngOnChanges(): void {
+    if(this.election) {
+      this.hasStarted = this.isInPast(this.election.registrationStart)
+      this.hasEnded = this.isInPast(this.election.registrationEnd)
+    }
+  }
+  hasStarted = false;
+  hasEnded = false;
   @Input() election: ElectionInformation | null = null;
   @Output() participateClicked: EventEmitter<void> = new EventEmitter<void>();
+
+  private isInPast(date: Date) {
+    const now = Date.now();
+    return now - date.getTime() > 0;
+  }
 }
