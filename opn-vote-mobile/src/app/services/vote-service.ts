@@ -39,8 +39,9 @@ const OPNVOTE_ABI = [
   providedIn: 'root',
 })
 export class VoteService {
-  async sendVotes(votes: Record<number, VoteOption>, voterCredentials: VoterCredentials, electionPublicKey: string, isRecast: boolean) {
+  async sendVotes(votes: Record<number, VoteOption>, voterCredentials: VoterCredentials, electionPublicKey: string) {
     const voterAccount = privateKeyToAccount(voterCredentials.voterWallet.privateKey as Hex)
+    const isRecast = await this.hasExistingVote(voterCredentials.electionId, voterAccount.address)
     const voteArray = Object.values(votes).map((vote) => ({ value: vote })) as Array<{ value: VoteOption }>;
 
     const coordinatorKey: EncryptionKey = {
@@ -179,6 +180,14 @@ export class VoteService {
     }
     await this.verifyVotes(voterCredentials.electionId, voterAccount.address, txHash)
     return txHash
+  }
+
+  async hasExistingVote(electionId: number, voterAddress: string): Promise<boolean> {
+    const { voteCasts } = await querySubgraph<{ voteCasts: { transactionHash: string }[] }>(
+      UrlPaths.graphUrl,
+      `{ voteCasts(where: { electionId: "${electionId}", voter: "${voterAddress}" }, first: 1) { transactionHash } }`,
+    )
+    return voteCasts.length > 0
   }
 
   async verifyVotes(electionId: number, voterAddress: string, txHash: string) {

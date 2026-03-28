@@ -115,7 +115,6 @@ export class VotingComponent  implements OnInit {
         this.votes,
         credentials,
         publicKey,
-        false
       );
 
       this.voteSuccessTxHash = txHash;
