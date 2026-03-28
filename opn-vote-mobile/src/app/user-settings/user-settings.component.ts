@@ -75,7 +75,7 @@ export class UserSettingsComponent {
   masterKeyDeleteDialogOpen = false;
 
   readonly ballotImportDialogInfo =
-    'Mehrere PDF-Dateien können gleichzeitig ausgewählt werden. Jeder Wahlschein wird einzeln geprüft und muss zu Ihrem Wahlschlüssel passen.';
+    'Es kann jeweils eine PDF-Datei ausgewählt werden. Der Wahlschein wird geprüft und muss zu Ihrem Wahlschlüssel passen.';
 
   ballotImportError: string | null = null;
   ballotImportDialogOpened = false;
@@ -282,10 +282,10 @@ export class UserSettingsComponent {
     this.ballotQrScanOpened = true;
   }
 
-  onBallotImportPdfsFromDialog(files: File[]): void {
+  onBallotImportPdfFromDialog(file: File): void {
     this.ballotImportDialogOpened = false;
     this.ballotImportError = null;
-    void this.processBallotPdfBatch(files);
+    void this.processBallotPdfBatch([file]);
   }
 
   onBallotQrScanCancel(): void {
