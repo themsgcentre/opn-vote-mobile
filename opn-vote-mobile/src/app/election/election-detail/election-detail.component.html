@@ -16,8 +16,16 @@
 
     <div class="description">{{ election.description }}</div>
 
-    <div class="vote-button" (click)="participateClicked.emit()">
-      Jetzt an Wahl teilnehmen
-    </div>
+    @if(!hasEnded) {
+      <button class="vote-button" (click)="participateClicked.emit()" [disabled]="!hasStarted">
+        @if(hasStarted){
+          Jetzt an Wahl teilnehmen
+        }
+        @else {
+          Registrierungsphase beginnt bald!
+        }
+      </button>
+    }
+    
   </div>
 }
