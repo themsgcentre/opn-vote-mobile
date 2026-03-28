@@ -16,6 +16,27 @@
 
     <div class="description">{{ election.description }}</div>
 
+    <div class="section">
+      <div class="section-title">Wahlbeteiligung</div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value">{{ election.authorizedVoterCount }}</div>
+          <div class="stat-label">Berechtigt</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-value">{{ election.registeredVoterCount }}</div>
+          <div class="stat-label">Registriert</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-value">{{ election.totalVotes }}</div>
+          <div class="stat-label">Stimmen</div>
+        </div>
+      </div>
+    </div>
+
     @if(!hasEnded) {
       <button class="vote-button" (click)="participateClicked.emit()" [disabled]="!hasStarted">
         @if(hasStarted){
