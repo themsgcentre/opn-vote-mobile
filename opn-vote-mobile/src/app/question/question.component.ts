@@ -15,6 +15,7 @@ export class QuestionComponent  implements OnInit {
 
   @Output() optionSelected = new EventEmitter<VoteOption>();
   @Input() question: Question | null = null;
+  @Input() initialVote?: VoteOption;
   options = defaultOptions;
 
   constructor() { }

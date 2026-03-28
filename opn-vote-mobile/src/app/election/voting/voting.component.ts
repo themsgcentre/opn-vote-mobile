@@ -11,6 +11,7 @@ import { IonContent } from "@ionic/angular/standalone";
 import { QuestionVote } from 'src/app/voting-system/vote';
 import { VoteOption } from 'src/app/voting-system/vote-option';
 import { VoteService } from 'src/app/services/vote-service';
+import { VoteDraftService } from 'src/app/services/vote-draft-service';
 import { LineComponent } from 'src/app/reusables/line/line.component';
 import { VoterCredentials } from 'src/app/interfaces/voter-credentials';
 import { QrCodeService } from 'src/app/services/qr-code-service';
@@ -33,6 +34,7 @@ export class VotingComponent  implements OnInit {
     private route: ActivatedRoute,
     private electionService: ElectionService,
     private voteService: VoteService,
+    private voteDraftService: VoteDraftService,
     private ballotService: BallotService,
     private router: Router,
     private qrCodeService: QrCodeService,
@@ -71,9 +73,11 @@ export class VotingComponent  implements OnInit {
       this.electionId = electionId
       this.election$ = this.electionService.getElectionInformation(electionId);
       this.questions$ = this.electionService.loadQuestions(electionId);
-      this.questions$.subscribe(questions => {
+      this.questions$.subscribe((questions) => {
         this.questionCount = questions.length;
+        this.updateCanSubmit();
       });
+      void this.restoreVoteDraft(electionId);
       this.hasBallot$ = this.ballotService.hasBallot(electionId);
       this.publicKey$ = this.electionService.getPublicKey(electionId)
       this.credentials$ = this.ballotService.getCredentials(electionId);
@@ -85,7 +89,23 @@ export class VotingComponent  implements OnInit {
 
   voteUpdated(vote: QuestionVote) {
     this.votes[vote.key] = vote.selected;
-    this.canSubmit = Object.keys(this.votes).length == this.questionCount;
+    this.updateCanSubmit();
+    if (this.electionId != null) {
+      void this.voteDraftService.save(this.electionId, this.votes);
+    }
+  }
+
+  private updateCanSubmit(): void {
+    this.canSubmit = Object.keys(this.votes).length === this.questionCount && this.questionCount > 0;
+  }
+
+  private async restoreVoteDraft(electionId: number): Promise<void> {
+    const draft = await this.voteDraftService.load(electionId);
+    if (!draft) {
+      return;
+    }
+    this.votes = { ...draft };
+    this.updateCanSubmit();
   }
 
   async submitVote() {

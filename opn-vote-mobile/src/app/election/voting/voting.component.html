@@ -20,6 +20,7 @@
         <div class="voting-area" [class.voting-area--locked]="voteSubmitting">
           <app-question-list 
             [questions]="(questions$ | async) || []"
+            [initialVotes]="votes"
             (optionSelected)="voteUpdated($event)"
           ></app-question-list>
         </div>

@@ -1,6 +1,10 @@
 <div class="question-list-container">
-  @for (question of questions; track question.text) {
-    <app-question [question]="question" (optionSelected)="optionSelected.emit({ key: question.key, selected: $event })"></app-question>
+  @for (question of questions; track question.key) {
+    <app-question
+      [question]="question"
+      [initialVote]="initialVotes[question.key]"
+      (optionSelected)="optionSelected.emit({ key: question.key, selected: $event })"
+    ></app-question>
     <app-line width="95%" height="1px"color="white" margin="0 auto 18px auto"></app-line>
   }
 </div>
