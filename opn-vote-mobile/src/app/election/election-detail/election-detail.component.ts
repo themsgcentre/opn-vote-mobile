@@ -25,4 +25,11 @@ export class ElectionDetailComponent implements OnChanges {
     const now = Date.now();
     return now - date.getTime() > 0;
   }
+
+  formatDate(date: Date): string {
+    return new Intl.DateTimeFormat('de-DE', {
+      dateStyle: 'medium',
+      timeStyle: 'short'
+    }).format(new Date(date));
+  }
 }

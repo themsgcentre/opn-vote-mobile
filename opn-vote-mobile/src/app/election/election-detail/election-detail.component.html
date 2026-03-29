@@ -37,6 +37,23 @@
       </div>
     </div>
 
+    <div class="section-title">Zeitraum</div>
+    <div class="info-list">
+        <div class="info-item">
+          <div class="label">Registrierung</div>
+          <div class="value">
+            {{ formatDate(election.registrationStart) }} – {{ formatDate(election.registrationEnd) }}
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="label">Abstimmung</div>
+          <div class="value">
+            {{ formatDate(election.votingStart) }} – {{ formatDate(election.votingEnd) }}
+          </div>
+        </div>
+      </div>
+
     @if(!hasEnded) {
       <button class="vote-button" (click)="participateClicked.emit()" [disabled]="!hasStarted">
         @if(hasStarted){

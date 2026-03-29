@@ -125,3 +125,29 @@
   font-size: 12px;
   color: $opn-lightgray;
 }
+
+.info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-left: 18px;
+  margin-right: 18px;
+}
+
+.info-item {
+  padding: 12px 14px;
+  border-radius: 10px;
+  background-color: rgba(255,255,255,0.04);
+}
+
+.label {
+  font-size: 13px;
+  color: $opn-lightgray;
+  margin-bottom: 4px;
+}
+
+.value {
+  font-size: 14px;
+  color: $opn-white;
+  line-height: 1.4;
+}
