@@ -109,7 +109,7 @@
 .stat-card {
   padding: 14px 10px;
   border-radius: 10px;
-  background-color: rgba(255,255,255,0.04);
+  background-color: $surface-card-bg;
   text-align: center;
 }
 
@@ -136,7 +136,7 @@
 .info-item {
   padding: 12px 14px;
   border-radius: 10px;
-  background-color: rgba(255,255,255,0.04);
+  background-color: $surface-card-bg;
 }
 
 .label {
@@ -165,24 +165,23 @@
   border-radius: 999px;
   font-size: 14px;
   font-weight: $semi-bold;
-  background-color: rgba(255,255,255,0.08);
   color: $opn-white;
 }
 
 .status-badge.upcoming {
-  background-color: rgba(120, 120, 120, 0.2);
+  background-color: $status-upcoming-bg;
 }
 
 .status-badge.registration {
-  background-color: rgba(0, 140, 255, 0.18);
+  background-color: $status-registration-bg;
 }
 
 .status-badge.voting {
-  background-color: rgba(0, 180, 120, 0.18);
+  background-color: $status-voting-bg;
 }
 
 .status-badge.ended {
-  background-color: rgba(255, 255, 255, 0.12);
+  background-color: $status-ended-bg;
   opacity: 0.8;
 }
 
