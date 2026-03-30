@@ -23,7 +23,7 @@
   font-size: $title-small;
   font-weight: $semi-bold;
   color: $opn-white;
-  text-align: center;
+  text-align: left;
   word-break: break-word;
 }
 
@@ -64,7 +64,6 @@
 
   overflow: auto;
 }
-
 
 .vote-button {
   margin: 18px 24px 0;
@@ -150,4 +149,44 @@
   font-size: 14px;
   color: $opn-white;
   line-height: 1.4;
+}
+
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 18px 0;
+  flex-wrap: wrap;
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: $semi-bold;
+  background-color: rgba(255,255,255,0.08);
+  color: $opn-white;
+}
+
+.status-badge.upcoming {
+  background-color: rgba(120, 120, 120, 0.2);
+}
+
+.status-badge.registration {
+  background-color: rgba(0, 140, 255, 0.18);
+}
+
+.status-badge.voting {
+  background-color: rgba(0, 180, 120, 0.18);
+}
+
+.status-badge.ended {
+  background-color: rgba(255, 255, 255, 0.12);
+  opacity: 0.8;
+}
+
+.author {
+  font-size: 14px;
+  color: $opn-lightgray;
 }
