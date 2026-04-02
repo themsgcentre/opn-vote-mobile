@@ -8,6 +8,17 @@
 @import "@ionic/angular/css/display.css";
 
 @import '@ionic/angular/css/palettes/dark.system.css';
+@import 'app/styles/colors.scss';
 
 /* Global style settings */
-@import 'app/styles.scss'
+@import 'app/styles.scss';
+
+html,
+body,
+ion-app {
+  background-color: $opn-darkgray;
+}
+
+body {
+  --ion-background-color: #{$opn-darkgray};
+}
