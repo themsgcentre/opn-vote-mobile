@@ -1,5 +1,11 @@
-<div class="import-backdrop" role="dialog" aria-modal="true" aria-labelledby="import-title">
-  <div class="import-dialog">
+<div
+  class="import-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="import-title"
+  (click)="onBackdropClick()"
+>
+  <div class="import-dialog" (click)="$event.stopPropagation()">
     <div id="import-title" class="import-title">{{item}} importieren.</div>
       @if(additionalInfo) {
         <div class="additional">{{additionalInfo}}</div>

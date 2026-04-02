@@ -18,6 +18,11 @@ export class ImportDialogComponent {
   @Output() scanSelected = new EventEmitter<void>();
   @Output() fileSelected = new EventEmitter<File>();
   @Output() filesSelected = new EventEmitter<File[]>();
+  @Output() dismissed = new EventEmitter<void>();
+
+  protected onBackdropClick(): void {
+    this.dismissed.emit();
+  }
 
   protected onUploadInputChange(event: Event): void {
     const input = event.target as HTMLInputElement;
