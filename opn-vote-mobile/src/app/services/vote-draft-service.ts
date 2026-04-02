@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
 import { VoteOption } from '../voting-system/vote-option';
 
-const STORAGE_KEY_PREFIX = 'opnvote_vote_draft_v1_';
+const STORAGE_KEY_PREFIX = 'opnvote_vote_draft_v3_';
 const VERSION = 1;
 
 type DraftPayload = {
@@ -76,6 +76,24 @@ export class VoteDraftService {
       await SecureStoragePlugin.remove({ key: this.keyFor(electionId) });
     } catch {
       // Key may not exist (e.g. first visit).
+    }
+  }
+
+  async clearAllDrafts(): Promise<void> {
+    try {
+      const { value: keys } = await SecureStoragePlugin.keys();
+      for (const key of keys) {
+        if (!key.startsWith(STORAGE_KEY_PREFIX)) {
+          continue;
+        }
+        try {
+          await SecureStoragePlugin.remove({ key });
+        } catch {
+          // Einzelner Key kann fehlen oder nicht entfernbar sein.
+        }
+      }
+    } catch {
+      // keys() kann auf manchen Plattformen fehlschlagen.
     }
   }
 }
