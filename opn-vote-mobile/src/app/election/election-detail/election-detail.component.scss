@@ -19,7 +19,7 @@
 }
 
 .title {
-  margin: 10px 24px 10px;
+  margin: 18px 18px;
   font-size: $title-small;
   font-weight: $semi-bold;
   color: $opn-white;
@@ -69,7 +69,7 @@
   margin: 18px 24px 0;
   padding: 12px 14px;
 
-  background-color: $opn-slategray;
+  background-color: $opn-lightblue;
   border-radius: 8px;
 
   color: $opn-white;
@@ -83,7 +83,7 @@
 }
 
 .vote-button:disabled {
-  opacity: 0.5;
+  background-color: $opn-gray;
 }
 
 .vote-button:active {
