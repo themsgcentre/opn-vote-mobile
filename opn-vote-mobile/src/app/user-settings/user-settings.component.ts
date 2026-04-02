@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
+import { Router } from '@angular/router';
 import {
   BehaviorSubject,
   concat,
@@ -74,7 +75,7 @@ export class UserSettingsComponent {
   masterKeyDeleteDialogOpen = false;
 
   readonly ballotImportDialogInfo =
-    'Mehrere PDF-Dateien können gleichzeitig ausgewählt werden. Jeder Wahlschein wird einzeln geprüft und muss zu Ihrem Wahlschlüssel passen.';
+    'Es kann jeweils eine PDF-Datei ausgewählt werden. Der Wahlschein wird geprüft und muss zu Ihrem Wahlschlüssel passen.';
 
   ballotImportError: string | null = null;
   ballotImportDialogOpened = false;
@@ -84,6 +85,7 @@ export class UserSettingsComponent {
   ballotImportFeedbackMessage = '';
 
   constructor(
+    private router: Router,
     private masterKeyService: MasterKeyService,
     private ballotService: BallotService,
     private qrCodeService: QrCodeService,
@@ -257,6 +259,7 @@ export class UserSettingsComponent {
   }
 
   onConfirmDeleteMasterKey(): void {
+    this.ballotImportError = null;
     this.masterKeyService.deleteMasterKey().subscribe(() => {
       this.triggerMasterKeyRefresh();
       this.masterKeyDeleteDialogOpen = false;
@@ -280,10 +283,10 @@ export class UserSettingsComponent {
     this.ballotQrScanOpened = true;
   }
 
-  onBallotImportPdfsFromDialog(files: File[]): void {
+  onBallotImportPdfFromDialog(file: File): void {
     this.ballotImportDialogOpened = false;
     this.ballotImportError = null;
-    void this.processBallotPdfBatch(files);
+    void this.processBallotPdfBatch([file]);
   }
 
   onBallotQrScanCancel(): void {
@@ -343,6 +346,7 @@ export class UserSettingsComponent {
 
     const failures: string[] = [];
     let okCount = 0;
+    let importedElectionId: number | null = null;
 
     for (const file of files) {
       const parsed = await this.tryParseBallotFromPdf(file);
@@ -353,6 +357,7 @@ export class UserSettingsComponent {
       try {
         await firstValueFrom(this.ballotService.importBallot(parsed.ballot).pipe(take(1)));
         okCount += 1;
+        importedElectionId = parsed.ballot.electionId;
       } catch (err) {
         failures.push(`${file.name}: ${this.mapBallotImportError(err)}`);
       }
@@ -360,6 +365,11 @@ export class UserSettingsComponent {
 
     const total = files.length;
     if (failures.length === 0) {
+      if (okCount === 1 && importedElectionId !== null) {
+        await this.navigateToVoting(importedElectionId);
+        return;
+      }
+
       this.ballotImportError = null;
       this.ballotImportFeedbackTitle = 'Wahlschein-Import';
       this.ballotImportFeedbackMessage =
@@ -397,11 +407,9 @@ export class UserSettingsComponent {
         .importBallot(payload.data)
         .pipe(take(1))
         .subscribe({
-          next: () => {
+          next: async () => {
             this.ballotImportError = null;
-            this.ballotImportFeedbackTitle = 'Wahlschein-Import';
-            this.ballotImportFeedbackMessage = 'Import erfolgreich!';
-            this.ballotImportFeedbackOpen = true;
+            await this.navigateToVoting(payload.data.electionId);
           },
           error: (err) => {
             this.ballotImportError = this.mapBallotImportError(err);
@@ -411,5 +419,12 @@ export class UserSettingsComponent {
       this.ballotImportError =
         e instanceof Error ? e.message : 'Die Daten konnten nicht gelesen werden.';
     }
+  }
+
+  private async navigateToVoting(electionId: number): Promise<void> {
+    this.ballotImportDialogOpened = false;
+    this.ballotQrScanOpened = false;
+    this.ballotImportFeedbackOpen = false;
+    await this.router.navigate(['/election/vote', electionId]);
   }
 }

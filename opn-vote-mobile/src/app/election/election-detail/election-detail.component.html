@@ -1,28 +1,79 @@
 @if(election) {
   <div class="info-container">
-    <div class="title-section">
-      <div class="title">{{ election.title }}</div>
-      <div class="title-divider"></div>
-    </div>
-
     <div class="image-container">
       <app-image
         [small]="election.headerImage.small"
         [large]="election.headerImage.large"
         [takeLarge]="false"
         [alt]="election.title"
-      ></app-image>
+      ></app-image> 
     </div>
+
+    <div class="title-divider"></div>
+    <div class="title-section">
+      <div class="title">{{ election.title }}</div>      
+    </div>
+
+    <div class="status-row">
+      <div class="status-badge" [ngClass]="phaseClass">
+        {{ phaseLabel }}
+      </div>
+      <div class="author">Von {{ election.author }}</div>
+     </div>
 
     <div class="description">{{ election.description }}</div>
 
-    @if(!hasEnded) {
-      <button class="vote-button" (click)="participateClicked.emit()" [disabled]="!hasStarted">
-        @if(hasStarted){
+    <div class="section">
+      <div class="section-title">Wahlbeteiligung</div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value">{{ election.authorizedVoterCount }}</div>
+          <div class="stat-label">Berechtigt</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-value">{{ election.registeredVoterCount }}</div>
+          <div class="stat-label">Registriert</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-value">{{ election.totalVotes }}</div>
+          <div class="stat-label">Stimmen</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">Zeitraum</div>
+    <div class="info-list">
+        <div class="info-item">
+          <div class="label">Registrierung</div>
+          <div class="value">
+            {{ formatDate(election.registrationStart) }} – {{ formatDate(election.registrationEnd) }}
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="label">Abstimmung</div>
+          <div class="value">
+            {{ formatDate(election.votingStart) }} – {{ formatDate(election.votingEnd) }}
+          </div>
+        </div>
+      </div>
+
+    @if(!isElectionFinished) {
+      <button class="vote-button" (click)="participateClicked.emit()" [disabled]="!canVote">
+        @if(canVote) {
           Jetzt an Wahl teilnehmen
         }
+        @else if(isBeforeRegistration) {
+          Registrierungsphase beginnt bald
+        }
+        @else if(isRegistrationOpen && !isVotingOpen) {
+          Registrierung läuft
+        }
         @else {
-          Registrierungsphase beginnt bald!
+          Abstimmung ist aktuell nicht verfügbar
         }
       </button>
     }

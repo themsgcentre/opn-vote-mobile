@@ -3,18 +3,26 @@
     <div class="tabs-container">
       <button
         class="tab-button"
-        [class.active]="selectedTab === 'active'"
-        (click)="selectTab('active')"
-      >
-        aktiv
-      </button>
-
-      <button
-        class="tab-button"
         [class.active]="selectedTab === 'upcoming'"
         (click)="selectTab('upcoming')"
       >
         anstehend
+      </button>
+
+      <button
+        class="tab-button"
+        [class.active]="selectedTab === 'pending'"
+        (click)="selectTab('pending')"
+      >
+        Registrierung zu
+      </button>
+
+      <button
+        class="tab-button"
+        [class.active]="selectedTab === 'running'"
+        (click)="selectTab('running')"
+      >
+        laufend
       </button>
 
       <button

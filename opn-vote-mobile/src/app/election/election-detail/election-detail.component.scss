@@ -23,7 +23,7 @@
   font-size: $title-small;
   font-weight: $semi-bold;
   color: $opn-white;
-  text-align: center;
+  text-align: left;
   word-break: break-word;
 }
 
@@ -56,7 +56,7 @@
 
 
 .description {
-  margin: 18px 24px 0;
+  margin: 18px 18px 0;
   font-size: $text-small; 
   font-weight: $regular;
   color: $opn-lightgray;
@@ -64,7 +64,6 @@
 
   overflow: auto;
 }
-
 
 .vote-button {
   margin: 18px 24px 0;
@@ -90,4 +89,103 @@
 .vote-button:active {
   transform: scale(0.98);
   opacity: 0.9;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: $semi-bold;
+  color: $opn-white;
+  margin: 10px 18px;
+}
+
+.stats-grid {
+  display: grid;
+  margin-left: 18px;
+  margin-right: 18px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.stat-card {
+  padding: 14px 10px;
+  border-radius: 10px;
+  background-color: $surface-card-bg;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: $semi-bold;
+  color: $opn-white;
+}
+
+.stat-label {
+  margin-top: 4px;
+  font-size: 12px;
+  color: $opn-lightgray;
+}
+
+.info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-left: 18px;
+  margin-right: 18px;
+}
+
+.info-item {
+  padding: 12px 14px;
+  border-radius: 10px;
+  background-color: $surface-card-bg;
+}
+
+.label {
+  font-size: 13px;
+  color: $opn-lightgray;
+  margin-bottom: 4px;
+}
+
+.value {
+  font-size: 14px;
+  color: $opn-white;
+  line-height: 1.4;
+}
+
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 18px 0;
+  flex-wrap: wrap;
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: $semi-bold;
+  color: $opn-white;
+}
+
+.status-badge.upcoming {
+  background-color: $status-upcoming-bg;
+}
+
+.status-badge.registration {
+  background-color: $status-registration-bg;
+}
+
+.status-badge.voting {
+  background-color: $status-voting-bg;
+}
+
+.status-badge.ended {
+  background-color: $status-ended-bg;
+  opacity: 0.8;
+}
+
+.author {
+  font-size: 14px;
+  color: $opn-lightgray;
 }

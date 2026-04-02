@@ -11,13 +11,13 @@
 
 .tabs-container {
   width: 100%;
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px;
   margin-bottom: 16px;
 }
 
 .tab-button {
-  flex: 1;
   height: 42px;
   border: none;
   border-radius: 5px;
@@ -25,6 +25,7 @@
   color: $opn-white;
   font-size: $text-small;
   font-weight: $semi-bold;
+  padding: 0 10px;
 }
 
 .tab-button.active {

@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { ElectionService } from '../services/election-service';
 import { ElectionInformation } from '../interfaces/election';
 
-type HomeTab = 'active' | 'upcoming' | 'finished';
+type HomeTab = 'upcoming' | 'pending' | 'running' | 'finished';
 
 @Component({
   selector: 'app-home-page',
@@ -21,7 +21,7 @@ export class HomePageComponent implements OnInit {
   allElections: ElectionInformation[] = [];
   filteredElections: ElectionInformation[] = [];
 
-  selectedTab: HomeTab = 'active';
+  selectedTab: HomeTab = 'upcoming';
   searchTerm: string = '';
 
   constructor(
@@ -62,17 +62,26 @@ export class HomePageComponent implements OnInit {
     const now = new Date();
 
     switch (this.selectedTab) {
-      case 'active':
+      case 'upcoming':
+        return elections.filter((election) => {
+          const registrationStart = new Date(election.registrationStart);
+          const registrationEnd = new Date(election.registrationEnd);
+          const votingStart = new Date(election.votingStart);
+          return registrationStart <= now && now <= registrationEnd && now < votingStart;
+        });
+
+      case 'running':
         return elections.filter((election) => {
           const votingStart = new Date(election.votingStart);
           const votingEnd = new Date(election.votingEnd);
           return votingStart <= now && now <= votingEnd;
         });
 
-      case 'upcoming':
+      case 'pending':
         return elections.filter((election) => {
+          const registrationEnd = new Date(election.registrationEnd);
           const votingStart = new Date(election.votingStart);
-          return now < votingStart;
+          return registrationEnd < now && now < votingStart;
         });
 
       case 'finished':
