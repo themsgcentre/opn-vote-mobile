@@ -43,4 +43,15 @@
     width: 90%;
     max-width: 400px;
   }
+
+  .ok-button {
+    margin-top: 16px;
+    background-color: $opn-lightblue;
+    padding: 12px 40px;
+    border-radius: 5px;
+    border: none;
+    font-size: $text-medium;
+    color: $opn-white;
+    cursor: pointer;
+  }
 }
