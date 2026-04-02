@@ -23,6 +23,7 @@ import { PdfType } from 'src/app/qr-code/pdf-type';
 import { ElectionPdfInformation } from 'src/app/qr-code/election-pdf-info';
 import { formatDate, formatDateTime } from 'src/app/formatting/date-formatting';
 import { UrlPaths } from 'src/app/globals/url';
+import { VoteParticipationStorageService } from 'src/app/services/vote-participation-storage.service';
 
 @Component({
   selector: 'app-voting',
@@ -41,7 +42,8 @@ export class VotingComponent  implements OnInit {
     private router: Router,
     private qrCodeService: QrCodeService,
     private pdfService: PdfService,
-    private fileSaveService: FileSaveService
+    private fileSaveService: FileSaveService,
+    private voteParticipationStorage: VoteParticipationStorageService,
   ) { }
 
   election$: Observable<ElectionInformation | null> = new Observable();
@@ -197,6 +199,9 @@ export class VotingComponent  implements OnInit {
       );
 
       this.voteSuccessTxHash = txHash;
+      if (this.electionId != null) {
+        void this.voteParticipationStorage.recordVoteCast(this.electionId);
+      }
     } catch (err) {
       this.error = 'Fehler beim Senden des Votes';
     } finally {

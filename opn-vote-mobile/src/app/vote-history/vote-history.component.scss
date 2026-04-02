@@ -1,0 +1,36 @@
+@import '../styles/colors.scss';
+@import '../styles/sizes.scss';
+@import '../styles/font-weights.scss';
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 16px 24px;
+}
+
+.section-heading {
+  width: 100%;
+  margin: 0 0 12px;
+  font-size: $text-small;
+  font-weight: $semi-bold;
+  color: $opn-white;
+  text-align: left;
+}
+
+.section-heading-spaced {
+  margin-top: 28px;
+}
+
+.list-container {
+  width: 100%;
+}
+
+.empty-state {
+  width: 100%;
+  margin: 0;
+  padding-top: 24px;
+  font-size: $text-medium;
+  color: $opn-lightgray;
+  text-align: center;
+}
