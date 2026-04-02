@@ -7,11 +7,24 @@
     flex-direction: column;
     align-items: center;
 
-    .export-button {
+    .action-button {
         background-color: $opn-lightblue;
-        padding: 10px 40px;
-        border-radius: 5px;
         margin: 5px 0px 20px 0px;
+        width: 85%;
+        min-height: 44px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 0 14px;
+        font-size: $text-medium;
+        font-weight: $regular;
+        color: $opn-white;
+    }
+
+    .action-button:disabled {
+        background-color: $opn-gray;
     }
 
     .title {
@@ -73,17 +86,6 @@
         max-width: 320px;
         margin: 0 0 16px 0;
         line-height: 1.4;
-    }
-
-    .submit-button {
-        background-color: $opn-lightblue;
-        padding: 10px 40px;
-        border-radius: 5px;
-        margin: 5px 0px 20px 0px;
-    }
-
-    .submit-button:disabled {
-        background-color: $opn-gray;
     }
 
     .voting-start-datetime {

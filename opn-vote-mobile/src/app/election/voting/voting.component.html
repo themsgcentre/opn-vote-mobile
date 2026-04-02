@@ -38,8 +38,8 @@
           <div class="description">
             Für jede Frage haben Sie eine Stimme. Sie können Ihre Stimme bis zum Ende des Wahlzeitraums ändern.
           </div>
-          <div class="export-button" (click)="exportBallot()">
-            Wahlschein exportieren.
+          <div class="action-button" (click)="exportBallot()">
+            Wahlschein exportieren
           </div>
           <div class="line"><app-line width="100%" height="5px" color="#29B0CC"></app-line></div>
           <div class="voting-area" [class.voting-area--locked]="voteSubmitting">
@@ -58,7 +58,7 @@
           </div>
             <button
               type="button"
-              class="submit-button"
+              class="action-button"
               [disabled]="!canSubmit || voteSubmitting"
               (click)="submitVote()"
             >
