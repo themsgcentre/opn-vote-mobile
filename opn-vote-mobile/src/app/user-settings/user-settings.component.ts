@@ -259,6 +259,7 @@ export class UserSettingsComponent {
   }
 
   onConfirmDeleteMasterKey(): void {
+    this.ballotImportError = null;
     this.masterKeyService.deleteMasterKey().subscribe(() => {
       this.triggerMasterKeyRefresh();
       this.masterKeyDeleteDialogOpen = false;
