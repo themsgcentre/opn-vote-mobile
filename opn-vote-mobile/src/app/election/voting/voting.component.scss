@@ -30,7 +30,13 @@
     .title {
         font-size: $title-medium;
         font-weight: $regular;
-        margin-top: 12px;
+        margin: 12px 18px 0;
+    }
+
+    .alttitle {
+        font-size: $title-small;
+        font-weight: $regular;
+        margin: 12px 18px;
     }
 
         .election-info {
@@ -92,7 +98,6 @@
         font-size: $text-medium;
         font-weight: $bold;
         color: $opn-white;
-        margin-bottom: 16px;
         text-align: center;
     }
 
@@ -103,11 +108,11 @@
         gap: 16px;
         width: 90%;
         max-width: 360px;
-        margin: 8px 0 16px 0;
+        margin: 10px 0 18px 0;
         padding: 12px 14px;
         box-sizing: border-box;
         border-radius: 8px;
-        background-color: rgba(0, 0, 0, 0.15);
+        background-color: $surface-card-bg;
     }
 
     .reminder-label {

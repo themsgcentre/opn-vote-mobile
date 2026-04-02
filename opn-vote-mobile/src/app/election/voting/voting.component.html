@@ -3,7 +3,7 @@
     @if(hasBallot$ | async) {
       @if(election$ | async; as election) {
         @if(isBeforeVotingStart(election)) {
-          <div class="title">Abstimmung noch nicht möglich</div>
+          <div class="alttitle">Abstimmung noch nicht möglich</div>
           <div class="election-info">für die Abstimmung:<br>
             <span class="election-title">{{ election.title }}</span></div>
           <div class="notice">
