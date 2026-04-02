@@ -5,6 +5,7 @@ import type { PluginListenerHandle } from '@capacitor/core';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { IonApp } from '@ionic/angular/standalone';
 import { LayoutComponent } from "./layout/layout.component";
+import { VotingStartDialogService } from './services/voting-start-dialog-service';
 
 @Component({
   selector: 'app-root',
@@ -14,6 +15,7 @@ import { LayoutComponent } from "./layout/layout.component";
 export class AppComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly zone = inject(NgZone);
+  private readonly votingStartDialogService = inject(VotingStartDialogService);
   private notificationTapHandle: PluginListenerHandle | null = null;
 
   ngOnInit(): void {
@@ -38,7 +40,10 @@ export class AppComponent implements OnInit, OnDestroy {
           return;
         }
         this.zone.run(() => {
-          void this.router.navigateByUrl(`election/vote/${electionId}`);
+          void (async () => {
+            await this.votingStartDialogService.markPromptShown(electionId);
+            await this.router.navigateByUrl(`election/vote/${electionId}`);
+          })();
         });
       },
     );

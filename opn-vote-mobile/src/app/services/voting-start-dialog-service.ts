@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
 
-const STORAGE_KEY_PREFIX = 'opnvote_voting_start_prompt_shown_v1_';
+const STORAGE_KEY_PREFIX = 'opnvote_voting_start_prompt_shown_v4';
 
 @Injectable({
   providedIn: 'root',
