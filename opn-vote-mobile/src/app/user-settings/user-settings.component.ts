@@ -75,9 +75,6 @@ export class UserSettingsComponent {
   masterKeyImportSuccess = false;
   masterKeyDeleteDialogOpen = false;
 
-  readonly ballotImportDialogInfo =
-    'Es kann jeweils eine PDF-Datei ausgewählt werden. Der Wahlschein wird geprüft und muss zu Ihrem Wahlschlüssel passen.';
-
   ballotImportError: string | null = null;
   ballotImportDialogOpened = false;
   ballotQrScanOpened = false;
@@ -125,7 +122,7 @@ export class UserSettingsComponent {
       return 'Hier können später externe Authentifizierungsanbieter zur Identifikation und Autorisierung ausgewählt werden.';
     }
     if (this.activeInfoPopup === 'ballot') {
-      return 'Der Wahlschein berechtigt Sie zur Teilnahme an einer Wahl.';
+      return 'Importieren Sie Ihre bestehenden Wahlscheine, um diese direkt wiederzuverwenden. Bitte beachten, dass der Wahlschein zu Ihrem Masterschlüssel passen muss. Der Wahlschein berechtigt Sie zur Teilnahme an einer Wahl.';
     }
     return '';
   }

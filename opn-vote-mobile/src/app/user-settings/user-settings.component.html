@@ -64,7 +64,6 @@
 @if (ballotImportDialogOpened) {
   <app-import-dialog
     item="Wahlschein"
-    [additionalInfo]="ballotImportDialogInfo"
     [allowMultipleFiles]="false"
     (scanSelected)="ballotImportViaScan()"
     (fileSelected)="onBallotImportPdfFromDialog($event)"
