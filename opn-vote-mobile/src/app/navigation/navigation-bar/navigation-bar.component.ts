@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NavigationButtonComponent } from "../navigation-button/navigation-button.component";
 import { Router } from '@angular/router';
 
@@ -12,10 +12,16 @@ export class NavigationBarComponent {
 
   constructor(private router: Router) {}
 
-  selectedPath: string = "home";
-
   selectPath(path: string) {
-    this.selectedPath = path;
-    this.router.navigateByUrl(path);
+    void this.router.navigateByUrl(`/${path}`);
+  }
+
+  isRouteActive(path: string): boolean {
+    return this.router.isActive(`/${path}`, {
+      paths: 'exact',
+      queryParams: 'ignored',
+      fragment: 'ignored',
+      matrixParams: 'ignored',
+    });
   }
 }
