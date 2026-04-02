@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { IonContent, AlertController } from "@ionic/angular/standalone";
 import { ElectionListComponent } from "./election-list/election-list.component";
-import { Observable, of, firstValueFrom, take } from 'rxjs';
+import { interval, Observable, of, firstValueFrom, take } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ElectionService } from '../services/election-service';
@@ -18,6 +19,8 @@ type HomeTab = 'upcoming' | 'pending' | 'running' | 'finished';
   imports: [IonContent, ElectionListComponent, CommonModule],
 })
 export class HomePageComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
+
   openElection$: Observable<ElectionInformation[]> = of([]);
 
   allElections: ElectionInformation[] = [];
@@ -25,6 +28,8 @@ export class HomePageComponent implements OnInit {
 
   selectedTab: HomeTab = 'upcoming';
   searchTerm: string = '';
+
+  private votingStartPromptBusy = false;
 
   constructor(
     private electionService: ElectionService,
@@ -40,14 +45,20 @@ export class HomePageComponent implements OnInit {
     this.openElection$.subscribe((elections) => {
       this.allElections = elections;
       this.applyFilters();
-    });
-
-    this.openElection$.pipe(take(1)).subscribe((elections) => {
       void this.tryShowVotingStartPrompt(elections);
     });
+
+    interval(15_000)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        void this.tryShowVotingStartPrompt(this.allElections);
+      });
   }
 
   private async tryShowVotingStartPrompt(elections: ElectionInformation[]): Promise<void> {
+    if (this.votingStartPromptBusy || elections.length === 0) {
+      return;
+    }
     const now = Date.now();
     const inVotingWindow = elections.filter(
       (e) => e.votingStart.getTime() <= now && now <= e.votingEnd.getTime(),
@@ -63,6 +74,7 @@ export class HomePageComponent implements OnInit {
         continue;
       }
 
+      this.votingStartPromptBusy = true;
       const alert = await this.alertController.create({
         header: 'Abstimmung möglich',
         message: `Die Abstimmung „${election.title}“ hat begonnen. Sie können jetzt abstimmen.`,
@@ -80,9 +92,13 @@ export class HomePageComponent implements OnInit {
         ],
       });
 
-      await alert.present();
-      await alert.onDidDismiss();
-      await this.votingStartDialogService.markPromptShown(election.id);
+      try {
+        await alert.present();
+        await alert.onDidDismiss();
+        await this.votingStartDialogService.markPromptShown(election.id);
+      } finally {
+        this.votingStartPromptBusy = false;
+      }
       return;
     }
   }
