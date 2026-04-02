@@ -33,6 +33,7 @@ import { QrScanDialogComponent } from '../qr-scan-dialog/qr-scan-dialog.componen
 import { MessageDialogComponent } from '../message-dialog/message-dialog.component';
 import { QuestionDialogComponent } from '../question-dialog/question-dialog.component';
 import { BallotImportComponent } from '../ballot-import/ballot-import.component';
+import { VoteParticipationStorageService } from '../services/vote-participation-storage.service';
 
 type InfoPopupType = 'masterkey' | 'provider' | 'ballot' | null;
 
@@ -91,7 +92,8 @@ export class UserSettingsComponent {
     private qrCodeService: QrCodeService,
     private pdfService: PdfService,
     private fileSaveService: FileSaveService,
-    private importService: ImportService
+    private importService: ImportService,
+    private voteParticipationStorage: VoteParticipationStorageService,
   ) {}
 
   openInfoPopup(type: InfoPopupType): void {
@@ -356,6 +358,7 @@ export class UserSettingsComponent {
       }
       try {
         await firstValueFrom(this.ballotService.importBallot(parsed.ballot).pipe(take(1)));
+        void this.voteParticipationStorage.recordRegistered(parsed.ballot.electionId);
         okCount += 1;
         importedElectionId = parsed.ballot.electionId;
       } catch (err) {
@@ -409,6 +412,7 @@ export class UserSettingsComponent {
         .subscribe({
           next: async () => {
             this.ballotImportError = null;
+            void this.voteParticipationStorage.recordRegistered(payload.data.electionId);
             await this.navigateToVoting(payload.data.electionId);
           },
           error: (err) => {

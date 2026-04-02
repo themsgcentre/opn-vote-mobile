@@ -1,3 +1,32 @@
-<p>
-  vote-history works!
-</p>
+<ion-content>
+  <div class="page-container">
+    @if (registeredElections.length === 0 && votedElections.length === 0) {
+      <p class="empty-state">Du hast noch an nichts teilgenommen.</p>
+    } @else {
+      @if (registeredElections.length > 0) {
+        <h2 class="section-heading">Hierfür bist du registriert:</h2>
+        <div class="list-container">
+          <app-election-list
+            [elections]="registeredElections"
+            (electionClicked)="navigateToElection($event)"
+          ></app-election-list>
+        </div>
+      }
+
+      @if (votedElections.length > 0) {
+        <h2
+          class="section-heading"
+          [class.section-heading-spaced]="registeredElections.length > 0"
+        >
+          Hier hast du bereits abgestimmt:
+        </h2>
+        <div class="list-container">
+          <app-election-list
+            [elections]="votedElections"
+            (electionClicked)="navigateToElection($event)"
+          ></app-election-list>
+        </div>
+      }
+    }
+  </div>
+</ion-content>

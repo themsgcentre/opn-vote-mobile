@@ -6,6 +6,7 @@ import { BallotService } from 'src/app/services/ballot-service';
 import { MasterKeyService } from 'src/app/services/master-key-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectionService } from 'src/app/services/election-service';
+import { VoteParticipationStorageService } from 'src/app/services/vote-participation-storage.service';
 
 type RegistrationView =
   | 'checking'
@@ -28,7 +29,8 @@ export class RegistrationComponent implements OnInit {
     private router: Router,
     private masterKeyService: MasterKeyService,
     private ballotService: BallotService,
-    private electionService: ElectionService
+    private electionService: ElectionService,
+    private voteParticipationStorage: VoteParticipationStorageService,
   ) {}
 
   electionId: number = NaN;
@@ -154,6 +156,7 @@ export class RegistrationComponent implements OnInit {
   }
 
   private redirectToVoting(): void {
+    void this.voteParticipationStorage.recordRegistered(this.electionId);
     void this.router.navigate([`/election/vote/${this.electionId}`]);
   }
 }
