@@ -27,6 +27,8 @@ export function parseElectionDTO(raw: RawElection): ElectionDTO {
     totalVotes: toNumber(raw.totalVotes),
     transactionHash: String(raw.transactionHash ?? ''),
     votingEndTime: toNumber(raw.votingEndTime),
+    // votingStartTime: Math.floor(Date.now() / 1000) + 120, // use this for simulation TODO: remove after testing phase
+    //votingStartTime: new Date('2026-04-02T12:45:00').getTime() / 1000, 
     votingStartTime: toNumber(raw.votingStartTime),
   };
 }

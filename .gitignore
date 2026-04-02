@@ -70,3 +70,6 @@ development.env
 # Secrets
 secrets/
 *.pem
+
+# android emulation
+android/

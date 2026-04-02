@@ -1,48 +1,75 @@
 <ion-content>
   <div class="voting-container">
     @if(hasBallot$ | async) {
-      <div class="title">Stimmzettel</div>
       @if(election$ | async; as election) {
-        <div class="election-info">für die Abstimmung:<br>
-           <span class="election-title">{{ election.title }}</span></div>
-      }
-      <div class="notice">
-        <i class="bi bi-exclamation-circle"></i> Hinweis
-      </div>
-      <div class="description">
-        Für jede Frage haben Sie eine Stimme. Sie können Ihre Stimme bis zum Ende des Wahlzeitraums ändern.
-      </div>
-      <div class="export-button" (click)="exportBallot()">
-        Wahlschein exportieren.
-      </div>
-      <div class="line"><app-line width="100%" height="5px" color="#29B0CC"></app-line></div>
-      @if(election$ | async; as election) {
-        <div class="voting-area" [class.voting-area--locked]="voteSubmitting">
-          <app-question-list 
-            [questions]="(questions$ | async) || []"
-            (optionSelected)="voteUpdated($event)"
-          ></app-question-list>
-        </div>
-        <div class="line"><app-line width="100%" height="5px" color="#29B0CC"></app-line></div>
-        <div class="notice">
-        <i class="bi bi-exclamation-circle"></i> Hinweis
-        </div>
-        <div class="description">
-          Überprüfen Sie Ihre Stimmen vor der Abgabe.
-        </div>
-          <button
-            type="button"
-            class="submit-button"
-            [disabled]="!canSubmit || voteSubmitting"
-            (click)="submitVote()"
-          >
-            {{ voteSubmitting ? 'Wird übermittelt …' : 'Stimmzettel abgeben' }}
-          </button>
-          @if (voteSubmitting) {
-            <div class="submit-status" aria-live="polite">
-              Bitte warten – die Transaktion läuft; die Bestätigung über den Index kann kurz dauern.
-            </div>
+        @if(isBeforeVotingStart(election)) {
+          <div class="title">Abstimmung noch nicht möglich</div>
+          <div class="election-info">für die Abstimmung:<br>
+            <span class="election-title">{{ election.title }}</span></div>
+          <div class="notice">
+            <i class="bi bi-exclamation-circle"></i> Hinweis
+          </div>
+          <div class="description">
+            Die Abstimmung hat noch nicht begonnen. Sie können erst ab dem folgenden Zeitpunkt wählen:
+          </div>
+          <div class="voting-start-datetime">{{ formatVotingStart(election) }}</div>
+          <div class="reminder-row">
+            <span class="reminder-label" id="reminder-toggle-label">Erinnerung zum Wahlbeginn</span>
+            <ion-toggle
+              [checked]="reminderScheduled"
+              [disabled]="reminderRequesting"
+              aria-labelledby="reminder-toggle-label"
+              (ionChange)="onReminderToggle($event, election)"
+            ></ion-toggle>
+          </div>
+          @if (reminderRequesting) {
+            <div class="reminder-status" aria-live="polite">Wird gespeichert …</div>
           }
+          @if (reminderFeedback) {
+            <div class="reminder-feedback" aria-live="polite">{{ reminderFeedback }}</div>
+          }
+        } @else {
+          <div class="title">Stimmzettel</div>
+          <div class="election-info">für die Abstimmung:<br>
+            <span class="election-title">{{ election.title }}</span></div>
+          <div class="notice">
+            <i class="bi bi-exclamation-circle"></i> Hinweis
+          </div>
+          <div class="description">
+            Für jede Frage haben Sie eine Stimme. Sie können Ihre Stimme bis zum Ende des Wahlzeitraums ändern.
+          </div>
+          <div class="export-button" (click)="exportBallot()">
+            Wahlschein exportieren.
+          </div>
+          <div class="line"><app-line width="100%" height="5px" color="#29B0CC"></app-line></div>
+          <div class="voting-area" [class.voting-area--locked]="voteSubmitting">
+            <app-question-list 
+              [questions]="(questions$ | async) || []"
+              [initialVotes]="votes"
+              (optionSelected)="voteUpdated($event)"
+            ></app-question-list>
+          </div>
+          <div class="line"><app-line width="100%" height="5px" color="#29B0CC"></app-line></div>
+          <div class="notice">
+          <i class="bi bi-exclamation-circle"></i> Hinweis
+          </div>
+          <div class="description">
+            Überprüfen Sie Ihre Stimmen vor der Abgabe.
+          </div>
+            <button
+              type="button"
+              class="submit-button"
+              [disabled]="!canSubmit || voteSubmitting"
+              (click)="submitVote()"
+            >
+              {{ voteSubmitting ? 'Wird übermittelt …' : 'Stimmzettel abgeben' }}
+            </button>
+            @if (voteSubmitting) {
+              <div class="submit-status" aria-live="polite">
+                Bitte warten – die Transaktion läuft; die Bestätigung über den Index kann kurz dauern.
+              </div>
+            }
+        }
       }
     }
     @else {

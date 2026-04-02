@@ -18,6 +18,7 @@
         <app-options 
           [options]="options" 
           [groupname]="question.text"
+          [initialSelection]="initialVote"
           (selected)="optionSelected.emit($event)"
         ></app-options>
       </div>

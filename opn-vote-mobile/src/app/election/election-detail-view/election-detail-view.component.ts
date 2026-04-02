@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { ElectionService } from 'src/app/services/election-service';
 import { ElectionInformation } from 'src/app/interfaces/election';
 import { IonContent } from "@ionic/angular/standalone";
+import { UrlPaths } from 'src/app/globals/url';
 
 @Component({
   selector: 'app-election-detail-view',
@@ -40,7 +41,7 @@ export class ElectionDetailViewComponent  implements OnInit {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/api/jwt", {
+      const response = await fetch(`${UrlPaths.jwtUrl}/api/jwt`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
