@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
 
-const STORAGE_KEY = 'opnvote_vote_participation_v3';
+const STORAGE_KEY = 'opnvote_vote_participation_v4';
 
 type StoredShape = {
   registeredIds: number[];
@@ -43,6 +43,14 @@ export class VoteParticipationStorageService {
 
   async getVotedIds(): Promise<number[]> {
     return [...(await this.read()).votedIds];
+  }
+
+  async clearAll(): Promise<void> {
+    try {
+      await SecureStoragePlugin.remove({ key: STORAGE_KEY });
+    } catch {
+      // key may not exist, ignore
+    }
   }
 
   private async read(): Promise<StoredShape> {

@@ -5,6 +5,7 @@ import { Token } from '../voting-system/token';
 import { R } from '../voting-system/r';
 import { MasterKey } from '../voting-system/masterkey';
 import { VoteDraftService } from './vote-draft-service';
+import { VoteParticipationStorageService } from './vote-participation-storage.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +14,10 @@ export class MasterKeyService {
   private readonly STORAGE_KEY = 'opnvote_masterkey_v1';
   private cached: MasterKey | null = null;
 
-  constructor(private voteDraftService: VoteDraftService) {}
+  constructor(
+    private voteDraftService: VoteDraftService,
+    private voteParticipationStorage: VoteParticipationStorageService,
+  ) {}
 
   createNewMasterKey(): Observable<void> {
     return from(this.createAndStore());
@@ -93,6 +97,7 @@ export class MasterKeyService {
       this.cached = null;
     }
     await this.voteDraftService.clearAllDrafts();
+    await this.voteParticipationStorage.clearAll();
   }
 
   private bytesToHex(bytes: Uint8Array): string {
