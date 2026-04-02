@@ -26,6 +26,7 @@ export function parseElectionDTO(raw: RawElection): ElectionDTO {
     totalVotes: toNumber(raw.totalVotes),
     transactionHash: String(raw.transactionHash ?? ''),
     votingEndTime: toNumber(raw.votingEndTime),
-    votingStartTime: toNumber(raw.votingStartTime),
+    votingStartTime: Date.now() + 3 * (3600 * 1000 * 24), //use this to simulate custom vote time
+    //votingStartTime: toNumber(raw.votingStartTime),
   };
 }

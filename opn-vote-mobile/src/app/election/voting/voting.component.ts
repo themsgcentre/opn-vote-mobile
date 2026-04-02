@@ -1,17 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest, filter, firstValueFrom, from, map, Observable, switchMap } from 'rxjs';
+import { combineLatest, filter, firstValueFrom, from, map, Observable, of, switchMap, take } from 'rxjs';
 import { ElectionInformation } from 'src/app/interfaces/election';
 import { Question } from 'src/app/interfaces/question';
 import { QuestionListComponent } from 'src/app/question-list/question-list.component';
 import { BallotService } from 'src/app/services/ballot-service';
 import { ElectionService } from 'src/app/services/election-service';
-import { IonContent } from "@ionic/angular/standalone";
+import { IonContent, IonToggle } from "@ionic/angular/standalone";
 import { QuestionVote } from 'src/app/voting-system/vote';
 import { VoteOption } from 'src/app/voting-system/vote-option';
 import { VoteService } from 'src/app/services/vote-service';
 import { VoteDraftService } from 'src/app/services/vote-draft-service';
+import { VotingReminderService } from 'src/app/services/voting-reminder-service';
 import { LineComponent } from 'src/app/reusables/line/line.component';
 import { VoterCredentials } from 'src/app/interfaces/voter-credentials';
 import { QrCodeService } from 'src/app/services/qr-code-service';
@@ -20,14 +21,14 @@ import { FileSaveService } from 'src/app/services/file-save-service';
 import { Ballot } from 'src/app/voting-system/ballot';
 import { PdfType } from 'src/app/qr-code/pdf-type';
 import { ElectionPdfInformation } from 'src/app/qr-code/election-pdf-info';
-import { formatDate } from 'src/app/formatting/date-formatting';
+import { formatDate, formatDateTime } from 'src/app/formatting/date-formatting';
 import { UrlPaths } from 'src/app/globals/url';
 
 @Component({
   selector: 'app-voting',
   templateUrl: './voting.component.html',
   styleUrls: ['./voting.component.scss'],
-  imports: [CommonModule, QuestionListComponent, IonContent, LineComponent]
+  imports: [CommonModule, QuestionListComponent, IonContent, IonToggle, LineComponent]
 })
 export class VotingComponent  implements OnInit {
   constructor(
@@ -35,6 +36,7 @@ export class VotingComponent  implements OnInit {
     private electionService: ElectionService,
     private voteService: VoteService,
     private voteDraftService: VoteDraftService,
+    private votingReminderService: VotingReminderService,
     private ballotService: BallotService,
     private router: Router,
     private qrCodeService: QrCodeService,
@@ -56,6 +58,10 @@ export class VotingComponent  implements OnInit {
 
   voteSubmitting = false;
   voteSuccessTxHash: string | null = null;
+
+  reminderScheduled = false;
+  reminderFeedback: string | null = null;
+  reminderRequesting = false;
 
   private static readonly GNOSISSCAN_TX_BASE = 'https://gnosisscan.io/tx/';
 
@@ -81,9 +87,62 @@ export class VotingComponent  implements OnInit {
       this.hasBallot$ = this.ballotService.hasBallot(electionId);
       this.publicKey$ = this.electionService.getPublicKey(electionId)
       this.credentials$ = this.ballotService.getCredentials(electionId);
+
+      this.election$
+        .pipe(
+          filter((e): e is ElectionInformation => e != null),
+          take(1),
+          switchMap((e) =>
+            this.electionId != null && this.isBeforeVotingStart(e)
+              ? from(this.votingReminderService.isReminderScheduled(this.electionId, e.votingStart))
+              : of(false),
+          ),
+        )
+        .subscribe((scheduled) => {
+          this.reminderScheduled = scheduled;
+        });
     }
     else {
       this.error = "Ungültige Wahl-ID";
+    }
+  }
+
+  isBeforeVotingStart(election: ElectionInformation): boolean {
+    return Date.now() < election.votingStart.getTime();
+  }
+
+  formatVotingStart(election: ElectionInformation): string {
+    return formatDateTime(election.votingStart);
+  }
+
+  async onReminderToggle(event: Event, election: ElectionInformation): Promise<void> {
+    if (this.electionId == null) {
+      return;
+    }
+    const detail = (event as CustomEvent<{ checked: boolean }>).detail;
+    const wantOn = detail?.checked ?? false;
+
+    this.reminderFeedback = null;
+    this.reminderRequesting = true;
+    try {
+      if (wantOn) {
+        const result = await this.votingReminderService.scheduleVotingStartReminder({
+          electionId: this.electionId,
+          votingStart: election.votingStart,
+          electionTitle: election.title,
+        });
+        if (result.ok) {
+          this.reminderScheduled = true;
+        } else {
+          this.reminderScheduled = false;
+          this.reminderFeedback = result.reason;
+        }
+      } else {
+        await this.votingReminderService.cancelVotingStartReminder(this.electionId);
+        this.reminderScheduled = false;
+      }
+    } finally {
+      this.reminderRequesting = false;
     }
   }
 

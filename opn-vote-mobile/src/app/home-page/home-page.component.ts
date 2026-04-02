@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { IonContent } from "@ionic/angular/standalone";
+import { IonContent, AlertController } from "@ionic/angular/standalone";
 import { ElectionListComponent } from "./election-list/election-list.component";
-import { Observable, of } from 'rxjs';
+import { Observable, of, firstValueFrom, take } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ElectionService } from '../services/election-service';
 import { ElectionInformation } from '../interfaces/election';
+import { BallotService } from '../services/ballot-service';
+import { VotingStartDialogService } from '../services/voting-start-dialog-service';
 
 type HomeTab = 'active' | 'upcoming' | 'finished';
 
@@ -26,6 +28,9 @@ export class HomePageComponent implements OnInit {
 
   constructor(
     private electionService: ElectionService,
+    private ballotService: BallotService,
+    private votingStartDialogService: VotingStartDialogService,
+    private alertController: AlertController,
     private router: Router
   ) { }
 
@@ -36,6 +41,50 @@ export class HomePageComponent implements OnInit {
       this.allElections = elections;
       this.applyFilters();
     });
+
+    this.openElection$.pipe(take(1)).subscribe((elections) => {
+      void this.tryShowVotingStartPrompt(elections);
+    });
+  }
+
+  private async tryShowVotingStartPrompt(elections: ElectionInformation[]): Promise<void> {
+    const now = Date.now();
+    const inVotingWindow = elections.filter(
+      (e) => e.votingStart.getTime() <= now && now <= e.votingEnd.getTime(),
+    );
+
+    for (const election of inVotingWindow) {
+      const alreadyShown = await this.votingStartDialogService.hasShownPrompt(election.id);
+      if (alreadyShown) {
+        continue;
+      }
+      const hasBallot = await firstValueFrom(this.ballotService.hasBallot(election.id).pipe(take(1)));
+      if (!hasBallot) {
+        continue;
+      }
+
+      const alert = await this.alertController.create({
+        header: 'Abstimmung möglich',
+        message: `Die Abstimmung „${election.title}“ hat begonnen. Sie können jetzt abstimmen.`,
+        buttons: [
+          {
+            text: 'Später',
+            role: 'cancel',
+          },
+          {
+            text: 'Jetzt abstimmen',
+            handler: () => {
+              void this.router.navigateByUrl(`election/vote/${election.id}`);
+            },
+          },
+        ],
+      });
+
+      await alert.present();
+      await alert.onDidDismiss();
+      await this.votingStartDialogService.markPromptShown(election.id);
+      return;
+    }
   }
 
   selectTab(tab: HomeTab) {
