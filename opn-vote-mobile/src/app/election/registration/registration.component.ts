@@ -1,13 +1,18 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { BehaviorSubject, combineLatest, forkJoin, Observable, switchMap, throwError } from 'rxjs';
+import { BehaviorSubject, combineLatest, EMPTY, forkJoin, Observable, switchMap, take, throwError } from 'rxjs';
 import { MasterKeySetupComponent } from 'src/app/credentials/master-key-setup/master-key-setup.component';
 import { BallotService } from 'src/app/services/ballot-service';
 import { MasterKeyService } from 'src/app/services/master-key-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectionService } from 'src/app/services/election-service';
 
-type RegistrationView = 'checking' | 'masterkey' | 'busy' | 'error';
+type RegistrationView =
+  | 'checking'
+  | 'masterkey'
+  | 'busy'
+  | 'error'
+  | 'registrationClosed';
 
 @Component({
   selector: 'app-registration',
@@ -29,17 +34,19 @@ export class RegistrationComponent implements OnInit {
   electionId: number = NaN;
   jwt: string | null = null;
   error: string | null = null;
-  
+
   view: RegistrationView = 'checking';
+
+  private registrationEnded = false;
 
   private readonly refresh$ = new BehaviorSubject<void>(undefined);
 
   private hasMasterKey$: Observable<boolean> = this.refresh$.pipe(
-    switchMap(() => this.masterKeyService.hasMasterKey())
+    switchMap(() => this.masterKeyService.hasMasterKey()),
   );
 
   private hasBallot$: Observable<boolean> = this.refresh$.pipe(
-    switchMap(() => this.ballotService.hasBallot(this.electionId))
+    switchMap(() => this.ballotService.hasBallot(this.electionId)),
   );
 
   private autoBallotRequestStarted = false;
@@ -55,17 +62,40 @@ export class RegistrationComponent implements OnInit {
       return;
     }
 
-    combineLatest([this.hasMasterKey$, this.hasBallot$])
-      .pipe(takeUntilDestroyed(this.destroyRef))
+    this.electionService
+      .getElectionInformation(this.electionId)
+      .pipe(
+        take(1),
+        switchMap((election) => {
+          if (!election) {
+            this.error = 'Wahl nicht gefunden';
+            this.view = 'error';
+            return EMPTY;
+          }
+          this.registrationEnded = Date.now() > election.registrationEnd.getTime();
+          return combineLatest([this.hasMasterKey$, this.hasBallot$]);
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe(([hasMasterKey, hasBallot]) => {
-        if (!hasMasterKey) {
-          this.view = 'masterkey';
-          this.autoBallotRequestStarted = false;
+        if (hasBallot) {
+          this.redirectToVoting();
           return;
         }
 
-        if (hasBallot) {
-          this.redirectToVoting();
+        //#region limit registration if registration period has ended
+        if (this.registrationEnded) {
+          this.error =
+            'Die Registrierungsfrist ist abgelaufen. Ohne einen auf diesem Gerät bereits erstellten Wahlschein ist eine Registrierung nicht mehr möglich.';
+          this.view = 'registrationClosed';
+          this.autoBallotRequestStarted = false;
+          return;
+        }
+        //#endregion
+
+        if (!hasMasterKey) {
+          this.view = 'masterkey';
+          this.autoBallotRequestStarted = false;
           return;
         }
 
@@ -87,6 +117,10 @@ export class RegistrationComponent implements OnInit {
       });
   }
 
+  goHome(): void {
+    void this.router.navigateByUrl('/home');
+  }
+
   private runAutoBallotCreation(): void {
     forkJoin({
       n: this.electionService.getN(this.electionId),
@@ -98,7 +132,7 @@ export class RegistrationComponent implements OnInit {
             return throwError(() => new Error('ELECTION_NOT_FOUND'));
           }
           return this.ballotService.createBallot(this.electionId, this.jwt!, n, e);
-        })
+        }),
       )
       .subscribe({
         next: () => this.refresh$.next(),

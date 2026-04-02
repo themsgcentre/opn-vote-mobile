@@ -12,5 +12,9 @@
     @case ('error') {
       <div class="error-display">{{ error }}</div>
     }
+    @case ('registrationClosed') {
+      <div class="error-display">{{ error }}</div>
+      <button type="button" class="ok-button" (click)="goHome()">OK</button>
+    }
   }
 </div>

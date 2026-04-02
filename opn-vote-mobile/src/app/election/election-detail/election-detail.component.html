@@ -62,7 +62,7 @@
       </div>
 
     @if(!isElectionFinished) {
-      <button class="vote-button" (click)="participateClicked.emit()" [disabled]="!canVote">
+      <button class="vote-button" (click)="participateClicked.emit()" [disabled]="!canVote && !isRegistrationOpen">
         @if(canVote) {
           Jetzt an Wahl teilnehmen
         }
@@ -70,7 +70,7 @@
           Registrierungsphase beginnt bald
         }
         @else if(isRegistrationOpen && !isVotingOpen) {
-          Registrierung läuft
+          Jetzt registrieren
         }
         @else {
           Abstimmung ist aktuell nicht verfügbar

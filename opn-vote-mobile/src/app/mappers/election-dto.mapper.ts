@@ -20,6 +20,7 @@ export function parseElectionDTO(raw: RawElection): ElectionDTO {
     registerPublicKeyE: String(raw.registerPublicKeyE ?? ''),
     registerPublicKeyN: String(raw.registerPublicKeyN ?? ''),
     registeredVoterCount: toNumber(raw.registeredVoterCount),
+    //registrationEndTime: Date.now()/1000 - 1000, //TODO: for testing purposes only, remove later
     registrationEndTime: toNumber(raw.registrationEndTime),
     registrationStartTime: toNumber(raw.registrationStartTime),
     status: toNumber(raw.status),
