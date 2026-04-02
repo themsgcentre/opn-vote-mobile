@@ -28,17 +28,17 @@
 
       <div class="stats-grid">
         <div class="stat-card">
-          <div class="stat-value">{{ election.authorizedVoterCount }}</div>
+          <div class="stat-value" [ngClass]="getStatValueClass(election.authorizedVoterCount)">{{ election.authorizedVoterCount }}</div>
           <div class="stat-label">Berechtigt</div>
         </div>
 
         <div class="stat-card">
-          <div class="stat-value">{{ election.registeredVoterCount }}</div>
+          <div class="stat-value" [ngClass]="getStatValueClass(election.registeredVoterCount)">{{ election.registeredVoterCount }}</div>
           <div class="stat-label">Registriert</div>
         </div>
 
         <div class="stat-card">
-          <div class="stat-value">{{ election.totalVotes }}</div>
+          <div class="stat-value" [ngClass]="getStatValueClass(election.totalVotes)">{{ election.totalVotes }}</div>
           <div class="stat-label">Stimmen</div>
         </div>
       </div>
