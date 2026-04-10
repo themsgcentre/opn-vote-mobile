@@ -7,17 +7,36 @@
     flex-direction: column;
     align-items: center;
 
-    .export-button {
+    .action-button {
         background-color: $opn-lightblue;
-        padding: 10px 40px;
-        border-radius: 5px;
         margin: 5px 0px 20px 0px;
+        width: 85%;
+        min-height: 44px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 0 14px;
+        font-size: $text-medium;
+        font-weight: $regular;
+        color: $opn-white;
+    }
+
+    .action-button:disabled {
+        background-color: $opn-gray;
     }
 
     .title {
         font-size: $title-medium;
         font-weight: $regular;
-        margin-top: 12px;
+        margin: 12px 18px 0;
+    }
+
+    .alttitle {
+        font-size: $title-small;
+        font-weight: $regular;
+        margin: 12px 18px;
     }
 
         .election-info {
@@ -75,22 +94,10 @@
         line-height: 1.4;
     }
 
-    .submit-button {
-        background-color: $opn-lightblue;
-        padding: 10px 40px;
-        border-radius: 5px;
-        margin: 5px 0px 20px 0px;
-    }
-
-    .submit-button:disabled {
-        background-color: $opn-gray;
-    }
-
     .voting-start-datetime {
         font-size: $text-medium;
         font-weight: $bold;
         color: $opn-white;
-        margin-bottom: 16px;
         text-align: center;
     }
 
@@ -101,11 +108,11 @@
         gap: 16px;
         width: 90%;
         max-width: 360px;
-        margin: 8px 0 16px 0;
+        margin: 10px 0 18px 0;
         padding: 12px 14px;
         box-sizing: border-box;
         border-radius: 8px;
-        background-color: rgba(0, 0, 0, 0.15);
+        background-color: $surface-card-bg;
     }
 
     .reminder-label {

@@ -19,7 +19,7 @@
 }
 
 .title {
-  margin: 10px 24px 10px;
+  margin: 18px 18px;
   font-size: $title-small;
   font-weight: $semi-bold;
   color: $opn-white;
@@ -69,7 +69,7 @@
   margin: 18px 24px 0;
   padding: 12px 14px;
 
-  background-color: $opn-slategray;
+  background-color: $opn-lightblue;
   border-radius: 8px;
 
   color: $opn-white;
@@ -83,7 +83,7 @@
 }
 
 .vote-button:disabled {
-  opacity: 0.5;
+  background-color: $opn-gray;
 }
 
 .vote-button:active {
@@ -102,21 +102,47 @@
   display: grid;
   margin-left: 18px;
   margin-right: 18px;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
 
 .stat-card {
+  min-width: 0;
+  min-height: 88px;
   padding: 14px 10px;
   border-radius: 10px;
   background-color: $surface-card-bg;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .stat-value {
-  font-size: 20px;
+  min-height: 31px;
   font-weight: $semi-bold;
   color: $opn-white;
+  line-height: 1;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-value-large {
+  font-size: 28px;
+}
+
+.stat-value-medium {
+  font-size: 24px;
+}
+
+.stat-value-small {
+  font-size: 20px;
+}
+
+.stat-value-xsmall {
+  font-size: 17px;
 }
 
 .stat-label {

@@ -65,4 +65,22 @@ export class ElectionDetailComponent implements OnChanges {
       timeStyle: 'short'
     }).format(new Date(date));
   }
+
+  getStatValueClass(value: number): string {
+    const digits = String(value).length;
+
+    if (digits >= 7) {
+      return 'stat-value-xsmall';
+    }
+
+    if (digits >= 6) {
+      return 'stat-value-small';
+    }
+
+    if (digits >= 4) {
+      return 'stat-value-medium';
+    }
+
+    return 'stat-value-large';
+  }
 }

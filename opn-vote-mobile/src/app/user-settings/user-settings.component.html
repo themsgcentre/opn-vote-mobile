@@ -34,6 +34,7 @@
   <app-import-dialog
     item="Masterschlüssel"
     [allowMultipleFiles]="false"
+    (dismissed)="masterKeyImportDialogOpened = false"
     (scanSelected)="masterKeyImportViaScan()"
     (fileSelected)="onMasterKeyImportPdfFromDialog($event)"
   ></app-import-dialog>
@@ -64,8 +65,8 @@
 @if (ballotImportDialogOpened) {
   <app-import-dialog
     item="Wahlschein"
-    [additionalInfo]="ballotImportDialogInfo"
     [allowMultipleFiles]="false"
+    (dismissed)="ballotImportDialogOpened = false"
     (scanSelected)="ballotImportViaScan()"
     (fileSelected)="onBallotImportPdfFromDialog($event)"
   ></app-import-dialog>
@@ -84,3 +85,4 @@
     (okClicked)="closeBallotImportFeedback()"
   ></app-message-dialog>
 }
+
