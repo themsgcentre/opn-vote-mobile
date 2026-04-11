@@ -1,13 +1,15 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { SavePdfOptions } from '../qr-code/save-pdf-options';
 import { Capacitor } from "@capacitor/core";
 import { Directory, Filesystem } from "@capacitor/filesystem";
-import { Share } from "@capacitor/share";
+import { ToastController } from '@ionic/angular/standalone';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FileSaveService {
+  private readonly toastController = inject(ToastController);
+
   public async savePdf(options: SavePdfOptions): Promise<void> {
     const { fileName, pdfBytes } = options;
 
@@ -51,23 +53,25 @@ export class FileSaveService {
   }
 
   private async savePdfNative(options: SavePdfOptions): Promise<void> {
-    const { fileName, pdfBytes, shareTitle, shareText } = options;
+    const { fileName, pdfBytes } = options;
 
     const base64Data = this.uint8ArrayToBase64(pdfBytes);
     const finalFileName = this.ensurePdfExtension(fileName);
 
-    const result = await Filesystem.writeFile({
+    await Filesystem.writeFile({
       path: finalFileName,
       data: base64Data,
       directory: Directory.Documents,
       recursive: true,
     });
 
-    await Share.share({
-      title: shareTitle ?? "PDF teilen",
-      text: shareText ?? "Hier ist dein PDF",
-      url: result.uri,
+    const toast = await this.toastController.create({
+      message: `PDF gespeichert: ${finalFileName}. In der Dateien-App unter „Dokumente“ dieser App.`,
+      duration: 4000,
+      color: 'success',
+      position: 'bottom',
     });
+    await toast.present();
   }
 
   private ensurePdfExtension(fileName: string): string {
