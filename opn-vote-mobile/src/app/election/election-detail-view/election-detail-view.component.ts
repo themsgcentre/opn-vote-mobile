@@ -34,6 +34,7 @@ export class ElectionDetailViewComponent  implements OnInit {
 
   async onParticipateClicked() {
     const electionId = this.route.snapshot.paramMap.get('id');
+    const voterId = Date.now(); // TODO: for simulation purposes only, replace with actual voter ID logic later
 
     if (!electionId) {
       console.error("Keine electionId gefunden");
@@ -46,7 +47,7 @@ export class ElectionDetailViewComponent  implements OnInit {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ payload: { electionId }, expiresIn: "" }),
+        body: JSON.stringify({ payload: { electionId: electionId, voterId: voterId }, expiresIn: "" }),
       });
 
       if (!response.ok) {
