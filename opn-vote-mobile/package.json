@@ -23,6 +23,7 @@
     "@angular/router": "^20.0.0",
     "@apollo/client": "^4.1.5",
     "@capacitor/core": "^8.2.0",
+    "@capacitor/filesystem": "^8.1.0",
     "@capacitor/local-notifications": "^8.0.2",
     "@gelatonetwork/relay-sdk": "^5.7.0",
     "@ionic/angular": "^8.0.0",
