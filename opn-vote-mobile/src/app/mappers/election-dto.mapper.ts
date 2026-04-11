@@ -20,15 +20,12 @@ export function parseElectionDTO(raw: RawElection): ElectionDTO {
     registerPublicKeyE: String(raw.registerPublicKeyE ?? ''),
     registerPublicKeyN: String(raw.registerPublicKeyN ?? ''),
     registeredVoterCount: toNumber(raw.registeredVoterCount),
-    //registrationEndTime: Date.now()/1000 - 1000, //TODO: for testing purposes only, remove later
     registrationEndTime: toNumber(raw.registrationEndTime),
     registrationStartTime: toNumber(raw.registrationStartTime),
     status: toNumber(raw.status),
     totalVotes: toNumber(raw.totalVotes),
     transactionHash: String(raw.transactionHash ?? ''),
     votingEndTime: toNumber(raw.votingEndTime),
-    // votingStartTime: Math.floor(Date.now() / 1000) + 120, // use this for simulation TODO: remove after testing phase
     votingStartTime: new Date('2026-04-02T14:04:00').getTime() / 1000, 
-    //votingStartTime: toNumber(raw.votingStartTime),
   };
 }

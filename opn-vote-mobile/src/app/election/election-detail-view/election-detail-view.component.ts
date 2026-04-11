@@ -41,20 +41,20 @@ export class ElectionDetailViewComponent  implements OnInit {
     }
 
     try {
-      const response = await fetch(`${UrlPaths.jwtUrl}/api/jwt`, {
+      const response = await fetch(`${UrlPaths.jwtUrl}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ electionId }),
+        body: JSON.stringify({ payload: { electionId }, expiresIn: "" }),
       });
 
       if (!response.ok) {
         throw new Error("JWT konnte nicht geladen werden");
       }
 
-      const data = await response.json();
-      const JWT = data.token;
+      const res = await response.json();
+      const JWT = res.data.token;
 
       this.router.navigate(['/election/register', electionId, JWT]);
 
