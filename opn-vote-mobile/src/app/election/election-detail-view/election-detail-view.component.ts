@@ -33,12 +33,18 @@ export class ElectionDetailViewComponent  implements OnInit {
   }
 
   async onParticipateClicked() {
-    const electionId = this.route.snapshot.paramMap.get('id');
+    const electionIdParam = this.route.snapshot.paramMap.get('id');
     const voterId = Date.now(); // TODO: for simulation purposes only, replace with actual voter ID logic later
-    const expiration: number = new Date('2030-04-02T14:00:00').getTime() / 1000;
 
-    if (!electionId) {
+    if (!electionIdParam) {
       console.error("Keine electionId gefunden");
+      return;
+    }
+
+    const electionId = Number(electionIdParam);
+
+    if (!Number.isSafeInteger(electionId) || electionId <= 0) {
+      console.error("Ungültige electionId");
       return;
     }
 
@@ -48,7 +54,7 @@ export class ElectionDetailViewComponent  implements OnInit {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ payload: { electionId: electionId, voterId: voterId }, expiresIn: expiration }),
+        body: JSON.stringify({ payload: { electionId: electionId, voterId: voterId }, expiresIn: "1d" }),
       });
 
       if (!response.ok) {
