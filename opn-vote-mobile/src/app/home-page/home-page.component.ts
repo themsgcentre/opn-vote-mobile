@@ -1,14 +1,11 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { IonContent, AlertController } from "@ionic/angular/standalone";
+import { Component, OnInit } from '@angular/core';
+import { IonContent } from "@ionic/angular/standalone";
 import { ElectionListComponent } from "./election-list/election-list.component";
-import { interval, Observable, of, firstValueFrom, take } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ElectionService } from '../services/election-service';
 import { ElectionInformation } from '../interfaces/election';
-import { BallotService } from '../services/ballot-service';
-import { VotingStartDialogService } from '../services/voting-start-dialog-service';
 
 type HomeTab = 'upcoming' | 'pending' | 'running' | 'finished';
 
@@ -19,8 +16,6 @@ type HomeTab = 'upcoming' | 'pending' | 'running' | 'finished';
   imports: [IonContent, ElectionListComponent, CommonModule],
 })
 export class HomePageComponent implements OnInit {
-  private readonly destroyRef = inject(DestroyRef);
-
   openElection$: Observable<ElectionInformation[]> = of([]);
 
   allElections: ElectionInformation[] = [];
@@ -29,13 +24,8 @@ export class HomePageComponent implements OnInit {
   selectedTab: HomeTab = 'upcoming';
   searchTerm: string = '';
 
-  private votingStartPromptBusy = false;
-
   constructor(
     private electionService: ElectionService,
-    private ballotService: BallotService,
-    private votingStartDialogService: VotingStartDialogService,
-    private alertController: AlertController,
     private router: Router
   ) { }
 
@@ -45,62 +35,7 @@ export class HomePageComponent implements OnInit {
     this.openElection$.subscribe((elections) => {
       this.allElections = elections;
       this.applyFilters();
-      void this.tryShowVotingStartPrompt(elections);
     });
-
-    interval(15_000)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        void this.tryShowVotingStartPrompt(this.allElections);
-      });
-  }
-
-  private async tryShowVotingStartPrompt(elections: ElectionInformation[]): Promise<void> {
-    if (this.votingStartPromptBusy || elections.length === 0) {
-      return;
-    }
-    const now = Date.now();
-    const inVotingWindow = elections.filter(
-      (e) => e.votingStart.getTime() <= now && now <= e.votingEnd.getTime(),
-    );
-
-    for (const election of inVotingWindow) {
-      const alreadyShown = await this.votingStartDialogService.hasShownPrompt(election.id);
-      if (alreadyShown) {
-        continue;
-      }
-      const hasBallot = await firstValueFrom(this.ballotService.hasBallot(election.id).pipe(take(1)));
-      if (!hasBallot) {
-        continue;
-      }
-
-      this.votingStartPromptBusy = true;
-      const alert = await this.alertController.create({
-        header: 'Abstimmung möglich',
-        message: `Die Abstimmung „${election.title}“ hat begonnen. Sie können jetzt abstimmen.`,
-        buttons: [
-          {
-            text: 'Später',
-            role: 'cancel',
-          },
-          {
-            text: 'Jetzt abstimmen',
-            handler: () => {
-              void this.router.navigateByUrl(`election/vote/${election.id}`);
-            },
-          },
-        ],
-      });
-
-      try {
-        await alert.present();
-        await alert.onDidDismiss();
-        await this.votingStartDialogService.markPromptShown(election.id);
-      } finally {
-        this.votingStartPromptBusy = false;
-      }
-      return;
-    }
   }
 
   selectTab(tab: HomeTab) {
