@@ -54,24 +54,32 @@ export class FileSaveService {
 
   private async savePdfNative(options: SavePdfOptions): Promise<void> {
     const { fileName, pdfBytes } = options;
-
-    const base64Data = this.uint8ArrayToBase64(pdfBytes);
     const finalFileName = this.ensurePdfExtension(fileName);
 
-    await Filesystem.requestPermissions();
+    const platform = Capacitor.getPlatform();
+    const directory =
+      platform === "android" ? Directory.External : Directory.Documents;
+    const path =
+      platform === "android" ? `pdfs/${finalFileName}` : finalFileName;
+
+    if (platform !== "android") {
+      await Filesystem.requestPermissions();
+    }
+
+    const base64Data = this.uint8ArrayToBase64(pdfBytes);
 
     await Filesystem.writeFile({
-      path: finalFileName,
+      path,
       data: base64Data,
-      directory: Directory.Documents,
+      directory,
       recursive: true,
     });
 
     const toast = await this.toastController.create({
       message: `PDF gespeichert: ${finalFileName}. In der Dateien-App unter „Dokumente“ dieser App.`,
       duration: 4000,
-      color: 'success',
-      position: 'bottom',
+      color: "success",
+      position: "bottom",
     });
     await toast.present();
   }
@@ -82,11 +90,16 @@ export class FileSaveService {
 
   private uint8ArrayToBase64(bytes: Uint8Array): string {
     let binary = "";
-    const chunkSize = 0x8000;
+    const chunkSize = 8192;
 
     for (let i = 0; i < bytes.length; i += chunkSize) {
-      const chunk = bytes.subarray(i, i + chunkSize);
-      binary += String.fromCharCode(...chunk);
+      const end = Math.min(i + chunkSize, bytes.length);
+      const chunk = bytes.subarray(i, end);
+      let segment = "";
+      for (let j = 0; j < chunk.length; j++) {
+        segment += String.fromCharCode(chunk[j]!);
+      }
+      binary += segment;
     }
 
     return btoa(binary);
