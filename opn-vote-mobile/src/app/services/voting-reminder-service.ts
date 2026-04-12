@@ -2,22 +2,17 @@ import { Injectable } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
+import { MasterKeyService } from './master-key-service';
 
 const CHANNEL_ID = 'opnvote_voting';
-const STORAGE_KEY_PREFIX = 'opnvote_voting_reminder_v1_';
-
-function notificationIdForElection(electionId: number): number {
-  const id = electionId | 0;
-  if (id <= 0 || id > 2_000_000_000) {
-    return Math.abs(Math.imul(electionId, 2654435761) % 2_000_000_000) + 1;
-  }
-  return id;
-}
+const STORAGE_KEY_PREFIX = 'opnvote_voting_reminder_v2_';
 
 @Injectable({
   providedIn: 'root',
 })
 export class VotingReminderService {
+  constructor() {}
+
   async isReminderScheduled(electionId: number, votingStart: Date): Promise<boolean> {
     try {
       const res = await SecureStoragePlugin.get({ key: this.storageKey(electionId) });
@@ -66,7 +61,7 @@ export class VotingReminderService {
         });
       }
 
-      const id = notificationIdForElection(electionId);
+      const id = this.notificationIdForElection(electionId);
       await LocalNotifications.cancel({ notifications: [{ id }] });
 
       await LocalNotifications.schedule({
@@ -100,7 +95,7 @@ export class VotingReminderService {
   async cancelVotingStartReminder(electionId: number): Promise<void> {
     if (Capacitor.isNativePlatform()) {
       try {
-        const id = notificationIdForElection(electionId);
+        const id = this.notificationIdForElection(electionId);
         await LocalNotifications.cancel({ notifications: [{ id }] });
       } catch (e) {
         console.error('VotingReminderService.cancelVotingStartReminder', e);
@@ -115,5 +110,13 @@ export class VotingReminderService {
 
   private storageKey(electionId: number): string {
     return `${STORAGE_KEY_PREFIX}${electionId}`;
+  }
+
+  private notificationIdForElection(electionId: number): number {
+    const id = electionId | 0;
+    if (id <= 0 || id > 2_000_000_000) {
+      return Math.abs(Math.imul(electionId, 2654435761) % 2_000_000_000) + 1;
+    }
+    return id;
   }
 }
