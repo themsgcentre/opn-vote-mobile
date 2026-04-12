@@ -3,9 +3,7 @@ import { provideRouter } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { of } from 'rxjs';
 
-import { BallotService } from '../services/ballot-service';
 import { ElectionService } from '../services/election-service';
-import { VotingStartDialogService } from '../services/voting-start-dialog-service';
 
 import { HomePageComponent } from './home-page.component';
 
@@ -19,8 +17,6 @@ describe('HomePageComponent', () => {
       providers: [
         provideRouter([]),
         { provide: ElectionService, useValue: { getAllElectionInformations: () => of([]) } },
-        { provide: BallotService, useValue: { hasBallot: () => of(false) } },
-        { provide: VotingStartDialogService, useValue: { hasShownPrompt: async () => false } },
       ],
     }).compileComponents();
 
