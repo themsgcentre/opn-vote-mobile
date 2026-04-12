@@ -8,15 +8,14 @@ import { TokenService } from './token-service';
 import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
 import { VoterCredentials } from '../interfaces/voter-credentials';
 import { MasterKey } from '../voting-system/masterkey';
+import { BALLOT_INDEX_KEY, ballotKeyForElection } from './ballot-storage.util';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BallotService {
-  private readonly BALLOT_INDEX_KEY = 'opnvote_ballot_index_v2';
-
   private keyFor(electionId: number) {
-    return `${this.BALLOT_INDEX_KEY}_${electionId}`;
+    return ballotKeyForElection(electionId);
   }
 
   constructor(
@@ -211,7 +210,7 @@ export class BallotService {
 
   private async loadBallotIndex(): Promise<number[]> {
     try {
-      const res = await SecureStoragePlugin.get({ key: this.BALLOT_INDEX_KEY });
+      const res = await SecureStoragePlugin.get({ key: BALLOT_INDEX_KEY });
       if (!res.value) return [];
 
       const parsed = JSON.parse(res.value);
@@ -225,7 +224,7 @@ export class BallotService {
 
   private async saveBallotIndex(index: number[]): Promise<void> {
     await SecureStoragePlugin.set({
-      key: this.BALLOT_INDEX_KEY,
+      key: BALLOT_INDEX_KEY,
       value: JSON.stringify(index),
     });
   }
