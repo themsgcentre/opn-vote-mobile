@@ -58,6 +58,8 @@ export class FileSaveService {
     const base64Data = this.uint8ArrayToBase64(pdfBytes);
     const finalFileName = this.ensurePdfExtension(fileName);
 
+    await Filesystem.requestPermissions();
+
     await Filesystem.writeFile({
       path: finalFileName,
       data: base64Data,
