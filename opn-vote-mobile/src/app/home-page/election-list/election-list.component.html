@@ -2,7 +2,10 @@
   <div class="overview-container">
     @for (election of elections; track $index) {
       <div class="overview-item" (click)="electionClicked.emit(election.id)">
-        <app-election-overview [election]="election"></app-election-overview>
+        <app-election-overview
+          [election]="election"
+          [showVotingCountdown]="showVotingCountdown"
+        ></app-election-overview>
       </div>
     }
   </div>

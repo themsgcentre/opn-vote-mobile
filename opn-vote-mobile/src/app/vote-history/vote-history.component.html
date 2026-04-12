@@ -8,6 +8,7 @@
         <div class="list-container">
           <app-election-list
             [elections]="registeredElections"
+            [showVotingCountdown]="true"
             (electionClicked)="navigateToElection($event)"
           ></app-election-list>
         </div>

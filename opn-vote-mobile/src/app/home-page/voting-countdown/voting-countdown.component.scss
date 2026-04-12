@@ -1,0 +1,36 @@
+@import '../../styles/colors.scss';
+@import '../../styles/sizes.scss';
+@import '../../styles/font-weights.scss';
+
+.countdown-strip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 10px 12px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.countdown-label {
+  font-size: $text-small;
+  color: $opn-textgray;
+  font-weight: $regular;
+  text-align: center;
+}
+
+.countdown-value {
+  font-size: $text-medium;
+  font-weight: $semi-bold;
+  color: $opn-lightblue;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.countdown-open {
+  font-size: $text-medium;
+  font-weight: $semi-bold;
+  color: $opn-white;
+  text-align: center;
+}

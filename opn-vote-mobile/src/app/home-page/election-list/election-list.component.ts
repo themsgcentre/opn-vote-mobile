@@ -10,5 +10,6 @@ import { ElectionInformation } from 'src/app/interfaces/election';
 })
 export class ElectionListComponent{
   @Input() elections: ElectionInformation[] = [];
+  @Input() showVotingCountdown = false;
   @Output() electionClicked: EventEmitter<number> = new EventEmitter<number>();
 }
