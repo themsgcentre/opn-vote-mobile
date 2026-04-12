@@ -19,11 +19,11 @@
             <button
               type="button"
               class="export-icon-button"
-              [disabled]="exportingElectionId !== null"
+              [disabled]="exportingElectionId !== null || ballotExportConfirmElectionId !== null"
               [attr.aria-busy]="exportingElectionId === row.electionId ? 'true' : null"
               [attr.aria-label]="'Wahlschein exportieren: ' + row.title"
               [title]="'Wahlschein als PDF speichern'"
-              (click)="exportBallotPdf(row.electionId)"
+              (click)="requestBallotPdfExport(row.electionId)"
             >
               @if (exportingElectionId === row.electionId) {
                 <span class="export-busy" aria-hidden="true">…</span>
@@ -37,3 +37,12 @@
     }
   }
 </div>
+
+@if (ballotExportConfirmElectionId !== null) {
+  <app-question-dialog
+    title="Wahlschein exportieren"
+    [question]="ballotExportSecurityQuestion"
+    (yesClicked)="onBallotExportSecurityYes()"
+    (noClicked)="onBallotExportSecurityNo()"
+  ></app-question-dialog>
+}

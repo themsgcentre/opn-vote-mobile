@@ -77,6 +77,13 @@ export class UserSettingsComponent {
   masterKeyQrScanOpened = false;
   masterKeyImportSuccess = false;
   masterKeyDeleteDialogOpen = false;
+  masterKeyExportConfirmDialogOpen = false;
+
+  readonly masterKeyExportSecurityQuestion =
+    'Solange der Wahlschlüssel nur in dieser App liegt, ist er im sicheren Speicher geschützt. ' +
+    'Mit dem Export verlässt er diesen Bereich – danach kann die App keine Sicherheit mehr für die Datei übernehmen. ' +
+    'Geben Sie die PDF nicht weiter und bewahren Sie sie sorgfältig auf. ' +
+    'Möchten Sie den Wahlschlüssel wirklich exportieren?';
 
   ballotImportError: string | null = null;
   ballotImportDialogOpened = false;
@@ -153,7 +160,20 @@ export class UserSettingsComponent {
     });
   }
 
-  onExportMasterKey(): void {
+  onMasterKeyExportClicked(): void {
+    this.masterKeyExportConfirmDialogOpen = true;
+  }
+
+  onMasterKeyExportSecurityNo(): void {
+    this.masterKeyExportConfirmDialogOpen = false;
+  }
+
+  onMasterKeyExportSecurityYes(): void {
+    this.masterKeyExportConfirmDialogOpen = false;
+    this.runMasterKeyPdfExport();
+  }
+
+  private runMasterKeyPdfExport(): void {
     this.masterKeyService
       .getMasterKey()
       .pipe(

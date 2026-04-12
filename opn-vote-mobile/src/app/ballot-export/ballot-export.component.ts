@@ -1,6 +1,7 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { AlertController } from '@ionic/angular/standalone';
+import { QuestionDialogComponent } from '../question-dialog/question-dialog.component';
 import {
   combineLatest,
   filter,
@@ -33,7 +34,7 @@ export interface BallotExportRow {
 @Component({
   selector: 'app-ballot-export',
   standalone: true,
-  imports: [AsyncPipe],
+  imports: [AsyncPipe, QuestionDialogComponent],
   templateUrl: './ballot-export.component.html',
   styleUrls: ['./ballot-export.component.scss'],
 })
@@ -46,6 +47,13 @@ export class BallotExportComponent {
   private readonly alertController = inject(AlertController);
 
   exportingElectionId: number | null = null;
+  ballotExportConfirmElectionId: number | null = null;
+
+  readonly ballotExportSecurityQuestion =
+    'Solange der Wahlschein nur in dieser App liegt, ist er im sicheren Speicher geschützt. ' +
+    'Mit dem Export verlässt er diesen Bereich – danach kann die App keine Sicherheit mehr für die Datei übernehmen. ' +
+    'Geben Sie die PDF nicht weiter und bewahren Sie sie sorgfältig auf. ' +
+    'Möchten Sie den Wahlschein wirklich exportieren?';
 
   private async presentExportError(): Promise<void> {
     const alert = await this.alertController.create({
@@ -80,7 +88,26 @@ export class BallotExportComponent {
       }),
     );
 
-  exportBallotPdf(electionId: number): void {
+  requestBallotPdfExport(electionId: number): void {
+    if (this.exportingElectionId !== null || this.ballotExportConfirmElectionId !== null) {
+      return;
+    }
+    this.ballotExportConfirmElectionId = electionId;
+  }
+
+  onBallotExportSecurityNo(): void {
+    this.ballotExportConfirmElectionId = null;
+  }
+
+  onBallotExportSecurityYes(): void {
+    const electionId = this.ballotExportConfirmElectionId;
+    this.ballotExportConfirmElectionId = null;
+    if (electionId != null) {
+      this.performBallotPdfExport(electionId);
+    }
+  }
+
+  private performBallotPdfExport(electionId: number): void {
     if (this.exportingElectionId !== null) {
       return;
     }
