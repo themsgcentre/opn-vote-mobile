@@ -9,8 +9,7 @@ describe('ElectionDetailComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ElectionDetailComponent ],
-      imports: [IonicModule.forRoot()]
+      imports: [ElectionDetailComponent, IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ElectionDetailComponent);

@@ -9,8 +9,7 @@ describe('SaveCredentialComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ SaveCredentialComponent ],
-      imports: [IonicModule.forRoot()]
+      imports: [SaveCredentialComponent, IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SaveCredentialComponent);

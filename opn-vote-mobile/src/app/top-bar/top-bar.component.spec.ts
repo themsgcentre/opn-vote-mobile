@@ -9,8 +9,7 @@ describe('TopBarComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ TopBarComponent ],
-      imports: [IonicModule.forRoot()]
+      imports: [TopBarComponent, IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TopBarComponent);

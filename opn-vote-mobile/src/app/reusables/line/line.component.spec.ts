@@ -9,8 +9,7 @@ describe('VerticalLineComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ LineComponent ],
-      imports: [IonicModule.forRoot()]
+      imports: [LineComponent, IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LineComponent);

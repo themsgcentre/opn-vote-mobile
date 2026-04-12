@@ -8,8 +8,7 @@ describe('ElectionInfoComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ElectionInfoComponent ],
-      imports: [IonicModule.forRoot()]
+      imports: [ElectionInfoComponent, IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ElectionInfoComponent);

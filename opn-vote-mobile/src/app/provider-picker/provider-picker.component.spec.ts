@@ -9,8 +9,7 @@ describe('ProviderPickerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProviderPickerComponent ],
-      imports: [IonicModule.forRoot()]
+      imports: [ProviderPickerComponent, IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProviderPickerComponent);

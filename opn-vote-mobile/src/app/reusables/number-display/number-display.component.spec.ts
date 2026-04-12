@@ -9,8 +9,7 @@ describe('NumberDisplayComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ NumberDisplayComponent ],
-      imports: [IonicModule.forRoot()]
+      imports: [NumberDisplayComponent, IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(NumberDisplayComponent);
