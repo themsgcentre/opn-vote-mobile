@@ -90,3 +90,21 @@
     font-size: 1.2em;
     line-height: 1;
 }
+
+.import-cancel-button {
+    width: 85%;
+    min-height: 44px;
+    margin-top: 4px;
+    border-radius: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: transparent;
+    color: $opn-lightgray;
+    font-size: $text-medium;
+    font-weight: $regular;
+    cursor: pointer;
+}
+
+.import-cancel-button:hover {
+    color: $opn-white;
+    border-color: rgba(255, 255, 255, 0.55);
+}
