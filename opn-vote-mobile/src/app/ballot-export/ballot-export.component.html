@@ -1,0 +1,39 @@
+<div class="ballot-export-container">
+  <div class="section-title">
+    <span class="title-with-icon">
+      <i class="bi bi-box-arrow-up"></i>
+      <span>Wahlschein exportieren</span>
+    </span>
+  </div>
+  <p class="section-description">
+    Für jede gespeicherte Wahl kann der Wahlschein als PDF gespeichert werden.
+  </p>
+  @if (rows$ | async; as rows) {
+    @if (rows.length === 0) {
+      <div class="empty-hint">Keine gespeicherten Wahlscheine.</div>
+    } @else {
+      <ul class="export-row-list">
+        @for (row of rows; track row.electionId) {
+          <li class="export-row">
+            <span class="export-row-title">{{ row.title }}</span>
+            <button
+              type="button"
+              class="export-icon-button"
+              [disabled]="exportingElectionId !== null"
+              [attr.aria-busy]="exportingElectionId === row.electionId ? 'true' : null"
+              [attr.aria-label]="'Wahlschein exportieren: ' + row.title"
+              [title]="'Wahlschein als PDF speichern'"
+              (click)="exportBallotPdf(row.electionId)"
+            >
+              @if (exportingElectionId === row.electionId) {
+                <span class="export-busy" aria-hidden="true">…</span>
+              } @else {
+                <i class="bi bi-download" aria-hidden="true"></i>
+              }
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  }
+</div>

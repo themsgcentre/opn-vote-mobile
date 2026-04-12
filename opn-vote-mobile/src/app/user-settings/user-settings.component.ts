@@ -33,6 +33,7 @@ import { QrScanDialogComponent } from '../qr-scan-dialog/qr-scan-dialog.componen
 import { MessageDialogComponent } from '../message-dialog/message-dialog.component';
 import { QuestionDialogComponent } from '../question-dialog/question-dialog.component';
 import { BallotImportComponent } from '../ballot-import/ballot-import.component';
+import { BallotExportComponent } from '../ballot-export/ballot-export.component';
 import { VoteParticipationStorageService } from '../services/vote-participation-storage.service';
 
 type InfoPopupType = 'masterkey' | 'provider' | 'ballot' | null;
@@ -51,6 +52,7 @@ type InfoPopupType = 'masterkey' | 'provider' | 'ballot' | null;
     MessageDialogComponent,
     QuestionDialogComponent,
     BallotImportComponent,
+    BallotExportComponent,
   ],
 })
 export class UserSettingsComponent {
