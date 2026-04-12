@@ -1,5 +1,6 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
+import { AlertController } from '@ionic/angular/standalone';
 import {
   combineLatest,
   filter,
@@ -42,8 +43,18 @@ export class BallotExportComponent {
   private readonly qrCodeService = inject(QrCodeService);
   private readonly pdfService = inject(PdfService);
   private readonly fileSaveService = inject(FileSaveService);
+  private readonly alertController = inject(AlertController);
 
   exportingElectionId: number | null = null;
+
+  private async presentExportError(): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Fehler',
+      message: 'Der Wahlschein konnte nicht exportiert werden.',
+      buttons: [{ text: 'OK', role: 'cancel' }],
+    });
+    await alert.present();
+  }
 
   rows$: Observable<BallotExportRow[]> = this.ballotService
     .listElectionIdsWithValidBallot()
@@ -130,8 +141,8 @@ export class BallotExportComponent {
         }),
       )
       .subscribe({
-        error: (err) => {
-          console.error('Fehler beim Wahlschein-Export:', err);
+        error: () => {
+          void this.presentExportError();
         },
       });
   }

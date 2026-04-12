@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
+import { AlertController } from '@ionic/angular/standalone';
 import { BallotExportComponent } from './ballot-export.component';
 import { BallotService } from '../services/ballot-service';
 import { ElectionService } from '../services/election-service';
@@ -30,9 +31,13 @@ describe('BallotExportComponent', () => {
   };
 
   beforeEach(async () => {
+    const alert = jasmine.createSpyObj<AlertController>('AlertController', ['create']);
+    alert.create.and.resolveTo({ present: jasmine.createSpy('present') } as unknown as HTMLIonAlertElement);
+
     await TestBed.configureTestingModule({
       imports: [BallotExportComponent],
       providers: [
+        { provide: AlertController, useValue: alert },
         {
           provide: BallotService,
           useValue: { listElectionIdsWithValidBallot: () => of([42]) },

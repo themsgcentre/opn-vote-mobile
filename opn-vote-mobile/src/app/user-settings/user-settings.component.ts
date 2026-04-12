@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AlertController } from '@ionic/angular/standalone';
 import { AsyncPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import {
@@ -93,7 +94,17 @@ export class UserSettingsComponent {
     private fileSaveService: FileSaveService,
     private importService: ImportService,
     private voteParticipationStorage: VoteParticipationStorageService,
+    private alertController: AlertController,
   ) {}
+
+  private async presentMasterKeyExportError(): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Fehler',
+      message: 'Der Wahlschlüssel konnte nicht exportiert werden.',
+      buttons: [{ text: 'OK', role: 'cancel' }],
+    });
+    await alert.present();
+  }
 
   openInfoPopup(type: InfoPopupType): void {
     this.activeInfoPopup = type;
@@ -178,8 +189,8 @@ export class UserSettingsComponent {
         })
       )
       .subscribe({
-        error: (err) => {
-          console.error('Fehler beim Export:', err);
+        error: () => {
+          void this.presentMasterKeyExportError();
         },
       });
   }

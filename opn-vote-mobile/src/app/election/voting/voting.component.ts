@@ -140,8 +140,14 @@ export class VotingComponent  implements OnInit {
           this.reminderFeedback = result.reason;
         }
       } else {
-        await this.votingReminderService.cancelVotingStartReminder(this.electionId);
-        this.reminderScheduled = false;
+        const cancelResult =
+          await this.votingReminderService.cancelVotingStartReminder(this.electionId);
+        if (cancelResult.ok) {
+          this.reminderScheduled = false;
+        } else {
+          this.reminderScheduled = true;
+          await this.presentVoteError(cancelResult.reason);
+        }
       }
     } finally {
       this.reminderRequesting = false;

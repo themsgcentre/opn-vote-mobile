@@ -5,7 +5,7 @@ import { ElectionDetailComponent } from "../election-detail/election-detail.comp
 import { CommonModule } from '@angular/common';
 import { ElectionService } from 'src/app/services/election-service';
 import { ElectionInformation } from 'src/app/interfaces/election';
-import { IonContent } from "@ionic/angular/standalone";
+import { AlertController, IonContent } from "@ionic/angular/standalone";
 import { UrlPaths } from 'src/app/globals/url';
 
 @Component({
@@ -19,8 +19,18 @@ export class ElectionDetailViewComponent  implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private electionService: ElectionService
+    private electionService: ElectionService,
+    private alertController: AlertController,
   ) { }
+
+  private async presentAlert(header: string, message: string): Promise<void> {
+    const alert = await this.alertController.create({
+      header,
+      message,
+      buttons: [{ text: 'OK', role: 'cancel' }],
+    });
+    await alert.present();
+  }
 
   ngOnInit() {
     this.election$ = this.route.paramMap.pipe(
@@ -36,15 +46,10 @@ export class ElectionDetailViewComponent  implements OnInit {
     const electionIdParam = this.route.snapshot.paramMap.get('id');
     const voterId = Date.now(); // TODO: for simulation purposes only, replace with actual voter ID logic later
 
-    if (!electionIdParam) {
-      console.error("Keine electionId gefunden");
-      return;
-    }
-
     const electionId = Number(electionIdParam);
 
-    if (!Number.isSafeInteger(electionId) || electionId <= 0) {
-      console.error("Ungültige electionId");
+    if (!Number.isSafeInteger(electionId) || electionId < 0 || electionIdParam === null) {
+      await this.presentAlert('Fehler', 'Ungültige Election-ID.');
       return;
     }
 
@@ -66,8 +71,11 @@ export class ElectionDetailViewComponent  implements OnInit {
 
       this.router.navigate(['/election/register', electionId, JWT]);
 
-    } catch (error) {
-      console.error("Fehler beim Laden der JWT:", error);
+    } catch {
+      await this.presentAlert(
+        'Fehler',
+        'Die Anmeldedaten konnten nicht geladen werden. Bitte versuchen Sie es erneut.',
+      );
     }
   }
 }
