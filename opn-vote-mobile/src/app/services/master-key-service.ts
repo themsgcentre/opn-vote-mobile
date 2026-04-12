@@ -4,6 +4,7 @@ import { from, map, Observable } from 'rxjs';
 import { Token } from '../voting-system/token';
 import { R } from '../voting-system/r';
 import { MasterKey } from '../voting-system/masterkey';
+import { clearAllBallotStorage } from './ballot-storage.util';
 import { VoteDraftService } from './vote-draft-service';
 import { VoteParticipationStorageService } from './vote-participation-storage.service';
 
@@ -98,6 +99,7 @@ export class MasterKeyService {
     }
     await this.voteDraftService.clearAllDrafts();
     await this.voteParticipationStorage.clearAll();
+    await clearAllBallotStorage();
   }
 
   private bytesToHex(bytes: Uint8Array): string {
