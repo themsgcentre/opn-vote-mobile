@@ -78,19 +78,11 @@
   </div>
 
   @if (voteSuccessTxHash && gnosisscanTxUrl) {
-    <div class="vote-success-backdrop" role="dialog" aria-modal="true" aria-labelledby="vote-success-title">
-      <div class="vote-success-dialog">
-        <div id="vote-success-title" class="vote-success-title">Stimme übermittelt</div>
-        <p class="vote-success-text">Die Transaktion war erfolgreich. Sie können sie im Block-Explorer einsehen:</p>
-        <a class="vote-success-link" [href]="gnosisscanTxUrl" target="_blank" rel="noopener noreferrer">
-          {{ gnosisscanTxUrl }}
-        </a>
-        <button type="button" class="vote-success-ok" (click)="onVoteSuccessOkay()">OK</button>
-      </div>
-    </div>
-  }
-
-  @if (error) {
-    <div>{{error}}</div>
+    <app-message-dialog
+      title="Stimme übermittelt"
+      message="Die Transaktion war erfolgreich. Sie können sie im Block-Explorer einsehen:"
+      [linkUrl]="gnosisscanTxUrl"
+      (okClicked)="onVoteSuccessOkay()"
+    ></app-message-dialog>
   }
 </ion-content>

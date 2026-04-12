@@ -37,6 +37,18 @@
     font-size: $text-medium;
     color: $opn-textgray;
     line-height: 1.4;
+    width: 100%;
+    text-align: center;
+}
+
+.message-link {
+    width: 100%;
+    font-size: $text-small;
+    color: $opn-lightblue;
+    word-break: break-all;
+    text-decoration: underline;
+    text-align: center;
+    line-height: 1.4;
 }
 
 .button {

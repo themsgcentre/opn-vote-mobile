@@ -7,7 +7,7 @@ import { Question } from 'src/app/interfaces/question';
 import { QuestionListComponent } from 'src/app/question-list/question-list.component';
 import { BallotService } from 'src/app/services/ballot-service';
 import { ElectionService } from 'src/app/services/election-service';
-import { IonContent, IonToggle } from "@ionic/angular/standalone";
+import { AlertController, IonContent, IonToggle } from "@ionic/angular/standalone";
 import { QuestionVote } from 'src/app/voting-system/vote';
 import { VoteOption } from 'src/app/voting-system/vote-option';
 import { VoteService } from 'src/app/services/vote-service';
@@ -24,12 +24,13 @@ import { ElectionPdfInformation } from 'src/app/qr-code/election-pdf-info';
 import { formatDate, formatDateTime } from 'src/app/formatting/date-formatting';
 import { UrlPaths } from 'src/app/globals/url';
 import { VoteParticipationStorageService } from 'src/app/services/vote-participation-storage.service';
+import { MessageDialogComponent } from 'src/app/message-dialog/message-dialog.component';
 
 @Component({
   selector: 'app-voting',
   templateUrl: './voting.component.html',
   styleUrls: ['./voting.component.scss'],
-  imports: [CommonModule, QuestionListComponent, IonContent, IonToggle, LineComponent]
+  imports: [CommonModule, QuestionListComponent, IonContent, IonToggle, LineComponent, MessageDialogComponent]
 })
 export class VotingComponent  implements OnInit {
   constructor(
@@ -40,6 +41,7 @@ export class VotingComponent  implements OnInit {
     private votingReminderService: VotingReminderService,
     private ballotService: BallotService,
     private router: Router,
+    private alertController: AlertController,
     private qrCodeService: QrCodeService,
     private pdfService: PdfService,
     private fileSaveService: FileSaveService,
@@ -54,7 +56,6 @@ export class VotingComponent  implements OnInit {
   electionId: number  | null = null;
 
   questionCount: number = 0;
-  error: string | null = null;
   canSubmit = false;
   votes: Record<number, VoteOption> = {};
 
@@ -105,8 +106,17 @@ export class VotingComponent  implements OnInit {
         });
     }
     else {
-      this.error = "Ungültige Wahl-ID";
+      void this.presentVoteError('Ungültige Wahl-ID');
     }
+  }
+
+  private async presentVoteError(message: string): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Fehler',
+      message,
+      buttons: [{ text: 'OK', role: 'cancel' }],
+    });
+    await alert.present();
   }
 
   isBeforeVotingStart(election: ElectionInformation): boolean {
@@ -174,7 +184,6 @@ export class VotingComponent  implements OnInit {
       return;
     }
 
-    this.error = null;
     this.voteSubmitting = true;
 
     try {
@@ -183,12 +192,12 @@ export class VotingComponent  implements OnInit {
       );
 
       if (!credentials) {
-        this.error = 'Keine Voting-Credentials vorhanden';
+        await this.presentVoteError('Keine Voting-Credentials vorhanden');
         return;
       }
 
       if (!publicKey) {
-        this.error = 'Kein Public Key vorhanden';
+        await this.presentVoteError('Kein Public Key vorhanden');
         return;
       }
 
@@ -202,8 +211,8 @@ export class VotingComponent  implements OnInit {
       if (this.electionId != null) {
         void this.voteParticipationStorage.recordVoteCast(this.electionId);
       }
-    } catch (err) {
-      this.error = 'Fehler beim Senden des Votes';
+    } catch(err) {
+      await this.presentVoteError('Fehler beim Senden des Votes');
     } finally {
       this.voteSubmitting = false;
     }
