@@ -87,18 +87,23 @@ export class VotingReminderService {
 
       return { ok: true };
     } catch (e) {
-      console.error('VotingReminderService.scheduleVotingStartReminder', e);
       return { ok: false, reason: 'Die Erinnerung konnte nicht eingerichtet werden.' };
     }
   }
 
-  async cancelVotingStartReminder(electionId: number): Promise<void> {
+  async cancelVotingStartReminder(
+    electionId: number,
+  ): Promise<{ ok: true } | { ok: false; reason: string }> {
     if (Capacitor.isNativePlatform()) {
       try {
         const id = this.notificationIdForElection(electionId);
         await LocalNotifications.cancel({ notifications: [{ id }] });
-      } catch (e) {
-        console.error('VotingReminderService.cancelVotingStartReminder', e);
+      } catch {
+        return {
+          ok: false,
+          reason:
+            'Die Erinnerung konnte nicht ausgeschaltet werden. Bitte erneut versuchen oder die Benachrichtigungsberechtigung in den Systemeinstellungen prüfen.',
+        };
       }
     }
     try {
@@ -106,6 +111,7 @@ export class VotingReminderService {
     } catch {
       // Key may not exist.
     }
+    return { ok: true };
   }
 
   private storageKey(electionId: number): string {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { combineLatest, from, map, Observable, of, switchMap, take, throwError } from 'rxjs';
+import { combineLatest, forkJoin, from, map, Observable, of, switchMap, take, throwError } from 'rxjs';
 import { RegisterProxyService } from './register-proxy-service';
 import { MasterKeyService } from './master-key-service';
 import { Ballot } from '../voting-system/ballot';
@@ -36,6 +36,25 @@ export class BallotService {
         }
         return from(this.ballotMatchesMasterKey(electionId, ballot, masterKey));
       })
+    );
+  }
+
+  listElectionIdsWithValidBallot(): Observable<number[]> {
+    return from(this.loadBallotIndex()).pipe(
+      switchMap((ids) => {
+        if (ids.length === 0) {
+          return of([]);
+        }
+        return forkJoin(
+          ids.map((electionId) =>
+            this.hasBallot(electionId).pipe(
+              map((has) => ({ electionId, has })),
+            ),
+          ),
+        ).pipe(
+          map((pairs) => pairs.filter((p) => p.has).map((p) => p.electionId)),
+        );
+      }),
     );
   }
 

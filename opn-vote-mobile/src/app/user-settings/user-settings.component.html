@@ -5,7 +5,7 @@
     (infoClicked)="openInfoPopup('masterkey')"
     (createClicked)="onCreateMasterKey()"
     (importClicked)="onOpenMasterKeyImport()"
-    (exportClicked)="onExportMasterKey()"
+    (exportClicked)="onMasterKeyExportClicked()"
     (deleteClicked)="masterKeyDeleteDialogOpen = true"
   ></app-master-key-management>
   @if ((masterKeyPanelState$ | async) === 'present') {
@@ -14,6 +14,7 @@
       (infoClicked)="openInfoPopup('ballot')"
       (importClicked)="onOpenBallotImport()"
     ></app-ballot-import>
+    <app-ballot-export></app-ballot-export>
   }
   <app-provider-picker (openInfoPopup)="openInfoPopup('provider')"></app-provider-picker>
 </div>
@@ -59,6 +60,14 @@
     question="Masterschlüssel wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden."
     (yesClicked)="onConfirmDeleteMasterKey()"
     (noClicked)="masterKeyDeleteDialogOpen = false"
+  ></app-question-dialog>
+}
+@if (masterKeyExportConfirmDialogOpen) {
+  <app-question-dialog
+    title="Wahlschlüssel exportieren"
+    [question]="masterKeyExportSecurityQuestion"
+    (yesClicked)="onMasterKeyExportSecurityYes()"
+    (noClicked)="onMasterKeyExportSecurityNo()"
   ></app-question-dialog>
 }
 

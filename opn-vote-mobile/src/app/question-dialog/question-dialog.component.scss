@@ -37,6 +37,10 @@
     font-size: $text-medium;
     color: $opn-textgray;
     line-height: 1.4;
+    white-space: pre-line;
+    text-align: center;
+    max-height: min(50vh, 320px);
+    overflow-y: auto;
 }
 
 .button {

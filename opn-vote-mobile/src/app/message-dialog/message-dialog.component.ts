@@ -10,6 +10,8 @@ export class MessageDialogComponent {
 
   @Output() okClicked: EventEmitter<void> = new EventEmitter<void>();
   @Input() message: string = '';
-  @Input() title: string = 'Information'
+  @Input() title: string = 'Information';
+  @Input() linkUrl?: string;
+  @Input() linkLabel?: string;
 
 }

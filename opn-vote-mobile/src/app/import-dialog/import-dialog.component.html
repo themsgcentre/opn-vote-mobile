@@ -28,5 +28,12 @@
           (change)="onUploadInputChange($event)"
         />
       </label>
+      <button
+        type="button"
+        class="import-cancel-button"
+        (click)="dismissed.emit()"
+      >
+        Abbrechen
+      </button>
   </div>
 </div>

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AlertController } from '@ionic/angular/standalone';
 import { AsyncPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import {
@@ -33,6 +34,7 @@ import { QrScanDialogComponent } from '../qr-scan-dialog/qr-scan-dialog.componen
 import { MessageDialogComponent } from '../message-dialog/message-dialog.component';
 import { QuestionDialogComponent } from '../question-dialog/question-dialog.component';
 import { BallotImportComponent } from '../ballot-import/ballot-import.component';
+import { BallotExportComponent } from '../ballot-export/ballot-export.component';
 import { VoteParticipationStorageService } from '../services/vote-participation-storage.service';
 
 type InfoPopupType = 'masterkey' | 'provider' | 'ballot' | null;
@@ -51,6 +53,7 @@ type InfoPopupType = 'masterkey' | 'provider' | 'ballot' | null;
     MessageDialogComponent,
     QuestionDialogComponent,
     BallotImportComponent,
+    BallotExportComponent,
   ],
 })
 export class UserSettingsComponent {
@@ -74,6 +77,13 @@ export class UserSettingsComponent {
   masterKeyQrScanOpened = false;
   masterKeyImportSuccess = false;
   masterKeyDeleteDialogOpen = false;
+  masterKeyExportConfirmDialogOpen = false;
+
+  readonly masterKeyExportSecurityQuestion =
+    'Solange der Wahlschlüssel nur in dieser App liegt, ist er im sicheren Speicher geschützt. ' +
+    'Mit dem Export verlässt er diesen Bereich – danach kann die App keine Sicherheit mehr für die Datei übernehmen. ' +
+    'Geben Sie die PDF nicht weiter und bewahren Sie sie sorgfältig auf. ' +
+    'Möchten Sie den Wahlschlüssel wirklich exportieren?';
 
   ballotImportError: string | null = null;
   ballotImportDialogOpened = false;
@@ -91,7 +101,17 @@ export class UserSettingsComponent {
     private fileSaveService: FileSaveService,
     private importService: ImportService,
     private voteParticipationStorage: VoteParticipationStorageService,
+    private alertController: AlertController,
   ) {}
+
+  private async presentMasterKeyExportError(): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Fehler',
+      message: 'Der Wahlschlüssel konnte nicht exportiert werden.',
+      buttons: [{ text: 'OK', role: 'cancel' }],
+    });
+    await alert.present();
+  }
 
   openInfoPopup(type: InfoPopupType): void {
     this.activeInfoPopup = type;
@@ -140,7 +160,20 @@ export class UserSettingsComponent {
     });
   }
 
-  onExportMasterKey(): void {
+  onMasterKeyExportClicked(): void {
+    this.masterKeyExportConfirmDialogOpen = true;
+  }
+
+  onMasterKeyExportSecurityNo(): void {
+    this.masterKeyExportConfirmDialogOpen = false;
+  }
+
+  onMasterKeyExportSecurityYes(): void {
+    this.masterKeyExportConfirmDialogOpen = false;
+    this.runMasterKeyPdfExport();
+  }
+
+  private runMasterKeyPdfExport(): void {
     this.masterKeyService
       .getMasterKey()
       .pipe(
@@ -176,8 +209,8 @@ export class UserSettingsComponent {
         })
       )
       .subscribe({
-        error: (err) => {
-          console.error('Fehler beim Export:', err);
+        error: () => {
+          void this.presentMasterKeyExportError();
         },
       });
   }

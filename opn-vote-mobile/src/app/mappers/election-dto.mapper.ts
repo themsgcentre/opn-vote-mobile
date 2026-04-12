@@ -26,6 +26,6 @@ export function parseElectionDTO(raw: RawElection): ElectionDTO {
     totalVotes: toNumber(raw.totalVotes),
     transactionHash: String(raw.transactionHash ?? ''),
     votingEndTime: toNumber(raw.votingEndTime),
-    votingStartTime: new Date('2026-04-02T14:04:00').getTime() / 1000, 
+    votingStartTime: toNumber(raw.votingStartTime),
   };
 }
