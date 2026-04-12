@@ -9,8 +9,7 @@ describe('BallotImportComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ BallotImportComponent ],
-      imports: [IonicModule.forRoot()]
+      imports: [BallotImportComponent, IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(BallotImportComponent);

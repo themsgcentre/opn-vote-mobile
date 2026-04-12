@@ -9,8 +9,7 @@ describe('NavigationBarComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ NavigationBarComponent ],
-      imports: [IonicModule.forRoot()]
+      imports: [NavigationBarComponent, IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(NavigationBarComponent);

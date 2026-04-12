@@ -9,8 +9,7 @@ describe('NavigationButtonComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ NavigationButtonComponent ],
-      imports: [IonicModule.forRoot()]
+      imports: [NavigationButtonComponent, IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(NavigationButtonComponent);

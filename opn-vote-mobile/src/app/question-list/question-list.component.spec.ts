@@ -9,8 +9,7 @@ describe('QuestionListComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ QuestionListComponent ],
-      imports: [IonicModule.forRoot()]
+      imports: [QuestionListComponent, IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(QuestionListComponent);

@@ -1,18 +1,16 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ElectionInformation } from 'src/app/interfaces/election';
 import { ImageComponent } from 'src/app/home-page/image/image.component';
+import { VotingCountdownComponent } from '../voting-countdown/voting-countdown.component';
 
 @Component({
   selector: 'app-election-overview',
   standalone: true,
   templateUrl: './election-overview.component.html',
   styleUrls: ['./election-overview.component.scss'],
-  imports: [ImageComponent]
+  imports: [ImageComponent, VotingCountdownComponent],
 })
-export class ElectionOverviewComponent implements OnChanges {
-  @Input() election: ElectionInformation | undefined; 
-  daysTilEnd: number = 0;
-
-  ngOnChanges(): void {
-  }
+export class ElectionOverviewComponent {
+  @Input() election: ElectionInformation | undefined;
+  @Input() showVotingCountdown = false;
 }

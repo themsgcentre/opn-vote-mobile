@@ -1,5 +1,9 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
+import { of } from 'rxjs';
+
+import { ElectionService } from 'src/app/services/election-service';
 
 import { ElectionDetailViewComponent } from './election-detail-view.component';
 
@@ -9,8 +13,18 @@ describe('ElectionDetailViewComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ElectionDetailViewComponent ],
-      imports: [IonicModule.forRoot()]
+      imports: [ElectionDetailViewComponent, IonicModule.forRoot()],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            paramMap: of(convertToParamMap({ id: '1' })),
+            snapshot: { paramMap: convertToParamMap({ id: '1' }) },
+          },
+        },
+        { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
+        { provide: ElectionService, useValue: { getElectionInformation: () => of(null) } },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ElectionDetailViewComponent);
