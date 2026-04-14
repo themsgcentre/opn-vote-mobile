@@ -16,7 +16,7 @@ type HomeTab = 'upcoming' | 'pending' | 'running' | 'finished';
   imports: [IonContent, ElectionListComponent, CommonModule],
 })
 export class HomePageComponent implements OnInit {
-  openElection$: Observable<ElectionInformation[]> = of([]);
+  elections$: Observable<ElectionInformation[]> = of([]);
 
   allElections: ElectionInformation[] = [];
   filteredElections: ElectionInformation[] = [];
@@ -30,9 +30,9 @@ export class HomePageComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.openElection$ = this.electionService.getAllElectionInformations();
+    this.elections$ = this.electionService.getAllElectionInformations();
 
-    this.openElection$.subscribe((elections) => {
+    this.elections$.subscribe((elections) => {
       this.allElections = elections;
       this.applyFilters();
     });
