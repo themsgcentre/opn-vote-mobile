@@ -64,10 +64,9 @@ export class HomePageComponent implements OnInit {
     switch (this.selectedTab) {
       case 'upcoming':
         return elections.filter((election) => {
-          const registrationStart = new Date(election.registrationStart);
           const registrationEnd = new Date(election.registrationEnd);
           const votingStart = new Date(election.votingStart);
-          return registrationStart <= now && now <= registrationEnd && now < votingStart;
+          return now <= registrationEnd && now < votingStart;
         });
 
       case 'running':
