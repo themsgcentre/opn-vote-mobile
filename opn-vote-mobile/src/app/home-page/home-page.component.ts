@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ElectionService } from '../services/election-service';
 import { ElectionInformation } from '../interfaces/election';
+import { TranslatePipe } from '../i18n/translate.pipe';
 
 type HomeTab = 'upcoming' | 'pending' | 'running' | 'finished';
 
@@ -13,7 +14,7 @@ type HomeTab = 'upcoming' | 'pending' | 'running' | 'finished';
   selector: 'app-home-page',
   templateUrl: './home-page.component.html',
   styleUrls: ['./home-page.component.scss'],
-  imports: [IonContent, ElectionListComponent, CommonModule],
+  imports: [IonContent, ElectionListComponent, CommonModule, TranslatePipe],
 })
 export class HomePageComponent implements OnInit {
   elections$: Observable<ElectionInformation[]> = of([]);

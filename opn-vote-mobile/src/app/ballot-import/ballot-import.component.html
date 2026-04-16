@@ -2,7 +2,7 @@
   <div class="section-title">
     <span class="title-with-icon">
       <i class="bi bi-envelope-fill"></i>
-      <span>Wahlschein</span>
+      <span>{{ 'ballotImport.title' | translate }}</span>
       <i
         class="bi bi-question-circle-fill info-icon"
         (click)="infoClicked.emit()"
@@ -16,6 +16,6 @@
   }
 
   <button type="button" class="action-button primary" (click)="importClicked.emit()">
-    Wahlschein importieren
+    {{ 'ballotImport.importButton' | translate }}
   </button>
 </div>

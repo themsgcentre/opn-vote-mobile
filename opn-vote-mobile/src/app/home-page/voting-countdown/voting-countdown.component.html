@@ -1,11 +1,11 @@
 @if (showCountdown && state !== 'none') {
   <div class="countdown-strip" aria-live="polite">
     @if (state === 'countdown') {
-      <span class="countdown-label">Abstimmung beginnt in</span>
+      <span class="countdown-label">{{ 'votingCountdown.startsIn' | translate }}</span>
       <span class="countdown-value">{{ countdownText }}</span>
     }
     @if (state === 'open') {
-      <span class="countdown-open">Jetzt abstimmen!</span>
+      <span class="countdown-open">{{ 'votingCountdown.voteNow' | translate }}</span>
     }
   </div>
 }

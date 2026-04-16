@@ -1,10 +1,10 @@
 <ion-content>
   <div class="page-container">
     @if (registeredElections.length === 0 && votedElections.length === 0) {
-      <p class="empty-state">Du hast noch an nichts teilgenommen.</p>
+      <p class="empty-state">{{ 'voteHistory.empty' | translate }}</p>
     } @else {
       @if (registeredElections.length > 0) {
-        <h2 class="section-heading">Hierfür bist du registriert:</h2>
+        <h2 class="section-heading">{{ 'voteHistory.registered' | translate }}</h2>
         <div class="list-container">
           <app-election-list
             [elections]="registeredElections"
@@ -19,7 +19,7 @@
           class="section-heading"
           [class.section-heading-spaced]="registeredElections.length > 0"
         >
-          Hier hast du bereits abgestimmt:
+          {{ 'voteHistory.voted' | translate }}
         </h2>
         <div class="list-container">
           <app-election-list

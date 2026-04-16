@@ -2,7 +2,7 @@
   <div class="question-dialog">
     <div id="question-title" class="question-title">{{title}}</div>
     <div class="question-text"> {{question}}</div>
-    <button class="button" (click)="yesClicked.emit()"> Ja </button>
-    <button class="button" (click)="noClicked.emit()"> Nein </button>
+    <button class="button" (click)="yesClicked.emit()">{{ 'common.yes' | translate }}</button>
+    <button class="button" (click)="noClicked.emit()">{{ 'common.no' | translate }}</button>
   </div>
 </div>

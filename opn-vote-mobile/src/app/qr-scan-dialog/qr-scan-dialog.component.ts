@@ -9,15 +9,19 @@ import {
   inject,
 } from '@angular/core';
 import { Html5Qrcode, Html5QrcodeScannerState } from 'html5-qrcode';
+import { TranslatePipe } from '../i18n/translate.pipe';
+import { TranslationService } from '../i18n/translation.service';
 
 @Component({
   selector: 'app-qr-scan-dialog',
   standalone: true,
   templateUrl: './qr-scan-dialog.component.html',
   styleUrls: ['./qr-scan-dialog.component.scss'],
+  imports: [TranslatePipe],
 })
 export class QrScanDialogComponent implements AfterViewInit, OnDestroy {
   private readonly ngZone = inject(NgZone);
+  private readonly translation = inject(TranslationService);
   private html5QrCode: Html5Qrcode | null = null;
   
   @Input() readerElementId = 'mk-import-qr-reader';
@@ -69,8 +73,7 @@ export class QrScanDialogComponent implements AfterViewInit, OnDestroy {
     } catch {
       await this.stopScanner();
       this.ngZone.run(() => {
-        this.cameraError =
-          'Kamera konnte nicht gestartet werden. Bitte Berechtigung erteilen oder in den Einstellungen erlauben.';
+        this.cameraError = this.translation.translate('qrScan.cameraError');
       });
     }
   }

@@ -1,31 +1,41 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AlertController, IonContent, IonToggle } from '@ionic/angular/standalone';
 import { combineLatest, filter, firstValueFrom, from, Observable, of, switchMap, take } from 'rxjs';
+import { formatDateTime } from 'src/app/formatting/date-formatting';
+import { TranslatePipe } from 'src/app/i18n/translate.pipe';
+import { TranslationService } from 'src/app/i18n/translation.service';
 import { ElectionInformation } from 'src/app/interfaces/election';
 import { Question } from 'src/app/interfaces/question';
+import { VoterCredentials } from 'src/app/interfaces/voter-credentials';
+import { MessageDialogComponent } from 'src/app/message-dialog/message-dialog.component';
 import { QuestionListComponent } from 'src/app/question-list/question-list.component';
+import { LineComponent } from 'src/app/reusables/line/line.component';
 import { BallotService } from 'src/app/services/ballot-service';
 import { ElectionService } from 'src/app/services/election-service';
-import { AlertController, IonContent, IonToggle } from "@ionic/angular/standalone";
-import { QuestionVote } from 'src/app/voting-system/vote';
-import { VoteOption } from 'src/app/voting-system/vote-option';
-import { VoteService } from 'src/app/services/vote-service';
 import { VoteDraftService } from 'src/app/services/vote-draft-service';
-import { VotingReminderService } from 'src/app/services/voting-reminder-service';
-import { LineComponent } from 'src/app/reusables/line/line.component';
-import { VoterCredentials } from 'src/app/interfaces/voter-credentials';
-import { formatDateTime } from 'src/app/formatting/date-formatting';
 import { VoteParticipationStorageService } from 'src/app/services/vote-participation-storage.service';
-import { MessageDialogComponent } from 'src/app/message-dialog/message-dialog.component';
+import { VoteService } from 'src/app/services/vote-service';
+import { VotingReminderService } from 'src/app/services/voting-reminder-service';
+import { VoteOption } from 'src/app/voting-system/vote-option';
+import { QuestionVote } from 'src/app/voting-system/vote';
 
 @Component({
   selector: 'app-voting',
   templateUrl: './voting.component.html',
   styleUrls: ['./voting.component.scss'],
-  imports: [CommonModule, QuestionListComponent, IonContent, IonToggle, LineComponent, MessageDialogComponent]
+  imports: [
+    CommonModule,
+    QuestionListComponent,
+    IonContent,
+    IonToggle,
+    LineComponent,
+    MessageDialogComponent,
+    TranslatePipe,
+  ],
 })
-export class VotingComponent  implements OnInit {
+export class VotingComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private electionService: ElectionService,
@@ -36,16 +46,17 @@ export class VotingComponent  implements OnInit {
     private router: Router,
     private alertController: AlertController,
     private voteParticipationStorage: VoteParticipationStorageService,
-  ) { }
+    readonly translation: TranslationService,
+  ) {}
 
   election$: Observable<ElectionInformation | null> = new Observable();
   questions$: Observable<Question[]> = new Observable();
   hasBallot$: Observable<boolean> = new Observable();
   credentials$: Observable<VoterCredentials | null> = new Observable();
   publicKey$: Observable<string | undefined> = new Observable();
-  electionId: number  | null = null;
+  electionId: number | null = null;
 
-  questionCount: number = 0;
+  questionCount = 0;
   canSubmit = false;
   votes: Record<number, VoteOption> = {};
 
@@ -64,12 +75,12 @@ export class VotingComponent  implements OnInit {
       : null;
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
     const electionId = idParam ? Number(idParam) : NaN;
 
-    if(!isNaN(electionId)) {
-      this.electionId = electionId
+    if (!isNaN(electionId)) {
+      this.electionId = electionId;
       this.election$ = this.electionService.getElectionInformation(electionId);
       this.questions$ = this.electionService.loadQuestions(electionId);
       this.questions$.subscribe((questions) => {
@@ -78,7 +89,7 @@ export class VotingComponent  implements OnInit {
       });
       void this.restoreVoteDraft(electionId);
       this.hasBallot$ = this.ballotService.hasBallot(electionId);
-      this.publicKey$ = this.electionService.getPublicKey(electionId)
+      this.publicKey$ = this.electionService.getPublicKey(electionId);
       this.credentials$ = this.ballotService.getCredentials(electionId);
 
       this.election$
@@ -94,19 +105,9 @@ export class VotingComponent  implements OnInit {
         .subscribe((scheduled) => {
           this.reminderScheduled = scheduled;
         });
+    } else {
+      void this.presentVoteError(this.translation.translate('voting.invalidElectionId'));
     }
-    else {
-      void this.presentVoteError('Ungültige Wahl-ID');
-    }
-  }
-
-  private async presentVoteError(message: string): Promise<void> {
-    const alert = await this.alertController.create({
-      header: 'Fehler',
-      message,
-      buttons: [{ text: 'OK', role: 'cancel' }],
-    });
-    await alert.present();
   }
 
   isBeforeVotingStart(election: ElectionInformation): boolean {
@@ -154,12 +155,65 @@ export class VotingComponent  implements OnInit {
     }
   }
 
-  voteUpdated(vote: QuestionVote) {
+  voteUpdated(vote: QuestionVote): void {
     this.votes[vote.key] = vote.selected;
     this.updateCanSubmit();
     if (this.electionId != null) {
       void this.voteDraftService.save(this.electionId, this.votes);
     }
+  }
+
+  async submitVote(): Promise<void> {
+    if (this.voteSubmitting) {
+      return;
+    }
+
+    this.voteSubmitting = true;
+
+    try {
+      const [credentials, publicKey] = await firstValueFrom(
+        combineLatest([this.credentials$, this.publicKey$]),
+      );
+
+      if (!credentials) {
+        await this.presentVoteError(this.translation.translate('voting.missingCredentials'));
+        return;
+      }
+
+      if (!publicKey) {
+        await this.presentVoteError(this.translation.translate('voting.missingPublicKey'));
+        return;
+      }
+
+      const txHash = await this.voteService.sendVotes(this.votes, credentials, publicKey);
+
+      this.voteSuccessTxHash = txHash;
+      if (this.electionId != null) {
+        void this.voteParticipationStorage.recordVoteCast(this.electionId);
+      }
+    } catch {
+      await this.presentVoteError(this.translation.translate('voting.sendError'));
+    } finally {
+      this.voteSubmitting = false;
+    }
+  }
+
+  onVoteSuccessOkay(): void {
+    this.voteSuccessTxHash = null;
+    this.onVoteSuccessAcknowledged();
+  }
+
+  onVoteSuccessAcknowledged(): void {
+    void this.router.navigateByUrl('election/detail/' + this.electionId);
+  }
+
+  private async presentVoteError(message: string): Promise<void> {
+    const alert = await this.alertController.create({
+      header: this.translation.translate('common.error'),
+      message,
+      buttons: [{ text: this.translation.translate('common.ok'), role: 'cancel' }],
+    });
+    await alert.present();
   }
 
   private updateCanSubmit(): void {
@@ -173,53 +227,5 @@ export class VotingComponent  implements OnInit {
     }
     this.votes = { ...draft };
     this.updateCanSubmit();
-  }
-
-  async submitVote() {
-    if (this.voteSubmitting) {
-      return;
-    }
-
-    this.voteSubmitting = true;
-
-    try {
-      const [credentials, publicKey] = await firstValueFrom(
-        combineLatest([this.credentials$, this.publicKey$])
-      );
-
-      if (!credentials) {
-        await this.presentVoteError('Keine Voting-Credentials vorhanden');
-        return;
-      }
-
-      if (!publicKey) {
-        await this.presentVoteError('Kein Public Key vorhanden');
-        return;
-      }
-
-      const txHash = await this.voteService.sendVotes(
-        this.votes,
-        credentials,
-        publicKey,
-      );
-
-      this.voteSuccessTxHash = txHash;
-      if (this.electionId != null) {
-        void this.voteParticipationStorage.recordVoteCast(this.electionId);
-      }
-    } catch {
-      await this.presentVoteError('Fehler beim Senden des Votes');
-    } finally {
-      this.voteSubmitting = false;
-    }
-  }
-
-  onVoteSuccessOkay(): void {
-    this.voteSuccessTxHash = null;
-    this.onVoteSuccessAcknowledged();
-  }
-
-  onVoteSuccessAcknowledged(): void {
-    this.router.navigateByUrl('election/detail/' + this.electionId);
   }
 }

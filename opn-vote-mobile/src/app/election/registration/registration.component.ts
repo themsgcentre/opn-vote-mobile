@@ -1,13 +1,15 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { BehaviorSubject, combineLatest, EMPTY, forkJoin, Observable, switchMap, take, throwError } from 'rxjs';
-import { MasterKeySetupComponent } from 'src/app/credentials/master-key-setup/master-key-setup.component';
-import { BallotService } from 'src/app/services/ballot-service';
-import { MasterKeyService } from 'src/app/services/master-key-service';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ElectionService } from 'src/app/services/election-service';
-import { VoteParticipationStorageService } from 'src/app/services/vote-participation-storage.service';
+import { BehaviorSubject, EMPTY, Observable, combineLatest, forkJoin, switchMap, take, throwError } from 'rxjs';
+import { MasterKeySetupComponent } from 'src/app/credentials/master-key-setup/master-key-setup.component';
+import { TranslatePipe } from 'src/app/i18n/translate.pipe';
+import { TranslationService } from 'src/app/i18n/translation.service';
 import { ApJwtService } from 'src/app/services/ap-jwt.service';
+import { BallotService } from 'src/app/services/ballot-service';
+import { ElectionService } from 'src/app/services/election-service';
+import { MasterKeyService } from 'src/app/services/master-key-service';
+import { VoteParticipationStorageService } from 'src/app/services/vote-participation-storage.service';
 
 const AP_AUTH_COUNTDOWN_SECONDS = 3;
 const AP_AUTH_SUCCESS_DISPLAY_MS = 1500;
@@ -24,7 +26,7 @@ type RegistrationView =
   selector: 'app-registration',
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.scss'],
-  imports: [MasterKeySetupComponent],
+  imports: [MasterKeySetupComponent, TranslatePipe],
 })
 export class RegistrationComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
@@ -37,6 +39,7 @@ export class RegistrationComponent implements OnInit {
     private electionService: ElectionService,
     private voteParticipationStorage: VoteParticipationStorageService,
     private apJwtService: ApJwtService,
+    private translation: TranslationService,
   ) {}
 
   electionId: number = NaN;
@@ -49,16 +52,15 @@ export class RegistrationComponent implements OnInit {
 
   private readonly refresh$ = new BehaviorSubject<void>(undefined);
 
-  private hasMasterKey$: Observable<boolean> = this.refresh$.pipe(
+  private readonly hasMasterKey$: Observable<boolean> = this.refresh$.pipe(
     switchMap(() => this.masterKeyService.hasMasterKey()),
   );
 
-  private hasBallot$: Observable<boolean> = this.refresh$.pipe(
+  private readonly hasBallot$: Observable<boolean> = this.refresh$.pipe(
     switchMap(() => this.ballotService.hasBallot(this.electionId)),
   );
 
   private autoBallotRequestStarted = false;
-
   private apAuthInFlight = false;
 
   apAuthOverlayText = '';
@@ -69,7 +71,7 @@ export class RegistrationComponent implements OnInit {
     this.jwt = this.route.snapshot.paramMap.get('jwt');
 
     if (!Number.isFinite(this.electionId)) {
-      this.error = 'Ungültige Wahl-ID';
+      this.error = this.translation.translate('registration.invalidElectionId');
       this.view = 'error';
       return;
     }
@@ -80,7 +82,7 @@ export class RegistrationComponent implements OnInit {
         take(1),
         switchMap((election) => {
           if (!election) {
-            this.error = 'Wahl nicht gefunden';
+            this.error = this.translation.translate('registration.electionNotFound');
             this.view = 'error';
             return EMPTY;
           }
@@ -95,15 +97,12 @@ export class RegistrationComponent implements OnInit {
           return;
         }
 
-        //#region limit registration if registration period has ended
         if (this.registrationEnded) {
-          this.error =
-            'Die Registrierungsfrist ist abgelaufen. Ohne einen auf diesem Gerät bereits erstellten Wahlschein ist eine Registrierung nicht mehr möglich.';
+          this.error = this.translation.translate('registration.registrationClosed');
           this.view = 'registrationClosed';
           this.autoBallotRequestStarted = false;
           return;
         }
-        //#endregion
 
         if (!hasMasterKey) {
           this.view = 'masterkey';
@@ -126,8 +125,7 @@ export class RegistrationComponent implements OnInit {
             })
             .catch(() => {
               this.apAuthInFlight = false;
-              this.error =
-                'Autorisierung beim Authorization Provider ist fehlgeschlagen. Bitte erneut versuchen.';
+              this.error = this.translation.translate('registration.authorizationFailed');
               this.view = 'error';
             });
           return;
@@ -144,6 +142,20 @@ export class RegistrationComponent implements OnInit {
       });
   }
 
+  goHome(): void {
+    void this.router.navigateByUrl('/home');
+  }
+
+  onCreateMasterKey(): void {
+    this.masterKeyService.createNewMasterKey().subscribe({
+      next: () => this.refresh$.next(),
+      error: () => {
+        this.error = this.translation.translate('registration.createMasterKeyError');
+        this.view = 'error';
+      },
+    });
+  }
+
   private sleep(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
@@ -151,20 +163,21 @@ export class RegistrationComponent implements OnInit {
   private async obtainJwtWithDemoUx(): Promise<string> {
     const apName = this.apJwtService.getProviderDisplayName(this.electionId);
     for (let s = AP_AUTH_COUNTDOWN_SECONDS; s >= 1; s--) {
-      this.apAuthOverlayText = `Weiterleitung zu ${apName} in ${s} Sekunden …`;
+      this.apAuthOverlayText = this.translation.translate('registration.redirectCountdown', {
+        provider: apName,
+        seconds: s,
+      });
       await this.sleep(1000);
     }
-    this.apAuthOverlayText = `Autorisierung bei ${apName} …`;
+    this.apAuthOverlayText = this.translation.translate('registration.authorizing', {
+      provider: apName,
+    });
     const voterId = Date.now();
     const { token } = await this.apJwtService.fetchJwtForElection(this.electionId, voterId);
-    this.apAuthOverlayText = 'Erfolgreich autorisiert';
+    this.apAuthOverlayText = this.translation.translate('registration.authorized');
     await this.sleep(AP_AUTH_SUCCESS_DISPLAY_MS);
     this.apAuthOverlayText = '';
     return token;
-  }
-
-  goHome(): void {
-    void this.router.navigateByUrl('/home');
   }
 
   private runAutoBallotCreation(): void {
@@ -175,7 +188,9 @@ export class RegistrationComponent implements OnInit {
       .pipe(
         switchMap(({ n, e }) => {
           if (!n || !e) {
-            return throwError(() => new Error('Election Daten unvollständig'));
+            return throwError(
+              () => new Error(this.translation.translate('registration.incompleteElectionData')),
+            );
           }
           return this.ballotService.createBallot(this.electionId, this.jwt!, n, e);
         }),
@@ -183,20 +198,11 @@ export class RegistrationComponent implements OnInit {
       .subscribe({
         next: () => this.refresh$.next(),
         error: (err: { message?: string }) => {
-          this.error = err?.message || 'Wahlschein konnte nicht erstellt werden.';
+          this.error =
+            err?.message || this.translation.translate('registration.ballotCreateError');
           this.view = 'error';
         },
       });
-  }
-
-  onCreateMasterKey(): void {
-    this.masterKeyService.createNewMasterKey().subscribe({
-      next: () => this.refresh$.next(),
-      error: () => {
-        this.error = 'Master-Key konnte nicht erstellt werden.';
-        this.view = 'error';
-      },
-    });
   }
 
   private redirectToVoting(): void {

@@ -6,34 +6,40 @@
   (click)="onBackdropClick()"
 >
   <div class="import-dialog" (click)="$event.stopPropagation()">
-    <div id="import-title" class="import-title">{{item}} importieren.</div>
-      @if(additionalInfo) {
-        <div class="additional">{{additionalInfo}}</div>
-      }
-      <div class="import-text">Wähle eine Option: </div>
-      <div class="button" (click)="scanSelected.emit()">
-        <i class="bi bi-camera-fill import-button-icon" aria-hidden="true"></i>
-        <span>QR-Code scannen</span>
-      </div>
-      <label class="button import-file-label">
-        <span class="import-file-label-visible">
-          <i class="bi bi-file-earmark-arrow-up import-button-icon" aria-hidden="true"></i>
-          <span>{{ allowMultipleFiles ? 'PDF(s) hochladen' : 'PDF hochladen' }}</span>
-        </span>
-        <input
-          type="file"
-          class="import-dialog-file-input"
-          [accept]="uploadAccept"
-          [attr.multiple]="allowMultipleFiles ? '' : null"
-          (change)="onUploadInputChange($event)"
-        />
-      </label>
-      <button
-        type="button"
-        class="import-cancel-button"
-        (click)="dismissed.emit()"
-      >
-        Abbrechen
-      </button>
+    <div id="import-title" class="import-title">
+      {{ 'importDialog.title' | translate:{ item: item } }}
+    </div>
+    @if (additionalInfo) {
+      <div class="additional">{{ additionalInfo }}</div>
+    }
+    <div class="import-text">{{ 'importDialog.chooseOption' | translate }}</div>
+    <div class="button" (click)="scanSelected.emit()">
+      <i class="bi bi-camera-fill import-button-icon" aria-hidden="true"></i>
+      <span>{{ 'importDialog.scanQr' | translate }}</span>
+    </div>
+    <label class="button import-file-label">
+      <span class="import-file-label-visible">
+        <i class="bi bi-file-earmark-arrow-up import-button-icon" aria-hidden="true"></i>
+        <span>{{
+          allowMultipleFiles
+            ? ('importDialog.uploadPdfs' | translate)
+            : ('importDialog.uploadPdf' | translate)
+        }}</span>
+      </span>
+      <input
+        type="file"
+        class="import-dialog-file-input"
+        [accept]="uploadAccept"
+        [attr.multiple]="allowMultipleFiles ? '' : null"
+        (change)="onUploadInputChange($event)"
+      />
+    </label>
+    <button
+      type="button"
+      class="import-cancel-button"
+      (click)="dismissed.emit()"
+    >
+      {{ 'common.cancel' | translate }}
+    </button>
   </div>
 </div>

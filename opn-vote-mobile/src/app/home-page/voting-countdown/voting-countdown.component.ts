@@ -4,8 +4,11 @@ import {
   OnChanges,
   OnDestroy,
   SimpleChanges,
+  inject,
 } from '@angular/core';
 import { ElectionInformation } from 'src/app/interfaces/election';
+import { TranslatePipe } from '../../i18n/translate.pipe';
+import { TranslationService } from '../../i18n/translation.service';
 
 type CountdownState = 'none' | 'countdown' | 'open';
 
@@ -14,8 +17,10 @@ type CountdownState = 'none' | 'countdown' | 'open';
   standalone: true,
   templateUrl: './voting-countdown.component.html',
   styleUrls: ['./voting-countdown.component.scss'],
+  imports: [TranslatePipe],
 })
 export class VotingCountdownComponent implements OnChanges, OnDestroy {
+  private readonly translation = inject(TranslationService);
   @Input() election!: ElectionInformation;
   @Input() showCountdown = false;
 
@@ -77,7 +82,10 @@ export class VotingCountdownComponent implements OnChanges, OnDestroy {
     const d = Math.floor(totalSec / 86400);
     const pad = (n: number) => String(n).padStart(2, '0');
     if (d > 0) {
-      return `${d} Tag${d === 1 ? '' : 'e'}, ${pad(h)}:${pad(m)}:${pad(s)}`;
+      const dayLabel = this.translation.translate(
+        d === 1 ? 'votingCountdown.day' : 'votingCountdown.days',
+      );
+      return `${d} ${dayLabel}, ${pad(h)}:${pad(m)}:${pad(s)}`;
     }
     return `${pad(h)}:${pad(m)}:${pad(s)}`;
   }

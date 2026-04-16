@@ -1,6 +1,8 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { NgClass } from '@angular/common';
+import { Component, EventEmitter, Input, OnChanges, Output, inject } from '@angular/core';
 import { ImageComponent } from 'src/app/home-page/image/image.component';
+import { TranslatePipe } from 'src/app/i18n/translate.pipe';
+import { TranslationService } from 'src/app/i18n/translation.service';
 import { ElectionInformation } from 'src/app/interfaces/election';
 
 @Component({
@@ -8,9 +10,11 @@ import { ElectionInformation } from 'src/app/interfaces/election';
   standalone: true,
   templateUrl: './election-detail.component.html',
   styleUrls: ['./election-detail.component.scss'],
-  imports: [ImageComponent, NgClass]
+  imports: [ImageComponent, NgClass, TranslatePipe],
 })
 export class ElectionDetailComponent implements OnChanges {
+  private readonly translation = inject(TranslationService);
+
   @Input() election: ElectionInformation | null = null;
   @Output() participateClicked: EventEmitter<void> = new EventEmitter<void>();
 
@@ -23,7 +27,9 @@ export class ElectionDetailComponent implements OnChanges {
   phaseClass = '';
 
   ngOnChanges(): void {
-    if (!this.election) return;
+    if (!this.election) {
+      return;
+    }
 
     const now = Date.now();
 
@@ -38,19 +44,19 @@ export class ElectionDetailComponent implements OnChanges {
     this.isElectionFinished = now >= votingEnd;
 
     if (this.isElectionFinished) {
-      this.phaseLabel = 'Beendet';
+      this.phaseLabel = this.translation.translate('electionDetail.phase.ended');
       this.phaseClass = 'ended';
     } else if (this.isVotingOpen) {
-      this.phaseLabel = 'Abstimmung läuft';
+      this.phaseLabel = this.translation.translate('electionDetail.phase.voting');
       this.phaseClass = 'voting';
     } else if (this.isRegistrationOpen) {
-      this.phaseLabel = 'Registrierung läuft';
+      this.phaseLabel = this.translation.translate('electionDetail.phase.registration');
       this.phaseClass = 'registration';
     } else if (this.isBeforeRegistration) {
-      this.phaseLabel = 'Noch nicht gestartet';
+      this.phaseLabel = this.translation.translate('electionDetail.phase.upcoming');
       this.phaseClass = 'upcoming';
     } else {
-      this.phaseLabel = 'Geplant';
+      this.phaseLabel = this.translation.translate('electionDetail.phase.planned');
       this.phaseClass = 'upcoming';
     }
   }
@@ -62,7 +68,7 @@ export class ElectionDetailComponent implements OnChanges {
   formatDate(date: Date): string {
     return new Intl.DateTimeFormat('de-DE', {
       dateStyle: 'medium',
-      timeStyle: 'short'
+      timeStyle: 'short',
     }).format(new Date(date));
   }
 

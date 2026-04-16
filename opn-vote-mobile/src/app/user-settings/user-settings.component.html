@@ -25,7 +25,7 @@
       <div class="info-modal-title">{{ popupTitle }}</div>
       <div class="info-modal-text">{{ popupText }}</div>
       <div class="info-modal-button" (click)="closeInfoPopup()">
-        Verstanden
+        {{ 'common.understood' | translate }}
       </div>
     </div>
   </div>
@@ -33,7 +33,7 @@
 
 @if (masterKeyImportDialogOpened) {
   <app-import-dialog
-    item="Masterschlüssel"
+    [item]="'masterKey.importFlow.item' | translate"
     [allowMultipleFiles]="false"
     (dismissed)="masterKeyImportDialogOpened = false"
     (scanSelected)="masterKeyImportViaScan()"
@@ -49,22 +49,22 @@
 }
 @if (masterKeyImportSuccess) {
   <app-message-dialog
-    title="Masterkey Import"
-    message="Import erfolgreich!"
+    [title]="'masterKey.importFlow.successTitle' | translate"
+    [message]="'masterKey.importFlow.successMessage' | translate"
     (okClicked)="closeMasterKeyImportSuccess()"
   ></app-message-dialog>
 }
 @if (masterKeyDeleteDialogOpen) {
   <app-question-dialog
-    title="Masterschlüssel löschen"
-    question="Masterschlüssel wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden."
+    [title]="'masterKey.importFlow.deleteTitle' | translate"
+    [question]="'masterKey.importFlow.deleteQuestion' | translate"
     (yesClicked)="onConfirmDeleteMasterKey()"
     (noClicked)="masterKeyDeleteDialogOpen = false"
   ></app-question-dialog>
 }
 @if (masterKeyExportConfirmDialogOpen) {
   <app-question-dialog
-    title="Wahlschlüssel exportieren"
+    [title]="'masterKey.export.confirmTitle' | translate"
     [question]="masterKeyExportSecurityQuestion"
     (yesClicked)="onMasterKeyExportSecurityYes()"
     (noClicked)="onMasterKeyExportSecurityNo()"
@@ -73,7 +73,7 @@
 
 @if (ballotImportDialogOpened) {
   <app-import-dialog
-    item="Wahlschein"
+    [item]="'ballotImportFlow.item' | translate"
     [allowMultipleFiles]="false"
     (dismissed)="ballotImportDialogOpened = false"
     (scanSelected)="ballotImportViaScan()"
@@ -94,4 +94,3 @@
     (okClicked)="closeBallotImportFeedback()"
   ></app-message-dialog>
 }
-
