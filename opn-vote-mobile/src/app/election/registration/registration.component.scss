@@ -55,3 +55,21 @@
     cursor: pointer;
   }
 }
+
+.ap-auth-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.ap-auth-overlay__card {
+  color: $opn-white;
+  font-size: $text-medium;
+  font-weight: $semi-bold;
+  text-align: center;
+  line-height: 1.45;
+}

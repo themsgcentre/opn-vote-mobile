@@ -6,6 +6,11 @@
     @case ('masterkey') {
       <app-master-key-setup (createClicked)="onCreateMasterKey()"></app-master-key-setup>
     }
+    @case ('authorizing') {
+      <div class="ap-auth-overlay" role="status" aria-live="polite">
+        <div class="ap-auth-overlay__card">{{ apAuthOverlayText }}</div>
+      </div>
+    }
     @case ('busy') {
       <div class="busy-message">Wahlschein wird erstellt …</div>
     }
