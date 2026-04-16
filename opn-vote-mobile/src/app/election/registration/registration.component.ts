@@ -175,7 +175,7 @@ export class RegistrationComponent implements OnInit {
       .pipe(
         switchMap(({ n, e }) => {
           if (!n || !e) {
-            return throwError(() => new Error('ELECTION NOT FOUND'));
+            return throwError(() => new Error('Election Daten unvollständig'));
           }
           return this.ballotService.createBallot(this.electionId, this.jwt!, n, e);
         }),
