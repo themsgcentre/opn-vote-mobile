@@ -24,7 +24,7 @@ export class ApJwtService {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        payload: { electionId, id },
+        payload: { electionId, voterId: id },
         expiresIn: '1d',
       }),
     });
