@@ -217,14 +217,14 @@ const de = {
   },
   qrScan: {
     title: 'QR-Code scannen',
-    hint: 'Halte den Code ruhig im Rahmen.',
+    hint: 'Halten Sie den Code ruhig im Rahmen.',
     cameraError:
       'Kamera konnte nicht gestartet werden. Bitte Berechtigung erteilen oder in den Einstellungen erlauben.',
   },
   voteHistory: {
-    empty: 'Du hast noch an nichts teilgenommen.',
-    registered: 'Hierfür bist du registriert:',
-    voted: 'Hier hast du bereits abgestimmt:',
+    empty: 'Sie haben an noch keiner Wahl teilgenommen.',
+    registered: 'Hierfür sind Sie registriert:',
+    voted: 'Hier haben Sie bereits abgestimmt:',
   },
   importService: {
     invalidJson: 'QR-Code enthält kein gültiges JSON.',
