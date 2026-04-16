@@ -1,20 +1,17 @@
 <div class="provider-picker-container">
   <div class="section-title provider-title">
     <span class="title-with-icon">
-      <span>Authorization Provider</span>
-        <i
-          class="bi bi-question-circle-fill info-icon"
-          (click)="openInfoPopup.emit()"
-        ></i>
-      </span>
+      <span>{{ 'providerPicker.title' | translate }}</span>
+      <i
+        class="bi bi-question-circle-fill info-icon"
+        (click)="openInfoPopup.emit()"
+      ></i>
+    </span>
   </div>
 
   <div class="button-group provider-group">
     <div class="action-button secondary">
-      Provider auswählen
+      {{ 'providerPicker.selectButton' | translate }}
     </div>
   </div>
 </div>
-   
-    
-

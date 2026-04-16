@@ -1,15 +1,15 @@
-import { Component } from '@angular/core';
-import { AlertController } from '@ionic/angular/standalone';
 import { AsyncPipe } from '@angular/common';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { AlertController } from '@ionic/angular/standalone';
 import {
   BehaviorSubject,
+  Observable,
   concat,
   filter,
   firstValueFrom,
   from,
   map,
-  Observable,
   of,
   switchMap,
   take,
@@ -18,23 +18,25 @@ import {
   MasterKeyManagementComponent,
   MasterKeyPanelState,
 } from '../credentials/master-key-management/master-key-management.component';
+import { formatDate } from '../formatting/date-formatting';
+import { TranslatePipe } from '../i18n/translate.pipe';
+import { TranslationService } from '../i18n/translation.service';
+import { Ballot } from '../voting-system/ballot';
+import { MasterKey } from '../voting-system/masterkey';
+import { BallotExportComponent } from '../ballot-export/ballot-export.component';
+import { BallotImportComponent } from '../ballot-import/ballot-import.component';
+import { ImportDialogComponent } from '../import-dialog/import-dialog.component';
+import { MessageDialogComponent } from '../message-dialog/message-dialog.component';
 import { ProviderPickerComponent } from '../provider-picker/provider-picker.component';
-import { MasterKeyService } from '../services/master-key-service';
+import { QrScanDialogComponent } from '../qr-scan-dialog/qr-scan-dialog.component';
+import { PdfType } from '../qr-code/pdf-type';
+import { QuestionDialogComponent } from '../question-dialog/question-dialog.component';
 import { BallotService } from '../services/ballot-service';
-import { QrCodeService } from '../services/qr-code-service';
-import { PdfService } from '../services/pdf-service';
 import { FileSaveService } from '../services/file-save-service';
 import { ImportService } from '../services/import-service';
-import { MasterKey } from '../voting-system/masterkey';
-import { Ballot } from '../voting-system/ballot';
-import { PdfType } from '../qr-code/pdf-type';
-import { formatDate } from '../formatting/date-formatting';
-import { ImportDialogComponent } from '../import-dialog/import-dialog.component';
-import { QrScanDialogComponent } from '../qr-scan-dialog/qr-scan-dialog.component';
-import { MessageDialogComponent } from '../message-dialog/message-dialog.component';
-import { QuestionDialogComponent } from '../question-dialog/question-dialog.component';
-import { BallotImportComponent } from '../ballot-import/ballot-import.component';
-import { BallotExportComponent } from '../ballot-export/ballot-export.component';
+import { MasterKeyService } from '../services/master-key-service';
+import { PdfService } from '../services/pdf-service';
+import { QrCodeService } from '../services/qr-code-service';
 import { VoteParticipationStorageService } from '../services/vote-participation-storage.service';
 
 type InfoPopupType = 'masterkey' | 'provider' | 'ballot' | null;
@@ -54,6 +56,7 @@ type InfoPopupType = 'masterkey' | 'provider' | 'ballot' | null;
     QuestionDialogComponent,
     BallotImportComponent,
     BallotExportComponent,
+    TranslatePipe,
   ],
 })
 export class UserSettingsComponent {
@@ -61,15 +64,15 @@ export class UserSettingsComponent {
 
   activeInfoPopup: InfoPopupType = null;
 
-  masterKeyPanelState$: Observable<MasterKeyPanelState> = this.refresh$.pipe(
+  readonly masterKeyPanelState$: Observable<MasterKeyPanelState> = this.refresh$.pipe(
     switchMap(() =>
       concat(
         of<MasterKeyPanelState>('loading'),
         this.masterKeyService.hasMasterKey().pipe(
-          map((has): MasterKeyPanelState => (has ? 'present' : 'none'))
-        )
-      )
-    )
+          map((has): MasterKeyPanelState => (has ? 'present' : 'none')),
+        ),
+      ),
+    ),
   );
 
   masterKeyImportError: string | null = null;
@@ -79,11 +82,9 @@ export class UserSettingsComponent {
   masterKeyDeleteDialogOpen = false;
   masterKeyExportConfirmDialogOpen = false;
 
-  readonly masterKeyExportSecurityQuestion =
-    'Solange der Wahlschlüssel nur in dieser App liegt, ist er im sicheren Speicher geschützt. ' +
-    'Mit dem Export verlässt er diesen Bereich – danach kann die App keine Sicherheit mehr für die Datei übernehmen. ' +
-    'Geben Sie die PDF nicht weiter und bewahren Sie sie sorgfältig auf. ' +
-    'Möchten Sie den Wahlschlüssel wirklich exportieren?';
+  readonly masterKeyExportSecurityQuestion = this.translation.translate(
+    'masterKey.export.securityQuestion',
+  );
 
   ballotImportError: string | null = null;
   ballotImportDialogOpened = false;
@@ -102,16 +103,8 @@ export class UserSettingsComponent {
     private importService: ImportService,
     private voteParticipationStorage: VoteParticipationStorageService,
     private alertController: AlertController,
+    private translation: TranslationService,
   ) {}
-
-  private async presentMasterKeyExportError(): Promise<void> {
-    const alert = await this.alertController.create({
-      header: 'Fehler',
-      message: 'Der Wahlschlüssel konnte nicht exportiert werden.',
-      buttons: [{ text: 'OK', role: 'cancel' }],
-    });
-    await alert.present();
-  }
 
   openInfoPopup(type: InfoPopupType): void {
     this.activeInfoPopup = type;
@@ -123,39 +116,35 @@ export class UserSettingsComponent {
 
   get popupTitle(): string {
     if (this.activeInfoPopup === 'masterkey') {
-      return 'Masterkey';
+      return this.translation.translate('masterKey.title');
     }
     if (this.activeInfoPopup === 'provider') {
-      return 'Authorization Provider';
+      return this.translation.translate('userSettings.providerPopup.title');
     }
     if (this.activeInfoPopup === 'ballot') {
-      return 'Wahlschein';
+      return this.translation.translate('userSettings.ballotPopup.title');
     }
     return '';
   }
 
   get popupText(): string {
     if (this.activeInfoPopup === 'masterkey') {
-      return 'Der Masterkey dient zur sicheren Verwaltung Ihrer Identität und wird für sensible Aktionen innerhalb der App benötigt.';
+      return this.translation.translate('masterKey.popup.text');
     }
     if (this.activeInfoPopup === 'provider') {
-      return 'Hier können später externe Authentifizierungsanbieter zur Identifikation und Autorisierung ausgewählt werden.';
+      return this.translation.translate('userSettings.providerPopup.text');
     }
     if (this.activeInfoPopup === 'ballot') {
-      return 'Importieren Sie Ihre bestehenden Wahlscheine, um diese direkt wiederzuverwenden. Bitte beachten, dass der Wahlschein zu Ihrem Masterschlüssel passen muss. Der Wahlschein berechtigt Sie zur Teilnahme an einer Wahl.';
+      return this.translation.translate('userSettings.ballotPopup.text');
     }
     return '';
-  }
-
-  private triggerMasterKeyRefresh(): void {
-    this.refresh$.next();
   }
 
   onCreateMasterKey(): void {
     this.masterKeyService.createNewMasterKey().subscribe({
       next: () => this.triggerMasterKeyRefresh(),
       error: () => {
-        this.masterKeyImportError = 'Master-Key konnte nicht erstellt werden.';
+        this.masterKeyImportError = this.translation.translate('masterKey.importFlow.createError');
       },
     });
   }
@@ -171,48 +160,6 @@ export class UserSettingsComponent {
   onMasterKeyExportSecurityYes(): void {
     this.masterKeyExportConfirmDialogOpen = false;
     this.runMasterKeyPdfExport();
-  }
-
-  private runMasterKeyPdfExport(): void {
-    this.masterKeyService
-      .getMasterKey()
-      .pipe(
-        filter((masterKey): masterKey is MasterKey => !!masterKey),
-        switchMap((masterKey) => {
-          const qrCodeString = JSON.stringify({
-            type: 'master-key',
-            version: 1,
-            data: masterKey,
-          });
-          return from(this.qrCodeService.generateDataUrl(qrCodeString)).pipe(
-            map((qrCodeDataUrl) => ({ qrCodeString, qrCodeDataUrl }))
-          );
-        }),
-        switchMap(({ qrCodeString, qrCodeDataUrl }) =>
-          from(
-            this.pdfService.createPdf({
-              qrCodeString,
-              qrCodeDataUrl,
-              downloadHeadline: 'Wahlschlüssel',
-              pdfType: PdfType.VOTING_KEY,
-            })
-          )
-        ),
-        switchMap((pdfBytes) => {
-          const formattedDate = formatDate(new Date());
-          return from(
-            this.fileSaveService.savePdf({
-              fileName: 'wahlschluessel-' + formattedDate,
-              pdfBytes,
-            })
-          );
-        })
-      )
-      .subscribe({
-        error: () => {
-          void this.presentMasterKeyExportError();
-        },
-      });
   }
 
   onOpenMasterKeyImport(): void {
@@ -236,7 +183,7 @@ export class UserSettingsComponent {
     const isPdf =
       file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
     if (!isPdf) {
-      this.masterKeyImportError = 'Bitte eine PDF-Datei wählen.';
+      this.masterKeyImportError = this.translation.translate('masterKey.importFlow.invalidPdf');
       return;
     }
 
@@ -244,14 +191,17 @@ export class UserSettingsComponent {
       const bytes = new Uint8Array(await file.arrayBuffer());
       const qrString = await this.pdfService.extractQrImportStringFromPdf(bytes);
       if (!qrString) {
-        this.masterKeyImportError =
-          'In dieser PDF wurden keine Schlüsseldaten gefunden. Bitte die exportierte Wahlschlüssel-PDF verwenden.';
+        this.masterKeyImportError = this.translation.translate(
+          'masterKey.importFlow.missingPdfData',
+        );
         return;
       }
       this.processMasterKeyImportPayload(qrString);
     } catch (e) {
       this.masterKeyImportError =
-        e instanceof Error ? e.message : 'Die PDF konnte nicht gelesen werden.';
+        e instanceof Error
+          ? e.message
+          : this.translation.translate('masterKey.importFlow.unreadablePdf');
     }
   }
 
@@ -262,32 +212,6 @@ export class UserSettingsComponent {
   onMasterKeyQrScanSuccess(raw: string): void {
     this.masterKeyQrScanOpened = false;
     this.processMasterKeyImportPayload(raw);
-  }
-
-  private processMasterKeyImportPayload(raw: string): void {
-    try {
-      const payload = this.importService.parseQrString(raw);
-      if (!this.importService.isMasterKeyPayload(payload)) {
-        this.masterKeyImportError =
-          'Dieser Inhalt enthält keinen Masterschlüssel. Bitte den Export-QR-Code verwenden.';
-        return;
-      }
-      this.masterKeyService
-        .importMasterKey(payload.data)
-        .pipe(take(1))
-        .subscribe({
-          next: () => {
-            this.masterKeyImportSuccess = true;
-            this.triggerMasterKeyRefresh();
-          },
-          error: () => {
-            this.masterKeyImportError = 'Der Masterschlüssel konnte nicht gespeichert werden.';
-          },
-        });
-    } catch (e) {
-      this.masterKeyImportError =
-        e instanceof Error ? e.message : 'Die Schlüsseldaten konnten nicht gelesen werden.';
-    }
   }
 
   onConfirmDeleteMasterKey(): void {
@@ -301,8 +225,6 @@ export class UserSettingsComponent {
   closeMasterKeyImportSuccess(): void {
     this.masterKeyImportSuccess = false;
   }
-
-  // --- Wahlschein-Import ---
 
   onOpenBallotImport(): void {
     this.ballotImportError = null;
@@ -334,39 +256,128 @@ export class UserSettingsComponent {
     this.ballotImportFeedbackOpen = false;
   }
 
+  private triggerMasterKeyRefresh(): void {
+    this.refresh$.next();
+  }
+
+  private async presentMasterKeyExportError(): Promise<void> {
+    const alert = await this.alertController.create({
+      header: this.translation.translate('common.error'),
+      message: this.translation.translate('masterKey.export.errorMessage'),
+      buttons: [{ text: this.translation.translate('common.ok'), role: 'cancel' }],
+    });
+    await alert.present();
+  }
+
+  private runMasterKeyPdfExport(): void {
+    this.masterKeyService
+      .getMasterKey()
+      .pipe(
+        filter((masterKey): masterKey is MasterKey => !!masterKey),
+        switchMap((masterKey) => {
+          const qrCodeString = JSON.stringify({
+            type: 'master-key',
+            version: 1,
+            data: masterKey,
+          });
+          return from(this.qrCodeService.generateDataUrl(qrCodeString)).pipe(
+            map((qrCodeDataUrl) => ({ qrCodeString, qrCodeDataUrl })),
+          );
+        }),
+        switchMap(({ qrCodeString, qrCodeDataUrl }) =>
+          from(
+            this.pdfService.createPdf({
+              qrCodeString,
+              qrCodeDataUrl,
+              downloadHeadline: this.translation.translate('masterKey.export.titleShort'),
+              pdfType: PdfType.VOTING_KEY,
+            }),
+          ),
+        ),
+        switchMap((pdfBytes) => {
+          const formattedDate = formatDate(new Date());
+          return from(
+            this.fileSaveService.savePdf({
+              fileName: this.translation.translate('masterKey.export.fileName', {
+                date: formattedDate,
+              }),
+              pdfBytes,
+            }),
+          );
+        }),
+      )
+      .subscribe({
+        error: () => {
+          void this.presentMasterKeyExportError();
+        },
+      });
+  }
+
+  private processMasterKeyImportPayload(raw: string): void {
+    try {
+      const payload = this.importService.parseQrString(raw);
+      if (!this.importService.isMasterKeyPayload(payload)) {
+        this.masterKeyImportError = this.translation.translate(
+          'masterKey.importFlow.invalidPayload',
+        );
+        return;
+      }
+      this.masterKeyService
+        .importMasterKey(payload.data)
+        .pipe(take(1))
+        .subscribe({
+          next: () => {
+            this.masterKeyImportSuccess = true;
+            this.triggerMasterKeyRefresh();
+          },
+          error: () => {
+            this.masterKeyImportError = this.translation.translate(
+              'masterKey.importFlow.saveError',
+            );
+          },
+        });
+    } catch (e) {
+      this.masterKeyImportError =
+        e instanceof Error
+          ? e.message
+          : this.translation.translate('masterKey.importFlow.unreadableData');
+    }
+  }
+
   private mapBallotImportError(err: unknown): string {
     const msg = err instanceof Error ? err.message : '';
     if (msg === 'BALLOT_MASTER_MISMATCH') {
-      return 'Passt nicht zu Ihrem Wahlschlüssel.';
+      return this.translation.translate('ballotImportFlow.mismatch');
     }
     if (msg === 'NO_MASTERKEY') {
-      return 'Kein Wahlschlüssel vorhanden.';
+      return this.translation.translate('ballotImportFlow.noMasterKey');
     }
-    return 'Wahlschein konnte nicht gespeichert werden.';
+    return this.translation.translate('ballotImportFlow.saveError');
   }
 
   private async tryParseBallotFromPdf(
-    file: File
+    file: File,
   ): Promise<{ ballot: Ballot } | { error: string }> {
     const isPdf =
       file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
     if (!isPdf) {
-      return { error: 'Keine PDF-Datei.' };
+      return { error: this.translation.translate('ballotImportFlow.notPdf') };
     }
     try {
       const bytes = new Uint8Array(await file.arrayBuffer());
       const qrString = await this.pdfService.extractQrImportStringFromPdf(bytes);
       if (!qrString) {
-        return { error: 'Keine Wahlschein-Daten in der PDF.' };
+        return { error: this.translation.translate('ballotImportFlow.noPdfData') };
       }
       const payload = this.importService.parseQrString(qrString);
       if (!this.importService.isBallotPayload(payload)) {
-        return { error: 'Kein gültiger Wahlschein-Inhalt.' };
+        return { error: this.translation.translate('ballotImportFlow.invalidContent') };
       }
       return { ballot: payload.data };
     } catch (e) {
       return {
-        error: e instanceof Error ? e.message : 'PDF konnte nicht gelesen werden.',
+        error:
+          e instanceof Error ? e.message : this.translation.translate('ballotImportFlow.unreadablePdf'),
       };
     }
   }
@@ -404,11 +415,11 @@ export class UserSettingsComponent {
       }
 
       this.ballotImportError = null;
-      this.ballotImportFeedbackTitle = 'Wahlschein-Import';
+      this.ballotImportFeedbackTitle = this.translation.translate('ballotImportFlow.title');
       this.ballotImportFeedbackMessage =
         okCount === 1
-          ? 'Import erfolgreich.'
-          : `${okCount} Wahlscheine erfolgreich importiert.`;
+          ? this.translation.translate('ballotImportFlow.successSingle')
+          : this.translation.translate('ballotImportFlow.successMultiple', { count: okCount });
       this.ballotImportFeedbackOpen = true;
       return;
     }
@@ -418,13 +429,23 @@ export class UserSettingsComponent {
       this.ballotImportError =
         failures.length === 1
           ? failures[0]
-          : `Keiner der ${total} Importe war erfolgreich:\n\n${failures.join('\n')}`;
+          : this.translation.translate('ballotImportFlow.noneSuccessful', {
+              total,
+              failures: failures.join('\n'),
+            });
       return;
     }
 
-    this.ballotImportError = `Bei ${failures.length} von ${total} Datei(en) ist ein Fehler aufgetreten:\n\n${failures.join('\n')}`;
-    this.ballotImportFeedbackTitle = 'Wahlschein-Import';
-    this.ballotImportFeedbackMessage = `${okCount} Wahlschein(e) erfolgreich importiert.`;
+    this.ballotImportError = this.translation.translate('ballotImportFlow.partialError', {
+      failedCount: failures.length,
+      total,
+      failures: failures.join('\n'),
+    });
+    this.ballotImportFeedbackTitle = this.translation.translate('ballotImportFlow.title');
+    this.ballotImportFeedbackMessage = this.translation.translate(
+      'ballotImportFlow.partialSuccess',
+      { count: okCount },
+    );
     this.ballotImportFeedbackOpen = true;
   }
 
@@ -432,8 +453,7 @@ export class UserSettingsComponent {
     try {
       const payload = this.importService.parseQrString(raw);
       if (!this.importService.isBallotPayload(payload)) {
-        this.ballotImportError =
-          'Der Inhalt ist kein gültiger Wahlschein. Bitte den Export-QR dieser Wahl verwenden.';
+        this.ballotImportError = this.translation.translate('ballotImportFlow.invalidPayload');
         return;
       }
       this.ballotService
@@ -451,7 +471,9 @@ export class UserSettingsComponent {
         });
     } catch (e) {
       this.ballotImportError =
-        e instanceof Error ? e.message : 'Die Daten konnten nicht gelesen werden.';
+        e instanceof Error
+          ? e.message
+          : this.translation.translate('ballotImportFlow.unreadableData');
     }
   }
 

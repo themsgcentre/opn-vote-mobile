@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
-import { MasterKeyService } from './master-key-service';
+import { TranslationService } from '../i18n/translation.service';
 
 const CHANNEL_ID = 'opnvote_voting';
 const STORAGE_KEY_PREFIX = 'opnvote_voting_reminder_v2_';
@@ -11,7 +11,7 @@ const STORAGE_KEY_PREFIX = 'opnvote_voting_reminder_v2_';
   providedIn: 'root',
 })
 export class VotingReminderService {
-  constructor() {}
+  constructor(private translation: TranslationService) {}
 
   async isReminderScheduled(electionId: number, votingStart: Date): Promise<boolean> {
     try {
@@ -34,7 +34,7 @@ export class VotingReminderService {
     const { electionId, votingStart, electionTitle } = params;
 
     if (votingStart.getTime() <= Date.now()) {
-      return { ok: false, reason: 'Der Wahlbeginn liegt bereits in der Vergangenheit.' };
+      return { ok: false, reason: this.translation.translate('votingReminder.startInPast') };
     }
 
     if (!Capacitor.isNativePlatform()) {
@@ -48,14 +48,17 @@ export class VotingReminderService {
     try {
       const perm = await LocalNotifications.requestPermissions();
       if (perm.display !== 'granted') {
-        return { ok: false, reason: 'Benachrichtigungen sind nicht erlaubt. Bitte in den Systemeinstellungen aktivieren.' };
+        return {
+          ok: false,
+          reason: this.translation.translate('votingReminder.notificationsDenied'),
+        };
       }
 
       if (Capacitor.getPlatform() === 'android') {
         await LocalNotifications.createChannel({
           id: CHANNEL_ID,
-          name: 'Abstimmungen',
-          description: 'Erinnerungen zum Wahlbeginn',
+          name: this.translation.translate('votingReminder.channelName'),
+          description: this.translation.translate('votingReminder.channelDescription'),
           importance: 4,
           visibility: 1,
         });
@@ -67,8 +70,10 @@ export class VotingReminderService {
       await LocalNotifications.schedule({
         notifications: [
           {
-            title: 'Abstimmung hat begonnen',
-            body: `Sie können jetzt bei „${electionTitle}“ abstimmen.`,
+            title: this.translation.translate('votingReminder.notificationTitle'),
+            body: this.translation.translate('votingReminder.notificationBody', {
+              title: electionTitle,
+            }),
             id,
             channelId: Capacitor.getPlatform() === 'android' ? CHANNEL_ID : undefined,
             schedule: {
@@ -86,8 +91,8 @@ export class VotingReminderService {
       });
 
       return { ok: true };
-    } catch (e) {
-      return { ok: false, reason: 'Die Erinnerung konnte nicht eingerichtet werden.' };
+    } catch {
+      return { ok: false, reason: this.translation.translate('votingReminder.scheduleError') };
     }
   }
 
@@ -101,8 +106,7 @@ export class VotingReminderService {
       } catch {
         return {
           ok: false,
-          reason:
-            'Die Erinnerung konnte nicht ausgeschaltet werden. Bitte erneut versuchen oder die Benachrichtigungsberechtigung in den Systemeinstellungen prüfen.',
+          reason: this.translation.translate('votingReminder.cancelError'),
         };
       }
     }

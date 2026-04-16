@@ -10,6 +10,8 @@
         rel="noopener noreferrer"
       >{{ linkLabel || linkUrl }}</a>
     }
-    <button type="button" class="button" (click)="okClicked.emit()">Okay</button>
+    <button type="button" class="button" (click)="okClicked.emit()">
+      {{ 'messageDialog.okay' | translate }}
+    </button>
   </div>
 </div>

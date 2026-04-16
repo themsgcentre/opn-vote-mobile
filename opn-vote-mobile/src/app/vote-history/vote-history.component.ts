@@ -6,12 +6,13 @@ import { ElectionListComponent } from '../home-page/election-list/election-list.
 import { ElectionService } from '../services/election-service';
 import { VoteParticipationStorageService } from '../services/vote-participation-storage.service';
 import { ElectionInformation } from '../interfaces/election';
+import { TranslatePipe } from '../i18n/translate.pipe';
 
 @Component({
   selector: 'app-vote-history',
   templateUrl: './vote-history.component.html',
   styleUrls: ['./vote-history.component.scss'],
-  imports: [IonContent, ElectionListComponent],
+  imports: [IonContent, ElectionListComponent, TranslatePipe],
 })
 export class VoteHistoryComponent implements ViewWillEnter {
   private readonly electionService = inject(ElectionService);
