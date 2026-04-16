@@ -66,7 +66,6 @@ export class RegistrationComponent implements OnInit {
   ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
     this.electionId = idParam ? Number(idParam) : NaN;
-    this.jwt = this.route.snapshot.paramMap.get('jwt');
 
     if (!Number.isFinite(this.electionId)) {
       this.error = 'Ungültige Wahl-ID';
