@@ -5,7 +5,6 @@ export const UrlPaths = {
     abiConfigUrl: 'https://svs.dev.opn.vote/api/abi.json',
     rpcnodeUrl: 'https://rpc.opn.vote',
     hostUrl: 'http://localhost:8100',
-    jwtUrl: 'https://ap.dev.opn.vote/api/dev/sign'
 }
 
 export const UrlProperties = {

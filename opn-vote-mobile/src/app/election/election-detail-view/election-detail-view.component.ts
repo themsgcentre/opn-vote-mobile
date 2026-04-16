@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
 import { ElectionService } from 'src/app/services/election-service';
 import { ElectionInformation } from 'src/app/interfaces/election';
 import { AlertController, IonContent } from "@ionic/angular/standalone";
-import { UrlPaths } from 'src/app/globals/url';
+import { ApJwtService } from 'src/app/services/ap-jwt.service';
 
 @Component({
   selector: 'app-election-detail-view',
@@ -21,6 +21,7 @@ export class ElectionDetailViewComponent  implements OnInit {
     private router: Router,
     private electionService: ElectionService,
     private alertController: AlertController,
+    private apJwtService: ApJwtService,
   ) { }
 
   private async presentAlert(header: string, message: string): Promise<void> {
@@ -54,21 +55,7 @@ export class ElectionDetailViewComponent  implements OnInit {
     }
 
     try {
-      const response = await fetch(`${UrlPaths.jwtUrl}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ payload: { electionId: electionId, voterId: voterId }, expiresIn: "1d" }),
-      });
-
-      if (!response.ok) {
-        throw new Error("JWT konnte nicht geladen werden");
-      }
-
-      const res = await response.json();
-      const JWT = res.data.token;
-
+      const { token: JWT } = await this.apJwtService.fetchJwtForElection(electionId, voterId);
       this.router.navigate(['/election/register', electionId, JWT]);
 
     } catch {
