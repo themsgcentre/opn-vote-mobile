@@ -11,20 +11,20 @@ export class ApJwtService {
   getProviderDisplayName(electionId: number): string {
     return getAuthorizationProviderForElection(electionId).apName;
   }
-  
+
   getJwtSignUrlForElection(electionId: number): string {
     const apUri = getAuthorizationProviderForElection(electionId).apUri;
     return buildApJwtSignUrl(apUri);
   }
 
-  async fetchJwtForElection(electionId: number, voterId: number): Promise<{ token: string; apName: string }> {
+  async fetchJwtForElection(electionId: number, id: number): Promise<{ token: string; apName: string }> {
     const provider = getAuthorizationProviderForElection(electionId);
     const url = buildApJwtSignUrl(provider.apUri);
     const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        payload: { electionId, voterId },
+        payload: { electionId, id },
         expiresIn: '1d',
       }),
     });
