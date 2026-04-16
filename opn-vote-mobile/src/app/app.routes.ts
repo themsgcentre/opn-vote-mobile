@@ -30,7 +30,11 @@ export const routes: Routes = [
   },
   {
     path: 'election/register/:id/:jwt',
-    component: RegistrationComponent
+    component: RegistrationComponent,
+  },
+  {
+    path: 'election/register/:id',
+    component: RegistrationComponent,
   },
   {
     path: 'election/vote/:id',

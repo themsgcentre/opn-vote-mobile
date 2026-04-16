@@ -7,10 +7,15 @@ import { MasterKeyService } from 'src/app/services/master-key-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ElectionService } from 'src/app/services/election-service';
 import { VoteParticipationStorageService } from 'src/app/services/vote-participation-storage.service';
+import { ApJwtService } from 'src/app/services/ap-jwt.service';
+
+const AP_AUTH_COUNTDOWN_SECONDS = 3;
+const AP_AUTH_SUCCESS_DISPLAY_MS = 1500;
 
 type RegistrationView =
   | 'checking'
   | 'masterkey'
+  | 'authorizing'
   | 'busy'
   | 'error'
   | 'registrationClosed';
@@ -31,6 +36,7 @@ export class RegistrationComponent implements OnInit {
     private ballotService: BallotService,
     private electionService: ElectionService,
     private voteParticipationStorage: VoteParticipationStorageService,
+    private apJwtService: ApJwtService,
   ) {}
 
   electionId: number = NaN;
@@ -52,6 +58,10 @@ export class RegistrationComponent implements OnInit {
   );
 
   private autoBallotRequestStarted = false;
+
+  private apAuthInFlight = false;
+
+  apAuthOverlayText = '';
 
   ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
@@ -102,9 +112,24 @@ export class RegistrationComponent implements OnInit {
         }
 
         if (!this.jwt) {
-          this.error =
-            'Kein Registrierungs-Token in der URL. Bitte den Link aus der Einladung verwenden.';
-          this.view = 'error';
+          if (this.apAuthInFlight) {
+            return;
+          }
+          this.apAuthInFlight = true;
+          this.error = null;
+          this.view = 'authorizing';
+          void this.obtainJwtWithDemoUx()
+            .then((token) => {
+              this.jwt = token;
+              this.apAuthInFlight = false;
+              this.refresh$.next();
+            })
+            .catch(() => {
+              this.apAuthInFlight = false;
+              this.error =
+                'Autorisierung beim Authorization Provider ist fehlgeschlagen. Bitte erneut versuchen.';
+              this.view = 'error';
+            });
           return;
         }
 
@@ -119,6 +144,25 @@ export class RegistrationComponent implements OnInit {
       });
   }
 
+  private sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  private async obtainJwtWithDemoUx(): Promise<string> {
+    const apName = this.apJwtService.getProviderDisplayName(this.electionId);
+    for (let s = AP_AUTH_COUNTDOWN_SECONDS; s >= 1; s--) {
+      this.apAuthOverlayText = `Weiterleitung zu ${apName} in ${s} Sekunden …`;
+      await this.sleep(1000);
+    }
+    this.apAuthOverlayText = `Autorisierung bei ${apName} …`;
+    const voterId = Date.now();
+    const { token } = await this.apJwtService.fetchJwtForElection(this.electionId, voterId);
+    this.apAuthOverlayText = 'Erfolgreich autorisiert';
+    await this.sleep(AP_AUTH_SUCCESS_DISPLAY_MS);
+    this.apAuthOverlayText = '';
+    return token;
+  }
+
   goHome(): void {
     void this.router.navigateByUrl('/home');
   }
@@ -131,7 +175,7 @@ export class RegistrationComponent implements OnInit {
       .pipe(
         switchMap(({ n, e }) => {
           if (!n || !e) {
-            return throwError(() => new Error('ELECTION_NOT_FOUND'));
+            return throwError(() => new Error('ELECTION NOT FOUND'));
           }
           return this.ballotService.createBallot(this.electionId, this.jwt!, n, e);
         }),

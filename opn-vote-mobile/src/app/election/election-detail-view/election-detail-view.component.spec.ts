@@ -4,7 +4,6 @@ import { IonicModule } from '@ionic/angular';
 import { of } from 'rxjs';
 
 import { ElectionService } from 'src/app/services/election-service';
-import { ApJwtService } from 'src/app/services/ap-jwt.service';
 
 import { ElectionDetailViewComponent } from './election-detail-view.component';
 
@@ -25,12 +24,6 @@ describe('ElectionDetailViewComponent', () => {
         },
         { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
         { provide: ElectionService, useValue: { getElectionInformation: () => of(null) } },
-        {
-          provide: ApJwtService,
-          useValue: {
-            fetchJwtForElection: async () => ({ token: 't', apName: 'Test AP' }),
-          },
-        },
       ],
     }).compileComponents();
 

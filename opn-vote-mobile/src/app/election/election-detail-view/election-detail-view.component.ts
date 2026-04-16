@@ -6,7 +6,6 @@ import { CommonModule } from '@angular/common';
 import { ElectionService } from 'src/app/services/election-service';
 import { ElectionInformation } from 'src/app/interfaces/election';
 import { AlertController, IonContent } from "@ionic/angular/standalone";
-import { ApJwtService } from 'src/app/services/ap-jwt.service';
 
 @Component({
   selector: 'app-election-detail-view',
@@ -21,7 +20,6 @@ export class ElectionDetailViewComponent  implements OnInit {
     private router: Router,
     private electionService: ElectionService,
     private alertController: AlertController,
-    private apJwtService: ApJwtService,
   ) { }
 
   private async presentAlert(header: string, message: string): Promise<void> {
@@ -45,8 +43,6 @@ export class ElectionDetailViewComponent  implements OnInit {
 
   async onParticipateClicked() {
     const electionIdParam = this.route.snapshot.paramMap.get('id');
-    const voterId = Date.now(); // TODO: for simulation purposes only, replace with actual voter ID logic later
-
     const electionId = Number(electionIdParam);
 
     if (!Number.isSafeInteger(electionId) || electionId < 0 || electionIdParam === null) {
@@ -54,15 +50,6 @@ export class ElectionDetailViewComponent  implements OnInit {
       return;
     }
 
-    try {
-      const { token: JWT } = await this.apJwtService.fetchJwtForElection(electionId, voterId);
-      this.router.navigate(['/election/register', electionId, JWT]);
-
-    } catch {
-      await this.presentAlert(
-        'Fehler',
-        'Die Anmeldedaten konnten nicht geladen werden. Bitte versuchen Sie es erneut.',
-      );
-    }
+    void this.router.navigate(['/election/register', electionId]);
   }
 }
