@@ -1,7 +1,7 @@
 import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular/standalone';
+import { AlertController, IonContent } from '@ionic/angular/standalone';
 import {
   BehaviorSubject,
   Observable,
@@ -48,6 +48,7 @@ type InfoPopupType = 'masterkey' | 'provider' | 'ballot' | null;
   styleUrls: ['./user-settings.component.scss'],
   imports: [
     AsyncPipe,
+    IonContent,
     MasterKeyManagementComponent,
     ProviderPickerComponent,
     ImportDialogComponent,

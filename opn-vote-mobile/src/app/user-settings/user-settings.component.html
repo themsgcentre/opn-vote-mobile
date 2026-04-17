@@ -1,4 +1,5 @@
-<div class="management-container">
+<ion-content class="user-settings-ion-content">
+  <div class="management-container">
   <app-master-key-management
     [state]="(masterKeyPanelState$ | async) ?? 'loading'"
     [importError]="masterKeyImportError"
@@ -17,7 +18,8 @@
     <app-ballot-export></app-ballot-export>
   }
   <app-provider-picker (openInfoPopup)="openInfoPopup('provider')"></app-provider-picker>
-</div>
+  </div>
+</ion-content>
 
 @if (activeInfoPopup) {
   <div class="popup-backdrop" (click)="closeInfoPopup()">

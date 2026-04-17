@@ -6,6 +6,8 @@ import { ElectionDTO } from '../models/election-dto';
 import { mapElectionInformation } from '../mappers/election-mapper';
 import { Question } from '../models/question';
 import { ElectionStatus } from '../models/election-status';
+import { VotesRecord } from '../models/votes-record';
+import { VoteResult } from '../models/vote-result';
 
 @Injectable({
   providedIn: 'root',
@@ -50,7 +52,7 @@ export class ElectionService {
     );
   }
 
-  loadQuestions(id: number): Observable<Question[]> {
+  getQuestions(id: number): Observable<Question[]> {
     return this.electionProxyService.getElectionById(id).pipe(
       map((dto: ElectionDTO | null) => {
         if (!dto) return [];
@@ -65,5 +67,9 @@ export class ElectionService {
         }));
       })
     );
+  }
+
+  getResults(id: number): Observable<VotesRecord | null> {
+    return this.electionProxyService.getResults(id);
   }
 }

@@ -82,7 +82,7 @@ export class VotingComponent implements OnInit {
     if (!isNaN(electionId)) {
       this.electionId = electionId;
       this.election$ = this.electionService.getElectionInformation(electionId);
-      this.questions$ = this.electionService.loadQuestions(electionId);
+      this.questions$ = this.electionService.getQuestions(electionId);
       this.questions$.subscribe((questions) => {
         this.questionCount = questions.length;
         this.updateCanSubmit();

@@ -80,9 +80,21 @@
 
     @else {
       <div class="result-section-container">
-        @if(resultsPublished) {
+        @if(resultsPublished && results) {
           <div class="results-notice">
             {{ 'electionDetail.resultsPublishedNotice' | translate }}
+          </div>
+          <div class="results-container">
+            @for (result of results; track $index) {
+              <div class="result-item">
+                <div class="result-question">{{ result.questionText }}</div>
+                <div class="result-votes">
+                  <span class="yes-votes">{{ result.yesVotes }}</span>
+                  <span class="no-votes">{{ result.noVotes }}</span>
+                  <span class="invalid-votes">{{ result.invalidVotes }}</span>
+                </div>
+              </div>
+            }
           </div>
         }
         @else {

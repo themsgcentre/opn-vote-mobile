@@ -5,6 +5,7 @@ import { TranslatePipe } from 'src/app/i18n/translate.pipe';
 import { TranslationService } from 'src/app/i18n/translation.service';
 import { ElectionInformation } from 'src/app/models/election-information';
 import { ElectionStatus } from 'src/app/models/election-status';
+import { VoteResult } from 'src/app/models/vote-result';
 
 @Component({
   selector: 'app-election-detail',
@@ -17,6 +18,7 @@ export class ElectionDetailComponent implements OnChanges {
   private readonly translation = inject(TranslationService);
 
   @Input() election: ElectionInformation | null = null;
+  @Input() results: VoteResult[] | null = null;
   @Output() participateClicked: EventEmitter<void> = new EventEmitter<void>();
 
   isBeforeRegistration = false;
