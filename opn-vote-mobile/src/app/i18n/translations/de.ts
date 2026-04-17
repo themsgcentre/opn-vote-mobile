@@ -145,7 +145,10 @@ const de = {
       upcoming: 'Noch nicht gestartet',
       planned: 'Geplant',
     },
-    resultsPublishedNotice: 'Die Ergebnisse dieser Wahl: ',
+    resultsPublishedNotice: 'Wahlergebnisse',
+    approval: 'Zustimmung',
+    rejection: 'Ablehnung',
+    abstention: 'Enthaltung',
     resultsPendingNotice: 'Die Ergebnisse dieser Wahl sind noch nicht verfügbar.',
   },
   electionDetailView: {

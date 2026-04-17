@@ -81,17 +81,27 @@
     @else {
       <div class="result-section-container">
         @if(resultsPublished && results) {
-          <div class="results-notice">
+          <div class="section-title">
             {{ 'electionDetail.resultsPublishedNotice' | translate }}
           </div>
           <div class="results-container">
             @for (result of results; track $index) {
               <div class="result-item">
                 <div class="result-question">{{ result.questionText }}</div>
-                <div class="result-votes">
-                  <span class="yes-votes">{{ result.yesVotes }}</span>
-                  <span class="no-votes">{{ result.noVotes }}</span>
-                  <span class="invalid-votes">{{ result.invalidVotes }}</span>
+                <div class="result-chart">
+                  @for (segment of getResultSegments(result); track segment.labelKey) {
+                    <div class="result-bar-card">
+                      <div class="result-bar-value">{{ segment.value }}</div>
+                      <div class="result-bar-track">
+                        <div
+                          class="result-bar-fill"
+                          [ngClass]="segment.cssClass"
+                          [style.height.%]="segment.height"
+                        ></div>
+                      </div>
+                      <div class="result-bar-label">{{ segment.labelKey | translate }}</div>
+                    </div>
+                  }
                 </div>
               </div>
             }

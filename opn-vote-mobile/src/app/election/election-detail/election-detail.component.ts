@@ -95,4 +95,41 @@ export class ElectionDetailComponent implements OnChanges {
 
     return 'stat-value-large';
   }
+
+  getResultSegments(result: VoteResult): Array<{ labelKey: string; value: number; cssClass: string; height: number }> {
+    const totalVotes = this.getTotalResultVotes(result);
+
+    return [
+      {
+        labelKey: 'electionDetail.approval',
+        value: result.yesVotes,
+        cssClass: 'approval',
+        height: this.getBarHeight(result.yesVotes, totalVotes),
+      },
+      {
+        labelKey: 'electionDetail.rejection',
+        value: result.noVotes,
+        cssClass: 'rejection',
+        height: this.getBarHeight(result.noVotes, totalVotes),
+      },
+      {
+        labelKey: 'electionDetail.abstention',
+        value: result.invalidVotes,
+        cssClass: 'abstention',
+        height: this.getBarHeight(result.invalidVotes, totalVotes),
+      },
+    ];
+  }
+
+  private getTotalResultVotes(result: VoteResult): number {
+    return result.yesVotes + result.noVotes + result.invalidVotes;
+  }
+
+  private getBarHeight(value: number, totalVotes: number): number {
+    if (totalVotes <= 0) {
+      return 0;
+    }
+
+    return (value / totalVotes) * 100;
+  }
 }
