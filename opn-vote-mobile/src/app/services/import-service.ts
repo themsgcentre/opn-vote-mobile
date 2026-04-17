@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TranslationService } from '../i18n/translation.service';
-import { ExportPayload } from '../interfaces/export-payload';
+import { ExportPayload } from '../models/export-payload';
 import { Ballot } from '../voting-system/ballot';
 import { R } from '../voting-system/r';
 import { Token } from '../voting-system/token';

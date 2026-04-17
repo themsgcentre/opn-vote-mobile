@@ -5,7 +5,7 @@ import { IonContent, ViewWillEnter } from '@ionic/angular/standalone';
 import { ElectionListComponent } from '../home-page/election-list/election-list.component';
 import { ElectionService } from '../services/election-service';
 import { VoteParticipationStorageService } from '../services/vote-participation-storage.service';
-import { ElectionInformation } from '../interfaces/election';
+import { ElectionInformation } from '../models/election-information';
 import { TranslatePipe } from '../i18n/translate.pipe';
 
 @Component({

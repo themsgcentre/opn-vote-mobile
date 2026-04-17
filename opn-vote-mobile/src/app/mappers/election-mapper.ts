@@ -1,9 +1,6 @@
-import { ElectionDTO } from '../interfaces/election-dto';
-import { ElectionInformation } from '../interfaces/election';
-import { DescriptionBlob } from '../interfaces/description-blob';
-import { ElectionPdfInformation } from '../qr-code/election-pdf-info';
-import { UrlPaths } from '../globals/url';
-import { formatDate } from '../formatting/date-formatting';
+import { ElectionDTO } from '../models/election-dto';
+import { ElectionInformation } from '../models/election-information';
+import { DescriptionBlob } from '../models/description-blob';
 
 const toDateFromSeconds = (seconds: number | string): Date => {
   const n = typeof seconds === 'number' ? seconds : Number(seconds);

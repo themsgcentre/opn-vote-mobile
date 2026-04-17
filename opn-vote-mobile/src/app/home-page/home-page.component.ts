@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ElectionService } from '../services/election-service';
-import { ElectionInformation } from '../interfaces/election';
+import { ElectionInformation } from '../models/election-information';
 import { TranslatePipe } from '../i18n/translate.pipe';
 
 type HomeTab = 'upcoming' | 'pending' | 'running' | 'finished';

@@ -6,11 +6,12 @@ import {
   SimpleChanges,
   inject,
 } from '@angular/core';
-import { ElectionInformation } from 'src/app/interfaces/election';
+import { ElectionInformation } from 'src/app/models/election-information';
 import { TranslatePipe } from '../../i18n/translate.pipe';
 import { TranslationService } from '../../i18n/translation.service';
+import { ElectionStatus } from 'src/app/models/election-status';
 
-type CountdownState = 'none' | 'countdown' | 'open';
+type CountdownState = 'none' | 'countdown' | 'open' | 'results' | 'closed';
 
 @Component({
   selector: 'app-voting-countdown',
@@ -29,7 +30,7 @@ export class VotingCountdownComponent implements OnChanges, OnDestroy {
 
   private timer: ReturnType<typeof setInterval> | undefined;
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(): void {
     this.stopTimer();
     if (!this.showCountdown || !this.election) {
       this.state = 'none';
@@ -59,6 +60,18 @@ export class VotingCountdownComponent implements OnChanges, OnDestroy {
     const regStart = this.election.registrationStart.getTime();
     const voteStart = this.election.votingStart.getTime();
     const voteEnd = this.election.votingEnd.getTime();
+
+    if(this.election.status === ElectionStatus.ResultsPublished) {
+      this.state = 'results';
+      this.countdownText = '';
+      return;
+    }
+
+    if(this.election.status === ElectionStatus.Ended) {
+      this.state = 'closed';
+      this.countdownText = '';
+      return;
+    }
 
     if (now < regStart || now > voteEnd) {
       this.state = 'none';

@@ -2,11 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, IonContent } from '@ionic/angular/standalone';
-import { filter, map, Observable, of, switchMap } from 'rxjs';
+import { filter, forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { TranslationService } from '../../i18n/translation.service';
-import { ElectionInformation } from 'src/app/interfaces/election';
+import { ElectionInformation } from 'src/app/models/election-information';
 import { ElectionService } from 'src/app/services/election-service';
 import { ElectionDetailComponent } from '../election-detail/election-detail.component';
+import { VoteResult } from 'src/app/models/vote-result';
 
 @Component({
   selector: 'app-election-detail-view',
@@ -16,6 +17,7 @@ import { ElectionDetailComponent } from '../election-detail/election-detail.comp
 })
 export class ElectionDetailViewComponent implements OnInit {
   election$: Observable<ElectionInformation | null> = of(null);
+  results$: Observable<VoteResult[] | null> = of(null);
 
   constructor(
     private route: ActivatedRoute,
@@ -30,6 +32,36 @@ export class ElectionDetailViewComponent implements OnInit {
       map((paramMap) => Number(paramMap.get('id'))),
       filter((id) => !isNaN(id)),
       switchMap((id) => this.electionService.getElectionInformation(id)),
+    );
+
+    this.results$ = this.route.paramMap.pipe(
+      map(paramMap => Number(paramMap.get('id'))),
+      filter(id => !isNaN(id)),
+      switchMap(id =>
+        forkJoin({
+          results: this.electionService.getResults(id),
+          questions: this.electionService.getQuestions(id),
+        }).pipe(
+          map(({ results, questions }): VoteResult[] | null => {
+            if (!results) {
+              return null;
+            }
+
+            return questions
+              .filter(question => results[question.key] !== undefined)
+              .map(question => {
+                const vote = results[question.key];
+
+                return {
+                  questionText: question.text,
+                  yesVotes: vote.yesVotes,
+                  noVotes: vote.noVotes,
+                  invalidVotes: vote.invalidVotes,
+                };
+              });
+          })
+        )
+      )
     );
   }
 

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Question } from '../interfaces/question';
+import { Question } from '../models/question';
 import { QuestionComponent } from '../question/question.component';
 import { LineComponent } from '../reusables/line/line.component';
 import { QuestionVote } from '../voting-system/vote';

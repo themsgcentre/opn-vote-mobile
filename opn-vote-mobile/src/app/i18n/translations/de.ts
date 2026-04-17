@@ -38,6 +38,11 @@ const de = {
   messageDialog: {
     okay: 'Okay',
   },
+  messageDialogWithNotify: {
+    notifyHint:
+      'Wenn Sie möchten, können Sie sich benachrichtigen lassen, wenn diese Wahl endet.',
+    notifyToggleLabel: 'Benachrichtige mich!',
+  },
   questionDialog: {
     title: 'Frage',
   },
@@ -140,6 +145,8 @@ const de = {
       upcoming: 'Noch nicht gestartet',
       planned: 'Geplant',
     },
+    resultsPublishedNotice: 'Die Ergebnisse dieser Wahl: ',
+    resultsPendingNotice: 'Die Ergebnisse dieser Wahl sind noch nicht verfügbar.',
   },
   electionDetailView: {
     invalidElectionId: 'Ungültige Election-ID.',
@@ -197,6 +204,13 @@ const de = {
     cancelError:
       'Die Erinnerung konnte nicht ausgeschaltet werden. Bitte erneut versuchen oder die Benachrichtigungsberechtigung in den Systemeinstellungen prüfen.',
   },
+  votingEndedNotify: {
+    pastEnd: 'Das Ende der Abstimmung liegt bereits in der Vergangenheit.',
+    notificationTitle: 'Abstimmung beendet',
+    notificationBody:
+      'Die Wahl „{{title}}“ ist beendet. Die Ergebnisse werden in Kürze veröffentlicht.',
+    scheduleError: 'Die Benachrichtigung konnte nicht eingerichtet werden.',
+  },
   electionList: {
     empty: 'Aktuell sind keine Wahlen verfügbar.',
   },
@@ -212,6 +226,8 @@ const de = {
   votingCountdown: {
     startsIn: 'Abstimmung beginnt in',
     voteNow: 'Jetzt abstimmen!',
+    closed: 'Abstimmung geschlossen',
+    resultsOnline: 'Ergebnisse online!',
     day: 'Tag',
     days: 'Tage',
   },

@@ -1,5 +1,5 @@
 import { ethers } from "ethers"
-import { VotingTransaction } from "../interfaces/voting-transaction"
+import { VotingTransaction } from "../models/voting-transaction"
 import { custom } from "viem"
 
 export function createVoteCalldata(
