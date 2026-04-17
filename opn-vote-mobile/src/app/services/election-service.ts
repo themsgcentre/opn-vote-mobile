@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { ElectionProxyService } from './election-proxy-service';
 import { ElectionInformation } from '../models/election-information';
-import { map, Observable } from 'rxjs';
+import { filter, map, Observable } from 'rxjs';
 import { ElectionDTO } from '../models/election-dto';
 import { mapElectionInformation } from '../mappers/election-mapper';
 import { Question } from '../models/question';
+import { ElectionStatus } from '../models/election-status';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +21,10 @@ export class ElectionService {
 
   getAllElectionInformations(): Observable<ElectionInformation[]> {
     return this.electionProxyService.getElections().pipe(
-      map((dtos: ElectionDTO[]) => dtos.map(mapElectionInformation))
+      map((dtos: ElectionDTO[]) => dtos
+        .filter(dto => dto.status === ElectionStatus.Open || dto.status === ElectionStatus.ResultsPublished || dto.status === ElectionStatus.Ended )
+        .map(mapElectionInformation)
+      )
     );
   }
 

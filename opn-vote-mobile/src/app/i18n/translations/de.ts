@@ -140,6 +140,8 @@ const de = {
       upcoming: 'Noch nicht gestartet',
       planned: 'Geplant',
     },
+    resultsPublishedNotice: 'Die Ergebnisse dieser Wahl: ',
+    resultsPendingNotice: 'Die Ergebnisse dieser Wahl sind noch nicht verfügbar.',
   },
   electionDetailView: {
     invalidElectionId: 'Ungültige Election-ID.',

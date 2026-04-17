@@ -43,25 +43,25 @@
         </div>
       </div>
     </div>
-
-    <div class="section-title">{{ 'electionDetail.period' | translate }}</div>
-    <div class="info-list">
-      <div class="info-item">
-        <div class="label">{{ 'electionDetail.registration' | translate }}</div>
-        <div class="value">
-          {{ formatDate(election.registrationStart) }} - {{ formatDate(election.registrationEnd) }}
-        </div>
-      </div>
-
-      <div class="info-item">
-        <div class="label">{{ 'electionDetail.voting' | translate }}</div>
-        <div class="value">
-          {{ formatDate(election.votingStart) }} - {{ formatDate(election.votingEnd) }}
-        </div>
-      </div>
-    </div>
-
     @if(!isElectionFinished) {
+      <div class="section-title">{{ 'electionDetail.period' | translate }}</div>
+      <div class="info-list">
+        <div class="info-item">
+          <div class="label">{{ 'electionDetail.registration' | translate }}</div>
+          <div class="value">
+            {{ formatDate(election.registrationStart) }} - {{ formatDate(election.registrationEnd) }}
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="label">{{ 'electionDetail.voting' | translate }}</div>
+          <div class="value">
+            {{ formatDate(election.votingStart) }} - {{ formatDate(election.votingEnd) }}
+          </div>
+        </div>
+      </div>
+
+    
       <button class="vote-button" (click)="participateClicked.emit()" [disabled]="!canVote && !isRegistrationOpen">
         @if(canVote) {
           {{ 'electionDetail.participateNow' | translate }}
@@ -76,6 +76,21 @@
           {{ 'electionDetail.unavailable' | translate }}
         }
       </button>
+    }
+
+    @else {
+      <div class="result-section-container">
+        @if(resultsPublished) {
+          <div class="results-notice">
+            {{ 'electionDetail.resultsPublishedNotice' | translate }}
+          </div>
+        }
+        @else {
+          <div class="results-notice">
+            {{ 'electionDetail.resultsPendingNotice' | translate }}
+          </div>
+        }
+      </div>
     }
   </div>
 }
