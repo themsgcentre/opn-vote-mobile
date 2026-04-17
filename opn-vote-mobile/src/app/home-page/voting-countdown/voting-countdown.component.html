@@ -7,5 +7,8 @@
     @if (state === 'open') {
       <span class="countdown-open">{{ 'votingCountdown.voteNow' | translate }}</span>
     }
+    @if (state === 'results') {
+      <span class="countdown-results">{{ 'votingCountdown.resultsOnline' | translate }}</span>
+    }
   </div>
 }
