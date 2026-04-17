@@ -11,7 +11,7 @@ import { TranslatePipe } from '../../i18n/translate.pipe';
 import { TranslationService } from '../../i18n/translation.service';
 import { ElectionStatus } from 'src/app/models/election-status';
 
-type CountdownState = 'none' | 'countdown' | 'open' | 'results';
+type CountdownState = 'none' | 'countdown' | 'open' | 'results' | 'closed';
 
 @Component({
   selector: 'app-voting-countdown',
@@ -63,6 +63,12 @@ export class VotingCountdownComponent implements OnChanges, OnDestroy {
 
     if(this.election.status === ElectionStatus.ResultsPublished) {
       this.state = 'results';
+      this.countdownText = '';
+      return;
+    }
+
+    if(this.election.status === ElectionStatus.Ended) {
+      this.state = 'closed';
       this.countdownText = '';
       return;
     }

@@ -226,6 +226,7 @@ const de = {
   votingCountdown: {
     startsIn: 'Abstimmung beginnt in',
     voteNow: 'Jetzt abstimmen!',
+    closed: 'Abstimmung geschlossen',
     resultsOnline: 'Ergebnisse online!',
     day: 'Tag',
     days: 'Tage',
