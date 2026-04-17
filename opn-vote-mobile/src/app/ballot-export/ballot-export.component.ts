@@ -17,7 +17,7 @@ import { formatDate } from '../formatting/date-formatting';
 import { UrlPaths } from '../globals/url';
 import { TranslationService } from '../i18n/translation.service';
 import { TranslatePipe } from '../i18n/translate.pipe';
-import { ElectionInformation } from '../interfaces/election';
+import { ElectionInformation } from '../models/election-information';
 import { QuestionDialogComponent } from '../question-dialog/question-dialog.component';
 import { ElectionPdfInformation } from '../qr-code/election-pdf-info';
 import { PdfType } from '../qr-code/pdf-type';

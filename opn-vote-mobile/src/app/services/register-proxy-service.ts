@@ -9,7 +9,7 @@ import { RegisterError } from '../globals/register-error';
 import { hexStringToBigInt, numberToHex32, padMessage, sha256Hex, validateR, validateRSAParams, validateSignature } from '../utils/utils';
 import { EncryptionType } from '../voting-system/encryption-type';
 import { Wallet } from 'ethers';
-import { VoterCredentials } from '../interfaces/voter-credentials';
+import { VoterCredentials } from '../models/voter-credentials';
 import { Ballot } from '../voting-system/ballot';
 import { modInv } from 'bigint-crypto-utils';
 import { RSAParams } from '../voting-system/rsa-params';

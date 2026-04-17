@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ElectionInformation } from 'src/app/interfaces/election';
+import { ElectionInformation } from 'src/app/models/election-information';
 import { ImageComponent } from 'src/app/home-page/image/image.component';
 import { VotingCountdownComponent } from '../voting-countdown/voting-countdown.component';
 

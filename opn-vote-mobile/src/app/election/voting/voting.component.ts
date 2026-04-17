@@ -6,9 +6,9 @@ import { combineLatest, filter, firstValueFrom, from, Observable, of, switchMap,
 import { formatDateTime } from 'src/app/formatting/date-formatting';
 import { TranslatePipe } from 'src/app/i18n/translate.pipe';
 import { TranslationService } from 'src/app/i18n/translation.service';
-import { ElectionInformation } from 'src/app/interfaces/election';
-import { Question } from 'src/app/interfaces/question';
-import { VoterCredentials } from 'src/app/interfaces/voter-credentials';
+import { ElectionInformation } from 'src/app/models/election-information';
+import { Question } from 'src/app/models/question';
+import { VoterCredentials } from 'src/app/models/voter-credentials';
 import { MessageDialogComponent } from 'src/app/message-dialog/message-dialog.component';
 import { QuestionListComponent } from 'src/app/question-list/question-list.component';
 import { LineComponent } from 'src/app/reusables/line/line.component';

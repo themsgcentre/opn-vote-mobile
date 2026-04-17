@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { Option } from '../interfaces/option';
+import { Option } from '../models/option';
 import { FormsModule } from '@angular/forms';
 import { VoteOption } from '../voting-system/vote-option';
 

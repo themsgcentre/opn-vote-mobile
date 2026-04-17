@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { EncryptionType } from '../voting-system/encryption-type';
 import { VoteOption } from '../voting-system/vote-option';
 import { addSVSSignatureToVotingTransaction, createVotingTransactionWithoutSVSSignature, encryptVotes } from '../voting-system/voting';
-import { VoterCredentials } from '../interfaces/voter-credentials';
+import { VoterCredentials } from '../models/voter-credentials';
 import { createPublicClient, hashMessage, Hex, http } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { EthSignature } from '../voting-system/eth-signature';

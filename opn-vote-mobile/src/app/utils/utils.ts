@@ -9,10 +9,10 @@ import { EncryptionKey } from "../voting-system/encryption-key"
 import { ethers } from "ethers"
 //import { webcrypto } from "node:crypto"
 import { EncryptedVotes } from "../voting-system/vote"
-import { VotingTransaction } from "../interfaces/voting-transaction"
+import { VotingTransaction } from "../models/voting-transaction"
 import { EthSignature } from "../voting-system/eth-signature"
-import { RecastingVotingTransaction } from "../interfaces/recasting-voting-transaction"
-import { VoterCredentials } from "../interfaces/voter-credentials"
+import { RecastingVotingTransaction } from "../models/recasting-voting-transaction"
+import { VoterCredentials } from "../models/voter-credentials"
 
 export function validateElectionID(electionID: number) {
     if (!Number.isInteger(electionID)) {

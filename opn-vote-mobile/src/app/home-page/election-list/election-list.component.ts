@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { ElectionOverviewComponent } from "../election-overview/election-overview.component";
-import { ElectionInformation } from 'src/app/interfaces/election';
+import { ElectionInformation } from 'src/app/models/election-information';
 import { TranslatePipe } from '../../i18n/translate.pipe';
 
 @Component({

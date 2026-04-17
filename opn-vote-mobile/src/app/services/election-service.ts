@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { ElectionProxyService } from './election-proxy-service';
-import { ElectionInformation } from '../interfaces/election';
+import { ElectionInformation } from '../models/election-information';
 import { map, Observable } from 'rxjs';
-import { ElectionDTO } from '../interfaces/election-dto';
+import { ElectionDTO } from '../models/election-dto';
 import { mapElectionInformation } from '../mappers/election-mapper';
-import { Question } from '../interfaces/question';
+import { Question } from '../models/question';
 
 @Injectable({
   providedIn: 'root',

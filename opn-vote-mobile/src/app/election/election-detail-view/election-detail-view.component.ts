@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, IonContent } from '@ionic/angular/standalone';
 import { filter, map, Observable, of, switchMap } from 'rxjs';
 import { TranslationService } from '../../i18n/translation.service';
-import { ElectionInformation } from 'src/app/interfaces/election';
+import { ElectionInformation } from 'src/app/models/election-information';
 import { ElectionService } from 'src/app/services/election-service';
 import { ElectionDetailComponent } from '../election-detail/election-detail.component';
 

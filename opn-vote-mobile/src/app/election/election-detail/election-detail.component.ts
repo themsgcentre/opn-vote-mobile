@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnChanges, Output, inject } from '@angu
 import { ImageComponent } from 'src/app/home-page/image/image.component';
 import { TranslatePipe } from 'src/app/i18n/translate.pipe';
 import { TranslationService } from 'src/app/i18n/translation.service';
-import { ElectionInformation } from 'src/app/interfaces/election';
+import { ElectionInformation } from 'src/app/models/election-information';
 
 @Component({
   selector: 'app-election-detail',

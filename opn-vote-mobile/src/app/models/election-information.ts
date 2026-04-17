@@ -1,3 +1,5 @@
+import { ElectionStatus } from "./election-status";
+
 export interface ElectionInformation {
   id: number;
 
@@ -22,5 +24,5 @@ export interface ElectionInformation {
   votingStart: Date;
   votingEnd: Date;
 
-  status: number; // status code of the election (0 pending, 1 open, 2 ended, 3 results published, 4 canceled)
+  status: ElectionStatus;
 }

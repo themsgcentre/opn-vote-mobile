@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { ElectionDTO } from '../interfaces/election-dto';
+import { ElectionDTO } from '../models/election-dto';
 import { from, map, Observable } from 'rxjs';
 import { GET_ELECTION, GET_ALL_ELECTIONS } from '../queries/election.queries';
 import { graphClient } from '../server/apollo.config';
 import { parseElectionDTO } from '../mappers/election-dto.mapper';
-import { GetElectionResponse, GetElectionsResponse } from '../interfaces/responses';
+import { GetElectionResponse, GetElectionsResponse } from '../models/responses';
 
 @Injectable({
   providedIn: 'root',
