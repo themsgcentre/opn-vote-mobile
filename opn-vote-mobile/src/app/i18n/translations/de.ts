@@ -38,6 +38,11 @@ const de = {
   messageDialog: {
     okay: 'Okay',
   },
+  messageDialogWithNotify: {
+    notifyHint:
+      'Wenn Sie möchten, können Sie sich benachrichtigen lassen, wenn diese Wahl endet.',
+    notifyToggleLabel: 'Benachrichtige mich!',
+  },
   questionDialog: {
     title: 'Frage',
   },
@@ -198,6 +203,13 @@ const de = {
     scheduleError: 'Die Erinnerung konnte nicht eingerichtet werden.',
     cancelError:
       'Die Erinnerung konnte nicht ausgeschaltet werden. Bitte erneut versuchen oder die Benachrichtigungsberechtigung in den Systemeinstellungen prüfen.',
+  },
+  votingEndedNotify: {
+    pastEnd: 'Das Ende der Abstimmung liegt bereits in der Vergangenheit.',
+    notificationTitle: 'Abstimmung beendet',
+    notificationBody:
+      'Die Wahl „{{title}}“ ist beendet. Die Ergebnisse werden in Kürze veröffentlicht.',
+    scheduleError: 'Die Benachrichtigung konnte nicht eingerichtet werden.',
   },
   electionList: {
     empty: 'Aktuell sind keine Wahlen verfügbar.',

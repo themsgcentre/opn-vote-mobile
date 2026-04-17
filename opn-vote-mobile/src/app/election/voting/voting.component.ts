@@ -9,7 +9,7 @@ import { TranslationService } from 'src/app/i18n/translation.service';
 import { ElectionInformation } from 'src/app/models/election-information';
 import { Question } from 'src/app/models/question';
 import { VoterCredentials } from 'src/app/models/voter-credentials';
-import { MessageDialogComponent } from 'src/app/message-dialog/message-dialog.component';
+import { MessageDialogWithNotifyComponent } from 'src/app/message-dialog-with-notify/message-dialog-with-notify.component';
 import { QuestionListComponent } from 'src/app/question-list/question-list.component';
 import { LineComponent } from 'src/app/reusables/line/line.component';
 import { BallotService } from 'src/app/services/ballot-service';
@@ -17,6 +17,7 @@ import { ElectionService } from 'src/app/services/election-service';
 import { VoteDraftService } from 'src/app/services/vote-draft-service';
 import { VoteParticipationStorageService } from 'src/app/services/vote-participation-storage.service';
 import { VoteService } from 'src/app/services/vote-service';
+import { VotingEndedNotificationService } from 'src/app/services/voting-ended-notification.service';
 import { VotingReminderService } from 'src/app/services/voting-reminder-service';
 import { VoteOption } from 'src/app/voting-system/vote-option';
 import { QuestionVote } from 'src/app/voting-system/vote';
@@ -31,7 +32,7 @@ import { QuestionVote } from 'src/app/voting-system/vote';
     IonContent,
     IonToggle,
     LineComponent,
-    MessageDialogComponent,
+    MessageDialogWithNotifyComponent,
     TranslatePipe,
   ],
 })
@@ -42,6 +43,7 @@ export class VotingComponent implements OnInit {
     private voteService: VoteService,
     private voteDraftService: VoteDraftService,
     private votingReminderService: VotingReminderService,
+    private votingEndedNotificationService: VotingEndedNotificationService,
     private ballotService: BallotService,
     private router: Router,
     private alertController: AlertController,
@@ -62,6 +64,8 @@ export class VotingComponent implements OnInit {
 
   voteSubmitting = false;
   voteSuccessTxHash: string | null = null;
+  voteEndedNotifyPreference = false;
+  successElectionForNotify: ElectionInformation | null = null;
 
   reminderScheduled = false;
   reminderFeedback: string | null = null;
@@ -187,10 +191,29 @@ export class VotingComponent implements OnInit {
 
       const txHash = await this.voteService.sendVotes(this.votes, credentials, publicKey);
 
-      this.voteSuccessTxHash = txHash;
       if (this.electionId != null) {
         void this.voteParticipationStorage.recordVoteCast(this.electionId);
+        try {
+          const election = await firstValueFrom(
+            this.election$.pipe(
+              filter((e): e is ElectionInformation => e != null),
+              take(1),
+            ),
+          );
+          this.successElectionForNotify = election;
+          this.voteEndedNotifyPreference = await this.votingEndedNotificationService.isEnabled(
+            this.electionId,
+          );
+        } catch {
+          this.successElectionForNotify = null;
+          this.voteEndedNotifyPreference = false;
+        }
+      } else {
+        this.successElectionForNotify = null;
+        this.voteEndedNotifyPreference = false;
       }
+
+      this.voteSuccessTxHash = txHash;
     } catch {
       await this.presentVoteError(this.translation.translate('voting.sendError'));
     } finally {
@@ -200,7 +223,28 @@ export class VotingComponent implements OnInit {
 
   onVoteSuccessOkay(): void {
     this.voteSuccessTxHash = null;
+    this.successElectionForNotify = null;
     this.onVoteSuccessAcknowledged();
+  }
+
+  async onVoteSuccessNotifyToggled(enabled: boolean): Promise<void> {
+    if (this.electionId == null || this.successElectionForNotify == null) {
+      return;
+    }
+    const result = await this.votingEndedNotificationService.setEnabled({
+      electionId: this.electionId,
+      votingEnd: this.successElectionForNotify.votingEnd,
+      electionTitle: this.successElectionForNotify.title,
+      enabled,
+    });
+    if (result.ok) {
+      this.voteEndedNotifyPreference = enabled;
+    } else {
+      this.voteEndedNotifyPreference = false;
+      if (enabled) {
+        await this.presentVoteError(result.reason);
+      }
+    }
   }
 
   onVoteSuccessAcknowledged(): void {

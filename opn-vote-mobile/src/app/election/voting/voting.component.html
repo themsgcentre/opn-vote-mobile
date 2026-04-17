@@ -75,11 +75,13 @@
   </div>
 
   @if (voteSuccessTxHash && gnosisscanTxUrl) {
-    <app-message-dialog
+    <app-message-dialog-with-notify
       [title]="'voting.successTitle' | translate"
       [message]="'voting.successMessage' | translate"
       [linkUrl]="gnosisscanTxUrl"
+      [initialNotifyEnabled]="voteEndedNotifyPreference"
       (okClicked)="onVoteSuccessOkay()"
-    ></app-message-dialog>
+      (notifyEnabledChange)="onVoteSuccessNotifyToggled($event)"
+    ></app-message-dialog-with-notify>
   }
 </ion-content>

@@ -1,0 +1,30 @@
+<div class="message-backdrop" role="dialog" aria-modal="true" aria-labelledby="message-with-notify-title">
+  <div class="message-dialog">
+    <div id="message-with-notify-title" class="message-title">{{ title || ('common.info' | translate) }}</div>
+    <div class="message-text">{{ message }}</div>
+    @if (linkUrl) {
+      <a
+        class="message-link"
+        [href]="linkUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+      >{{ linkLabel || linkUrl }}</a>
+    }
+    <button type="button" class="button" (click)="okClicked.emit()">
+      {{ 'messageDialog.okay' | translate }}
+    </button>
+
+    <div class="notify-section" aria-labelledby="notify-hint">
+      <p id="notify-hint" class="notify-hint">{{ 'messageDialogWithNotify.notifyHint' | translate }}</p>
+      <div class="notify-row">
+        <span class="notify-label" id="notify-toggle-label">{{ 'messageDialogWithNotify.notifyToggleLabel' | translate }}</span>
+        <ion-toggle
+          class="notify-toggle"
+          [checked]="notifyEnabled"
+          aria-labelledby="notify-toggle-label"
+          (ionChange)="onNotifyToggle($event)"
+        ></ion-toggle>
+      </div>
+    </div>
+  </div>
+</div>

@@ -4,7 +4,8 @@ import { Capacitor } from '@capacitor/core';
 import type { PluginListenerHandle } from '@capacitor/core';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { IonApp } from '@ionic/angular/standalone';
-import { LayoutComponent } from "./layout/layout.component";
+import { LayoutComponent } from './layout/layout.component';
+import { VOTING_ENDED_NOTIFICATION_KIND } from './services/voting-ended-notification.service';
 
 @Component({
   selector: 'app-root',
@@ -32,7 +33,12 @@ export class AppComponent implements OnInit, OnDestroy {
     this.notificationTapHandle = await LocalNotifications.addListener(
       'localNotificationActionPerformed',
       (action) => {
-        const extra = action.notification.extra as { electionId?: number } | undefined;
+        const extra = action.notification.extra as
+          | { electionId?: number; kind?: string }
+          | undefined;
+        if (extra?.kind === VOTING_ENDED_NOTIFICATION_KIND) {
+          return;
+        }
         const electionId = extra?.electionId;
         if (electionId == null || !Number.isFinite(electionId)) {
           return;
