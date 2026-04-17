@@ -131,9 +131,6 @@ export class VotingEndedNotificationService {
     return `${STORAGE_KEY_PREFIX}${electionId}`;
   }
 
-  /**
-   * Eigener ID-Bereich, damit keine Kollision mit {@link VotingReminderService} (dort oft electionId als ID).
-   */
   private notificationId(electionId: number): number {
     const base = 2_000_000_000;
     const id = base + (electionId | 0);
