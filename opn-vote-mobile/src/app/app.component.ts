@@ -34,7 +34,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this.appBackButtonHandle = null;
   }
 
-  /** Registriert einen App-backButton-Listener, damit Android `document`-`backbutton` auslöst (Ionic-Navigation). */
   private async registerAndroidHardwareBackBridge(): Promise<void> {
     if (Capacitor.getPlatform() !== 'android') {
       return;
