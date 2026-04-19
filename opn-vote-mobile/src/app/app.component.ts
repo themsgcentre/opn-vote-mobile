@@ -1,5 +1,6 @@
 import { Component, NgZone, OnDestroy, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { App } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 import type { PluginListenerHandle } from '@capacitor/core';
 import { LocalNotifications } from '@capacitor/local-notifications';
@@ -16,17 +17,28 @@ export class AppComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly zone = inject(NgZone);
   private notificationTapHandle: PluginListenerHandle | null = null;
+  private appBackButtonHandle: PluginListenerHandle | null = null;
 
   ngOnInit(): void {
     if (!Capacitor.isNativePlatform()) {
       return;
     }
+    void this.registerAndroidHardwareBackBridge();
     void this.registerVotingNotificationTap();
   }
 
   ngOnDestroy(): void {
     void this.notificationTapHandle?.remove();
     this.notificationTapHandle = null;
+    void this.appBackButtonHandle?.remove();
+    this.appBackButtonHandle = null;
+  }
+
+  private async registerAndroidHardwareBackBridge(): Promise<void> {
+    if (Capacitor.getPlatform() !== 'android') {
+      return;
+    }
+    this.appBackButtonHandle = await App.addListener('backButton', () => {});
   }
 
   private async registerVotingNotificationTap(): Promise<void> {
