@@ -6,7 +6,7 @@
         [class.active]="selectedTab === 'upcoming'"
         (click)="selectTab('upcoming')"
       >
-        anstehend
+        {{ 'homePage.tabs.upcoming' | translate }}
       </button>
 
       <button
@@ -14,7 +14,7 @@
         [class.active]="selectedTab === 'pending'"
         (click)="selectTab('pending')"
       >
-        Registrierung zu
+        {{ 'homePage.tabs.pending' | translate }}
       </button>
 
       <button
@@ -22,7 +22,7 @@
         [class.active]="selectedTab === 'running'"
         (click)="selectTab('running')"
       >
-        laufend
+        {{ 'homePage.tabs.running' | translate }}
       </button>
 
       <button
@@ -30,7 +30,7 @@
         [class.active]="selectedTab === 'finished'"
         (click)="selectTab('finished')"
       >
-        abgeschlossen
+        {{ 'homePage.tabs.finished' | translate }}
       </button>
     </div>
 
@@ -39,7 +39,7 @@
       <input
         type="text"
         class="search-input"
-        placeholder="Wahl suchen"
+        [placeholder]="'homePage.searchPlaceholder' | translate"
         [value]="searchTerm"
         (input)="onSearchChange($event)"
       />
@@ -48,6 +48,7 @@
     <div class="list-container">
       <app-election-list
         [elections]="filteredElections"
+        [showVotingCountdown]="false"
         (electionClicked)="navigateToElection($event)"
       ></app-election-list>
     </div>

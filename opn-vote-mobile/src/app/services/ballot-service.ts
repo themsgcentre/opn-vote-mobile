@@ -6,7 +6,7 @@ import { Ballot } from '../voting-system/ballot';
 import { RSA_BIT_LENGTH } from '../utils/constants';
 import { TokenService } from './token-service';
 import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
-import { VoterCredentials } from '../interfaces/voter-credentials';
+import { VoterCredentials } from '../models/voter-credentials';
 import { MasterKey } from '../voting-system/masterkey';
 import { BALLOT_INDEX_KEY, ballotKeyForElection } from './ballot-storage.util';
 

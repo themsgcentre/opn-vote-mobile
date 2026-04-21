@@ -1,4 +1,4 @@
-import { ElectionDTO } from '../interfaces/election-dto';
+import { ElectionDTO } from '../models/election-dto';
 
 type RawElection = any;
 

@@ -215,3 +215,85 @@
   font-size: 14px;
   color: $opn-lightgray;
 }
+
+.result-section-container {
+  display: flex;
+  flex-direction: column;
+
+  .results-notice {
+    font-weight: $semi-bold;
+    font-size: 16px;
+    text-align: start;
+  }
+
+  .result-item {
+    margin: 0 18px;
+    padding: 0 0 14px;
+  }
+
+  .result-question {
+    margin-bottom: 10px;
+    font-size: $text-medium;
+    font-weight: $regular;
+    color: $opn-white;
+  }
+
+  .result-chart {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .result-bar-card {
+    min-width: 0;
+    padding: 12px 10px 14px;
+    border-radius: 10px;
+    background-color: $surface-card-bg;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .result-bar-value {
+    font-size: $text-medium;
+    line-height: 1;
+    font-weight: $semi-bold;
+    color: $opn-white;
+    margin-bottom: 5px;
+  }
+
+  .result-bar-track {
+    height: 60px;
+    width: 32px;
+    border-radius: 4px 4px 0 0;
+    background-color: $opn-gray;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+  }
+
+  .result-bar-fill {
+    width: 100%;
+  }
+
+  .result-bar-fill.approval {
+    background-color: $opn-yes;
+  }
+
+  .result-bar-fill.rejection {
+    background-color: $opn-no;
+  }
+
+  .result-bar-fill.abstention {
+    background-color: $opn-abstain;
+  }
+
+  .result-bar-label {
+    margin-top: 5px;
+    text-align: center;
+    font-size: $text-small;
+    line-height: 1.2;
+    font-weight: $semi-bold;
+    color: $opn-lightgray;
+  }
+}

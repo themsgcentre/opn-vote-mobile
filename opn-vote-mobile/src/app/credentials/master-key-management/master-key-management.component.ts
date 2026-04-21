@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MasterKeySetupComponent } from '../master-key-setup/master-key-setup.component';
+import { TranslatePipe } from '../../i18n/translate.pipe';
 
 export type MasterKeyPanelState = 'loading' | 'none' | 'present';
 
@@ -8,7 +9,7 @@ export type MasterKeyPanelState = 'loading' | 'none' | 'present';
   standalone: true,
   templateUrl: './master-key-management.component.html',
   styleUrls: ['./master-key-management.component.scss'],
-  imports: [MasterKeySetupComponent],
+  imports: [MasterKeySetupComponent, TranslatePipe],
 })
 export class MasterKeyManagementComponent {
   @Input() state: MasterKeyPanelState = 'loading';

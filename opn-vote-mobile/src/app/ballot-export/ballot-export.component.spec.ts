@@ -7,7 +7,7 @@ import { ElectionService } from '../services/election-service';
 import { QrCodeService } from '../services/qr-code-service';
 import { PdfService } from '../services/pdf-service';
 import { FileSaveService } from '../services/file-save-service';
-import type { ElectionInformation } from '../interfaces/election';
+import type { ElectionInformation } from '../models/election-information';
 
 describe('BallotExportComponent', () => {
   let fixture: ComponentFixture<BallotExportComponent>;

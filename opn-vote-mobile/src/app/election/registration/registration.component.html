@@ -1,7 +1,7 @@
 <div class="registration-container">
   @switch (view) {
     @case ('checking') {
-      <div class="busy-message" aria-busy="true">Laden …</div>
+      <div class="busy-message" aria-busy="true">{{ 'common.loading' | translate }}</div>
     }
     @case ('masterkey') {
       <app-master-key-setup (createClicked)="onCreateMasterKey()"></app-master-key-setup>
@@ -12,14 +12,14 @@
       </div>
     }
     @case ('busy') {
-      <div class="busy-message">Wahlschein wird erstellt …</div>
+      <div class="busy-message">{{ 'registration.creatingBallot' | translate }}</div>
     }
     @case ('error') {
       <div class="error-display">{{ error }}</div>
     }
     @case ('registrationClosed') {
       <div class="error-display">{{ error }}</div>
-      <button type="button" class="ok-button" (click)="goHome()">OK</button>
+      <button type="button" class="ok-button" (click)="goHome()">{{ 'common.ok' | translate }}</button>
     }
   }
 </div>

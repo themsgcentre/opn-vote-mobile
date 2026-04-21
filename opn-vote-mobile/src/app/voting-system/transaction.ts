@@ -1,5 +1,5 @@
 import { UrlPaths } from "../globals/url";
-import { VotingTransaction } from "../interfaces/voting-transaction";
+import { VotingTransaction } from "../models/voting-transaction";
 import { EthSignature } from "./eth-signature";
 import { ServerError } from "./server-error";
 

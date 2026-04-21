@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Question } from '../interfaces/question';
+import { Question } from '../models/question';
 import { ImageComponent } from "../home-page/image/image.component";
 import { OptionsComponent } from "../options/options.component";
 import { defaultOptions } from '../voting-system/default-options';

@@ -4,18 +4,24 @@ import {
   OnChanges,
   OnDestroy,
   SimpleChanges,
+  inject,
 } from '@angular/core';
-import { ElectionInformation } from 'src/app/interfaces/election';
+import { ElectionInformation } from 'src/app/models/election-information';
+import { TranslatePipe } from '../../i18n/translate.pipe';
+import { TranslationService } from '../../i18n/translation.service';
+import { ElectionStatus } from 'src/app/models/election-status';
 
-type CountdownState = 'none' | 'countdown' | 'open';
+type CountdownState = 'none' | 'countdown' | 'open' | 'results' | 'closed';
 
 @Component({
   selector: 'app-voting-countdown',
   standalone: true,
   templateUrl: './voting-countdown.component.html',
   styleUrls: ['./voting-countdown.component.scss'],
+  imports: [TranslatePipe],
 })
 export class VotingCountdownComponent implements OnChanges, OnDestroy {
+  private readonly translation = inject(TranslationService);
   @Input() election!: ElectionInformation;
   @Input() showCountdown = false;
 
@@ -24,7 +30,7 @@ export class VotingCountdownComponent implements OnChanges, OnDestroy {
 
   private timer: ReturnType<typeof setInterval> | undefined;
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(): void {
     this.stopTimer();
     if (!this.showCountdown || !this.election) {
       this.state = 'none';
@@ -55,6 +61,18 @@ export class VotingCountdownComponent implements OnChanges, OnDestroy {
     const voteStart = this.election.votingStart.getTime();
     const voteEnd = this.election.votingEnd.getTime();
 
+    if(this.election.status === ElectionStatus.ResultsPublished) {
+      this.state = 'results';
+      this.countdownText = '';
+      return;
+    }
+
+    if(this.election.status === ElectionStatus.Ended) {
+      this.state = 'closed';
+      this.countdownText = '';
+      return;
+    }
+
     if (now < regStart || now > voteEnd) {
       this.state = 'none';
       this.countdownText = '';
@@ -77,7 +95,10 @@ export class VotingCountdownComponent implements OnChanges, OnDestroy {
     const d = Math.floor(totalSec / 86400);
     const pad = (n: number) => String(n).padStart(2, '0');
     if (d > 0) {
-      return `${d} Tag${d === 1 ? '' : 'e'}, ${pad(h)}:${pad(m)}:${pad(s)}`;
+      const dayLabel = this.translation.translate(
+        d === 1 ? 'votingCountdown.day' : 'votingCountdown.days',
+      );
+      return `${d} ${dayLabel}, ${pad(h)}:${pad(m)}:${pad(s)}`;
     }
     return `${pad(h)}:${pad(m)}:${pad(s)}`;
   }

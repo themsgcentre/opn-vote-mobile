@@ -1,10 +1,10 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { AlertController } from '@ionic/angular/standalone';
-import { QuestionDialogComponent } from '../question-dialog/question-dialog.component';
 import {
   combineLatest,
   filter,
+  finalize,
   forkJoin,
   from,
   map,
@@ -12,19 +12,21 @@ import {
   of,
   switchMap,
   take,
-  finalize,
 } from 'rxjs';
-import { BallotService } from '../services/ballot-service';
-import { ElectionService } from '../services/election-service';
-import { QrCodeService } from '../services/qr-code-service';
-import { PdfService } from '../services/pdf-service';
-import { FileSaveService } from '../services/file-save-service';
-import { Ballot } from '../voting-system/ballot';
-import { ElectionInformation } from '../interfaces/election';
-import { PdfType } from '../qr-code/pdf-type';
-import { ElectionPdfInformation } from '../qr-code/election-pdf-info';
 import { formatDate } from '../formatting/date-formatting';
 import { UrlPaths } from '../globals/url';
+import { TranslationService } from '../i18n/translation.service';
+import { TranslatePipe } from '../i18n/translate.pipe';
+import { ElectionInformation } from '../models/election-information';
+import { QuestionDialogComponent } from '../question-dialog/question-dialog.component';
+import { ElectionPdfInformation } from '../qr-code/election-pdf-info';
+import { PdfType } from '../qr-code/pdf-type';
+import { BallotService } from '../services/ballot-service';
+import { ElectionService } from '../services/election-service';
+import { FileSaveService } from '../services/file-save-service';
+import { PdfService } from '../services/pdf-service';
+import { QrCodeService } from '../services/qr-code-service';
+import { Ballot } from '../voting-system/ballot';
 
 export interface BallotExportRow {
   electionId: number;
@@ -34,7 +36,7 @@ export interface BallotExportRow {
 @Component({
   selector: 'app-ballot-export',
   standalone: true,
-  imports: [AsyncPipe, QuestionDialogComponent],
+  imports: [AsyncPipe, QuestionDialogComponent, TranslatePipe],
   templateUrl: './ballot-export.component.html',
   styleUrls: ['./ballot-export.component.scss'],
 })
@@ -45,26 +47,16 @@ export class BallotExportComponent {
   private readonly pdfService = inject(PdfService);
   private readonly fileSaveService = inject(FileSaveService);
   private readonly alertController = inject(AlertController);
+  readonly translation = inject(TranslationService);
 
   exportingElectionId: number | null = null;
   ballotExportConfirmElectionId: number | null = null;
 
-  readonly ballotExportSecurityQuestion =
-    'Solange der Wahlschein nur in dieser App liegt, ist er im sicheren Speicher geschützt. ' +
-    'Mit dem Export verlässt er diesen Bereich – danach kann die App keine Sicherheit mehr für die Datei übernehmen. ' +
-    'Geben Sie die PDF nicht weiter und bewahren Sie sie sorgfältig auf. ' +
-    'Möchten Sie den Wahlschein wirklich exportieren?';
+  readonly ballotExportSecurityQuestion = this.translation.translate(
+    'ballotExport.securityQuestion',
+  );
 
-  private async presentExportError(): Promise<void> {
-    const alert = await this.alertController.create({
-      header: 'Fehler',
-      message: 'Der Wahlschein konnte nicht exportiert werden.',
-      buttons: [{ text: 'OK', role: 'cancel' }],
-    });
-    await alert.present();
-  }
-
-  rows$: Observable<BallotExportRow[]> = this.ballotService
+  readonly rows$: Observable<BallotExportRow[]> = this.ballotService
     .listElectionIdsWithValidBallot()
     .pipe(
       switchMap((ids) => {
@@ -80,7 +72,9 @@ export class BallotExportComponent {
                 title:
                   info != null && info.title.trim() !== ''
                     ? info.title
-                    : `Wahl ${electionId}`,
+                    : this.translation.translate('ballotExport.fallbackElectionTitle', {
+                        electionId,
+                      }),
               })),
             ),
           ),
@@ -105,6 +99,15 @@ export class BallotExportComponent {
     if (electionId != null) {
       this.performBallotPdfExport(electionId);
     }
+  }
+
+  private async presentExportError(): Promise<void> {
+    const alert = await this.alertController.create({
+      header: this.translation.translate('common.error'),
+      message: this.translation.translate('ballotExport.exportErrorMessage'),
+      buttons: [{ text: this.translation.translate('common.ok'), role: 'cancel' }],
+    });
+    await alert.present();
   }
 
   private performBallotPdfExport(electionId: number): void {
@@ -148,7 +151,7 @@ export class BallotExportComponent {
             this.pdfService.createPdf({
               qrCodeString,
               qrCodeDataUrl,
-              downloadHeadline: 'Wahlschein',
+              downloadHeadline: this.translation.translate('ballotExport.titleShort'),
               pdfType: PdfType.ELECTION_PERMIT,
               pdfInformation,
             }),

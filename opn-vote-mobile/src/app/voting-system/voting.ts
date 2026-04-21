@@ -5,11 +5,11 @@ import { EncryptedVotes, Vote } from "./vote"
 import { bytesToHex, getSubtleCrypto, hexToBuffer, hexToBytes, validateCredentials, validateElectionID, validateEncryptedVotes, validateEncryptionKey, validateEthAddress, validateEthSignature, validateRecastingVotingTransaction, validateSignature, validateToken } from "../utils/utils"
 import { RSA_BIT_LENGTH } from "../utils/constants"
 import { VoteOption } from "./vote-option"
-import { VotingTransaction } from "../interfaces/voting-transaction"
+import { VotingTransaction } from "../models/voting-transaction"
 import { EthSignature } from "./eth-signature"
 import { ServerError } from "./server-error"
 import { UrlPaths } from "../globals/url"
-import { VoterCredentials } from "../interfaces/voter-credentials"
+import { VoterCredentials } from "../models/voter-credentials"
 
 export async function encryptVotes(
   votes: Array<Vote>,

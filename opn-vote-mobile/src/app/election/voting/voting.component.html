@@ -3,18 +3,18 @@
     @if(hasBallot$ | async) {
       @if(election$ | async; as election) {
         @if(isBeforeVotingStart(election)) {
-          <div class="alttitle">Abstimmung noch nicht möglich</div>
-          <div class="election-info">für die Abstimmung:<br>
+          <div class="alttitle">{{ 'voting.notYetPossible' | translate }}</div>
+          <div class="election-info">{{ 'voting.forElection' | translate }}<br>
             <span class="election-title">{{ election.title }}</span></div>
           <div class="notice">
-            <i class="bi bi-exclamation-circle"></i> Hinweis
+            <i class="bi bi-exclamation-circle"></i> {{ 'voting.notice' | translate }}
           </div>
           <div class="description">
-            Die Abstimmung hat noch nicht begonnen. Sie können erst ab dem folgenden Zeitpunkt wählen:
+            {{ 'voting.notStartedDescription' | translate }}
           </div>
           <div class="voting-start-datetime">{{ formatVotingStart(election) }}</div>
           <div class="reminder-row">
-            <span class="reminder-label" id="reminder-toggle-label">Erinnerung zum Wahlbeginn</span>
+            <span class="reminder-label" id="reminder-toggle-label">{{ 'voting.reminderLabel' | translate }}</span>
             <ion-toggle
               [checked]="reminderScheduled"
               [disabled]="reminderRequesting"
@@ -23,24 +23,24 @@
             ></ion-toggle>
           </div>
           @if (reminderRequesting) {
-            <div class="reminder-status" aria-live="polite">Wird gespeichert …</div>
+            <div class="reminder-status" aria-live="polite">{{ 'voting.reminderSaving' | translate }}</div>
           }
           @if (reminderFeedback) {
             <div class="reminder-feedback" aria-live="polite">{{ reminderFeedback }}</div>
           }
         } @else {
-          <div class="title">Stimmzettel</div>
-          <div class="election-info">für die Abstimmung:<br>
+          <div class="title">{{ 'voting.ballotTitle' | translate }}</div>
+          <div class="election-info">{{ 'voting.forElection' | translate }}<br>
             <span class="election-title">{{ election.title }}</span></div>
           <div class="notice">
-            <i class="bi bi-exclamation-circle"></i> Hinweis
+            <i class="bi bi-exclamation-circle"></i> {{ 'voting.notice' | translate }}
           </div>
           <div class="description">
-            Für jede Frage haben Sie eine Stimme. Sie können Ihre Stimme bis zum Ende des Wahlzeitraums ändern.
+            {{ 'voting.ballotDescription' | translate }}
           </div>
           <div class="line"><app-line width="100%" height="5px" color="#29B0CC"></app-line></div>
           <div class="voting-area" [class.voting-area--locked]="voteSubmitting">
-            <app-question-list 
+            <app-question-list
               [questions]="(questions$ | async) || []"
               [initialVotes]="votes"
               (optionSelected)="voteUpdated($event)"
@@ -48,38 +48,40 @@
           </div>
           <div class="line"><app-line width="100%" height="5px" color="#29B0CC"></app-line></div>
           <div class="notice">
-          <i class="bi bi-exclamation-circle"></i> Hinweis
+            <i class="bi bi-exclamation-circle"></i> {{ 'voting.notice' | translate }}
           </div>
           <div class="description">
-            Überprüfen Sie Ihre Stimmen vor der Abgabe.
+            {{ 'voting.reviewHint' | translate }}
           </div>
-            <button
-              type="button"
-              class="action-button"
-              [disabled]="!canSubmit || voteSubmitting"
-              (click)="submitVote()"
-            >
-              {{ voteSubmitting ? 'Wird übermittelt …' : 'Stimmzettel abgeben' }}
-            </button>
-            @if (voteSubmitting) {
-              <div class="submit-status" aria-live="polite">
-                Bitte warten – die Transaktion läuft; die Bestätigung über den Index kann kurz dauern.
-              </div>
-            }
+          <button
+            type="button"
+            class="action-button"
+            [disabled]="!canSubmit || voteSubmitting"
+            (click)="submitVote()"
+          >
+            {{ voteSubmitting ? ('voting.submitting' | translate) : ('voting.submit' | translate) }}
+          </button>
+          @if (voteSubmitting) {
+            <div class="submit-status" aria-live="polite">
+              {{ 'voting.submitStatus' | translate }}
+            </div>
+          }
         }
       }
     }
     @else {
-      <div>Wahlzettel konnte nicht erkannt werden. Bitte versuchen Sie es erneut.</div>
+      <div>{{ 'voting.ballotMissing' | translate }}</div>
     }
   </div>
 
   @if (voteSuccessTxHash && gnosisscanTxUrl) {
-    <app-message-dialog
-      title="Stimme übermittelt"
-      message="Die Transaktion war erfolgreich. Sie können sie im Block-Explorer einsehen:"
+    <app-message-dialog-with-notify
+      [title]="'voting.successTitle' | translate"
+      [message]="'voting.successMessage' | translate"
       [linkUrl]="gnosisscanTxUrl"
+      [initialNotifyEnabled]="voteEndedNotifyPreference"
       (okClicked)="onVoteSuccessOkay()"
-    ></app-message-dialog>
+      (notifyEnabledChange)="onVoteSuccessNotifyToggled($event)"
+    ></app-message-dialog-with-notify>
   }
 </ion-content>

@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { VotingCountdownComponent } from './voting-countdown.component';
-import type { ElectionInformation } from 'src/app/interfaces/election';
+import type { ElectionInformation } from 'src/app/models/election-information';
 
 function election(overrides: Partial<ElectionInformation> = {}): ElectionInformation {
   const base = new Date('2026-01-01T12:00:00');

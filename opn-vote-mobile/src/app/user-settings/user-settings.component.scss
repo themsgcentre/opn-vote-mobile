@@ -2,11 +2,22 @@
 @import '../styles/font-weights.scss';
 @import '../styles/sizes.scss';
 
+:host {
+  display: block;
+  height: 100%;
+  min-height: 0;
+}
+
+.user-settings-ion-content {
+  --background: transparent;
+}
+
 .management-container {
   width: 100%;
-  min-height: 100%;
   display: flex;
   flex-direction: column;
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+  box-sizing: border-box;
 }
 
 .info-popup {

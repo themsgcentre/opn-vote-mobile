@@ -5,42 +5,53 @@ import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
 import { TranslationService } from '../i18n/translation.service';
 
 const CHANNEL_ID = 'opnvote_voting';
-const STORAGE_KEY_PREFIX = 'opnvote_voting_reminder_v2_';
+const STORAGE_KEY_PREFIX = 'opnvote_voting_ended_notify_v1_';
+
+export const VOTING_ENDED_NOTIFICATION_KIND = 'votingEnded' as const;
 
 @Injectable({
   providedIn: 'root',
 })
-export class VotingReminderService {
-  constructor(private translation: TranslationService) {}
+export class VotingEndedNotificationService {
+  constructor(private readonly translation: TranslationService) {}
 
-  async isReminderScheduled(electionId: number, votingStart: Date): Promise<boolean> {
+  async isEnabled(electionId: number): Promise<boolean> {
     try {
       const res = await SecureStoragePlugin.get({ key: this.storageKey(electionId) });
       if (!res.value) {
         return false;
       }
-      const parsed = JSON.parse(res.value) as { votingStartIso: string };
-      return new Date(parsed.votingStartIso).getTime() === votingStart.getTime();
+      const parsed = JSON.parse(res.value) as { votingEndIso?: string };
+      return typeof parsed.votingEndIso === 'string';
     } catch {
       return false;
     }
   }
 
-  async scheduleVotingStartReminder(params: {
+  async setEnabled(params: {
     electionId: number;
-    votingStart: Date;
+    votingEnd: Date;
     electionTitle: string;
+    enabled: boolean;
   }): Promise<{ ok: true } | { ok: false; reason: string }> {
-    const { electionId, votingStart, electionTitle } = params;
+    const { electionId, votingEnd, electionTitle, enabled } = params;
 
-    if (votingStart.getTime() <= Date.now()) {
-      return { ok: false, reason: this.translation.translate('votingReminder.startInPast') };
+    if (!enabled) {
+      await this.cancel(electionId);
+      return { ok: true };
+    }
+
+    if (votingEnd.getTime() <= Date.now()) {
+      return { ok: false, reason: this.translation.translate('votingEndedNotify.pastEnd') };
     }
 
     if (!Capacitor.isNativePlatform()) {
       await SecureStoragePlugin.set({
         key: this.storageKey(electionId),
-        value: JSON.stringify({ votingStartIso: votingStart.toISOString() }),
+        value: JSON.stringify({
+          votingEndIso: votingEnd.toISOString(),
+          electionTitle,
+        }),
       });
       return { ok: true };
     }
@@ -64,68 +75,67 @@ export class VotingReminderService {
         });
       }
 
-      const id = this.notificationIdForElection(electionId);
+      const id = this.notificationId(electionId);
       await LocalNotifications.cancel({ notifications: [{ id }] });
 
       await LocalNotifications.schedule({
         notifications: [
           {
-            title: this.translation.translate('votingReminder.notificationTitle'),
-            body: this.translation.translate('votingReminder.notificationBody', {
+            title: this.translation.translate('votingEndedNotify.notificationTitle'),
+            body: this.translation.translate('votingEndedNotify.notificationBody', {
               title: electionTitle,
             }),
             id,
             channelId: Capacitor.getPlatform() === 'android' ? CHANNEL_ID : undefined,
             schedule: {
-              at: votingStart,
+              at: votingEnd,
               allowWhileIdle: true,
             },
-            extra: { electionId },
+            extra: { kind: VOTING_ENDED_NOTIFICATION_KIND },
           },
         ],
       });
 
       await SecureStoragePlugin.set({
         key: this.storageKey(electionId),
-        value: JSON.stringify({ votingStartIso: votingStart.toISOString() }),
+        value: JSON.stringify({
+          votingEndIso: votingEnd.toISOString(),
+          electionTitle,
+        }),
       });
 
       return { ok: true };
     } catch {
-      return { ok: false, reason: this.translation.translate('votingReminder.scheduleError') };
+      return { ok: false, reason: this.translation.translate('votingEndedNotify.scheduleError') };
     }
   }
 
-  async cancelVotingStartReminder(
-    electionId: number,
-  ): Promise<{ ok: true } | { ok: false; reason: string }> {
+  private async cancel(electionId: number): Promise<void> {
     if (Capacitor.isNativePlatform()) {
       try {
-        const id = this.notificationIdForElection(electionId);
-        await LocalNotifications.cancel({ notifications: [{ id }] });
+        await LocalNotifications.cancel({
+          notifications: [{ id: this.notificationId(electionId) }],
+        });
       } catch {
-        return {
-          ok: false,
-          reason: this.translation.translate('votingReminder.cancelError'),
-        };
+        // ignore
       }
     }
     try {
       await SecureStoragePlugin.remove({ key: this.storageKey(electionId) });
     } catch {
-      // Key may not exist.
+      // ignore
     }
-    return { ok: true };
   }
 
   private storageKey(electionId: number): string {
     return `${STORAGE_KEY_PREFIX}${electionId}`;
   }
 
-  private notificationIdForElection(electionId: number): number {
-    const id = electionId | 0;
-    if (id <= 0 || id > 2_000_000_000) {
-      return Math.abs(Math.imul(electionId, 2654435761) % 2_000_000_000) + 1;
+  private notificationId(electionId: number): number {
+    const base = 2_000_000_000;
+    const id = base + (electionId | 0);
+    if (id > 2_147_000_000) {
+      return base + (Math.abs(Math.imul(electionId, 2654435761)) % 100_000_000);
     }
     return id;
   }

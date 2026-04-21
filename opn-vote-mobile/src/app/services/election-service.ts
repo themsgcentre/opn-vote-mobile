@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import { ElectionProxyService } from './election-proxy-service';
-import { ElectionInformation } from '../interfaces/election';
-import { map, Observable } from 'rxjs';
-import { ElectionDTO } from '../interfaces/election-dto';
+import { ElectionInformation } from '../models/election-information';
+import { filter, map, Observable } from 'rxjs';
+import { ElectionDTO } from '../models/election-dto';
 import { mapElectionInformation } from '../mappers/election-mapper';
-import { Question } from '../interfaces/question';
+import { Question } from '../models/question';
+import { ElectionStatus } from '../models/election-status';
+import { VotesRecord } from '../models/votes-record';
+import { VoteResult } from '../models/vote-result';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +23,10 @@ export class ElectionService {
 
   getAllElectionInformations(): Observable<ElectionInformation[]> {
     return this.electionProxyService.getElections().pipe(
-      map((dtos: ElectionDTO[]) => dtos.map(mapElectionInformation))
+      map((dtos: ElectionDTO[]) => dtos
+        .filter(dto => dto.status === ElectionStatus.Open || dto.status === ElectionStatus.ResultsPublished || dto.status === ElectionStatus.Ended )
+        .map(mapElectionInformation)
+      )
     );
   }
 
@@ -46,7 +52,7 @@ export class ElectionService {
     );
   }
 
-  loadQuestions(id: number): Observable<Question[]> {
+  getQuestions(id: number): Observable<Question[]> {
     return this.electionProxyService.getElectionById(id).pipe(
       map((dto: ElectionDTO | null) => {
         if (!dto) return [];
@@ -61,5 +67,9 @@ export class ElectionService {
         }));
       })
     );
+  }
+
+  getResults(id: number): Observable<VotesRecord | null> {
+    return this.electionProxyService.getResults(id);
   }
 }

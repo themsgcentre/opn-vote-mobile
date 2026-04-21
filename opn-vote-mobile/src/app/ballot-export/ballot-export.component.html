@@ -2,15 +2,15 @@
   <div class="section-title">
     <span class="title-with-icon">
       <i class="bi bi-box-arrow-up"></i>
-      <span>Wahlschein exportieren</span>
+      <span>{{ 'ballotExport.title' | translate }}</span>
     </span>
   </div>
   <p class="section-description">
-    Für jede gespeicherte Wahl kann der Wahlschein als PDF gespeichert werden.
+    {{ 'ballotExport.description' | translate }}
   </p>
   @if (rows$ | async; as rows) {
     @if (rows.length === 0) {
-      <div class="empty-hint">Keine gespeicherten Wahlscheine.</div>
+      <div class="empty-hint">{{ 'ballotExport.empty' | translate }}</div>
     } @else {
       <ul class="export-row-list">
         @for (row of rows; track row.electionId) {
@@ -21,12 +21,12 @@
               class="export-icon-button"
               [disabled]="exportingElectionId !== null || ballotExportConfirmElectionId !== null"
               [attr.aria-busy]="exportingElectionId === row.electionId ? 'true' : null"
-              [attr.aria-label]="'Wahlschein exportieren: ' + row.title"
-              [title]="'Wahlschein als PDF speichern'"
+              [attr.aria-label]="'ballotExport.ariaLabel' | translate:{ title: row.title }"
+              [title]="'ballotExport.buttonTitle' | translate"
               (click)="requestBallotPdfExport(row.electionId)"
             >
               @if (exportingElectionId === row.electionId) {
-                <span class="export-busy" aria-hidden="true">…</span>
+                <span class="export-busy" aria-hidden="true">...</span>
               } @else {
                 <i class="bi bi-download" aria-hidden="true"></i>
               }
@@ -40,7 +40,7 @@
 
 @if (ballotExportConfirmElectionId !== null) {
   <app-question-dialog
-    title="Wahlschein exportieren"
+    [title]="'ballotExport.confirmTitle' | translate"
     [question]="ballotExportSecurityQuestion"
     (yesClicked)="onBallotExportSecurityYes()"
     (noClicked)="onBallotExportSecurityNo()"

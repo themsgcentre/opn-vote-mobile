@@ -1,11 +1,13 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, NgZone, Output } from '@angular/core';
+import { TranslatePipe } from '../i18n/translate.pipe';
 
 @Component({
   selector: 'app-import-dialog',
   standalone: true,
   templateUrl: './import-dialog.component.html',
   styleUrls: ['./import-dialog.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [TranslatePipe],
 })
 export class ImportDialogComponent {
   private readonly ngZone = inject(NgZone);

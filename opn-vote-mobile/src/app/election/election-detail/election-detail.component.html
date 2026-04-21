@@ -6,77 +6,113 @@
         [large]="election.headerImage.large"
         [takeLarge]="false"
         [alt]="election.title"
-      ></app-image> 
+      ></app-image>
     </div>
 
     <div class="title-divider"></div>
     <div class="title-section">
-      <div class="title">{{ election.title }}</div>      
+      <div class="title">{{ election.title }}</div>
     </div>
 
     <div class="status-row">
       <div class="status-badge" [ngClass]="phaseClass">
         {{ phaseLabel }}
       </div>
-      <div class="author">Von {{ election.author }}</div>
+      <div class="author">{{ 'electionDetail.byAuthor' | translate:{ author: election.author } }}</div>
      </div>
 
     <div class="description">{{ election.description }}</div>
 
     <div class="section">
-      <div class="section-title">Wahlbeteiligung</div>
+      <div class="section-title">{{ 'electionDetail.participation' | translate }}</div>
 
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-value" [ngClass]="getStatValueClass(election.authorizedVoterCount)">{{ election.authorizedVoterCount }}</div>
-          <div class="stat-label">Berechtigt</div>
+          <div class="stat-label">{{ 'electionDetail.authorized' | translate }}</div>
         </div>
 
         <div class="stat-card">
           <div class="stat-value" [ngClass]="getStatValueClass(election.registeredVoterCount)">{{ election.registeredVoterCount }}</div>
-          <div class="stat-label">Registriert</div>
+          <div class="stat-label">{{ 'electionDetail.registered' | translate }}</div>
         </div>
 
         <div class="stat-card">
           <div class="stat-value" [ngClass]="getStatValueClass(election.totalVotes)">{{ election.totalVotes }}</div>
-          <div class="stat-label">Stimmen</div>
+          <div class="stat-label">{{ 'electionDetail.votes' | translate }}</div>
         </div>
       </div>
     </div>
-
-    <div class="section-title">Zeitraum</div>
-    <div class="info-list">
+    @if(!isElectionFinished) {
+      <div class="section-title">{{ 'electionDetail.period' | translate }}</div>
+      <div class="info-list">
         <div class="info-item">
-          <div class="label">Registrierung</div>
+          <div class="label">{{ 'electionDetail.registration' | translate }}</div>
           <div class="value">
-            {{ formatDate(election.registrationStart) }} – {{ formatDate(election.registrationEnd) }}
+            {{ formatDate(election.registrationStart) }} - {{ formatDate(election.registrationEnd) }}
           </div>
         </div>
 
         <div class="info-item">
-          <div class="label">Abstimmung</div>
+          <div class="label">{{ 'electionDetail.voting' | translate }}</div>
           <div class="value">
-            {{ formatDate(election.votingStart) }} – {{ formatDate(election.votingEnd) }}
+            {{ formatDate(election.votingStart) }} - {{ formatDate(election.votingEnd) }}
           </div>
         </div>
       </div>
 
-    @if(!isElectionFinished) {
+    
       <button class="vote-button" (click)="participateClicked.emit()" [disabled]="!canVote && !isRegistrationOpen">
         @if(canVote) {
-          Jetzt an Wahl teilnehmen
+          {{ 'electionDetail.participateNow' | translate }}
         }
         @else if(isBeforeRegistration) {
-          Registrierungsphase beginnt bald
+          {{ 'electionDetail.registrationStartsSoon' | translate }}
         }
         @else if(isRegistrationOpen && !isVotingOpen) {
-          Jetzt registrieren
+          {{ 'electionDetail.registerNow' | translate }}
         }
         @else {
-          Abstimmung ist aktuell nicht verfügbar
+          {{ 'electionDetail.unavailable' | translate }}
         }
       </button>
     }
-    
+
+    @else {
+      <div class="result-section-container">
+        @if(resultsPublished && results) {
+          <div class="section-title">
+            {{ 'electionDetail.resultsPublishedNotice' | translate }}
+          </div>
+          <div class="results-container">
+            @for (result of results; track $index) {
+              <div class="result-item">
+                <div class="result-question">{{ result.questionText }}</div>
+                <div class="result-chart">
+                  @for (segment of getResultSegments(result); track segment.labelKey) {
+                    <div class="result-bar-card">
+                      <div class="result-bar-value">{{ segment.value }}</div>
+                      <div class="result-bar-track">
+                        <div
+                          class="result-bar-fill"
+                          [ngClass]="segment.cssClass"
+                          [style.height.%]="segment.height"
+                        ></div>
+                      </div>
+                      <div class="result-bar-label">{{ segment.labelKey | translate }}</div>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
+        @else {
+          <div class="section-title">
+            {{ 'electionDetail.resultsPendingNotice' | translate }}
+          </div>
+        }
+      </div>
+    }
   </div>
 }

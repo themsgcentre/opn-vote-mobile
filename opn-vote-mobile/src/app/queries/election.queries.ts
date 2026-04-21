@@ -45,3 +45,13 @@ export const GET_ALL_ELECTIONS = gql`
     }
   }
 `;
+
+export const GET_ELECTION_RESULTS = gql`
+   query getResults($id: ID!) {                                                                                                                                                                 
+    electionResultsPublisheds(where: { electionId: $id }) {                                                                                                                       
+      invalidVotes                                                                                                                                                                 
+      noVotes                                                                                                                                                                     
+      yesVotes
+    }                                                                                                                                                                             
+  }
+`;
