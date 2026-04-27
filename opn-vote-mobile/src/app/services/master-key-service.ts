@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
 import { from, map, Observable } from 'rxjs';
-import { Token } from '../voting-system/token';
-import { R } from '../voting-system/r';
-import { MasterKey } from '../voting-system/masterkey';
+import { Token } from '../models/token';
+import { R } from '../models/r';
+import { MasterKey } from '../models/masterkey';
 import { clearAllBallotStorage } from './ballot-storage.util';
 import { VoteDraftService } from './vote-draft-service';
 import { VoteParticipationStorageService } from './vote-participation-storage.service';

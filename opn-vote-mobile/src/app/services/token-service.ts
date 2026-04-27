@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Token } from '../voting-system/token';
+import { Token } from '../models/token';
 import { gcdBigInt, hexStringToBigInt, numberToHex32, padMessage, sha256Hex, validateElectionID, validateR, validateRSAParams, validateSignature, validateToken } from '../utils/utils';
 import { PREFIX_BLINDED_TOKEN, PREFIX_UNBLINDED_TOKEN } from '../utils/constants';
-import { R } from '../voting-system/r';
-import { RSAParams } from '../voting-system/rsa-params';
+import { R } from '../models/r';
+import { RSAParams } from '../models/rsa-params';
 import { modInv, modPow } from 'bigint-crypto-utils';
-import { Signature } from '../voting-system/signature';
+import { Signature } from '../models/signature';
 
 @Injectable({
   providedIn: 'root',

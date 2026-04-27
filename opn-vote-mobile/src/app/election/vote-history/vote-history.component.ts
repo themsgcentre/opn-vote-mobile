@@ -2,11 +2,11 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { IonContent, ViewWillEnter } from '@ionic/angular/standalone';
-import { ElectionListComponent } from '../home-page/election-list/election-list.component';
-import { ElectionService } from '../services/election-service';
-import { VoteParticipationStorageService } from '../services/vote-participation-storage.service';
-import { ElectionInformation } from '../models/election-information';
-import { TranslatePipe } from '../i18n/translate.pipe';
+import { ElectionListComponent } from '../election-list/election-list.component';
+import { ElectionService } from '../../services/election-service';
+import { VoteParticipationStorageService } from '../../services/vote-participation-storage.service';
+import { ElectionInformation } from '../../models/election-information';
+import { TranslatePipe } from '../../i18n/translate.pipe';
 
 @Component({
   selector: 'app-vote-history',

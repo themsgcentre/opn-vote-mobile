@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { OptionsComponent } from './options.component';
-import { VoteOption } from '../../voting-system/vote-option';
+import { VoteOption } from '../../models/vote-option';
 import type { Option } from '../../models/option';
 
 const threeOptions: Option[] = [

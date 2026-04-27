@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { combineLatest, forkJoin, from, map, Observable, of, switchMap, take, throwError } from 'rxjs';
 import { RegisterProxyService } from './register-proxy-service';
 import { MasterKeyService } from './master-key-service';
-import { Ballot } from '../voting-system/ballot';
+import { Ballot } from '../models/ballot';
 import { RSA_BIT_LENGTH } from '../utils/constants';
 import { TokenService } from './token-service';
 import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
 import { VoterCredentials } from '../models/voter-credentials';
-import { MasterKey } from '../voting-system/masterkey';
+import { MasterKey } from '../models/masterkey';
 import { BALLOT_INDEX_KEY, ballotKeyForElection } from './ballot-storage.util';
 
 @Injectable({

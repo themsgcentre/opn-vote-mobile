@@ -6,7 +6,7 @@ import { clearAllBallotStorage } from './ballot-storage.util';
 import { MasterKeyService } from './master-key-service';
 import { VoteDraftService } from './vote-draft-service';
 import { VoteParticipationStorageService } from './vote-participation-storage.service';
-import type { MasterKey } from '../voting-system/masterkey';
+import type { MasterKey } from '../models/masterkey';
 
 jest.mock('capacitor-secure-storage-plugin', () => ({
   SecureStoragePlugin: {

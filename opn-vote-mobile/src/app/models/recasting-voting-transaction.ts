@@ -1,4 +1,4 @@
-import { EncryptedVotes } from "../voting-system/vote";
+import { EncryptedVotes } from "./vote";
 
 export interface RecastingVotingTransaction {
     electionID: number;

@@ -4,8 +4,8 @@ import { IonicModule } from '@ionic/angular';
 import { of } from 'rxjs';
 
 import { VoteHistoryComponent } from './vote-history.component';
-import { ElectionService } from '../services/election-service';
-import { VoteParticipationStorageService } from '../services/vote-participation-storage.service';
+import { ElectionService } from '../../services/election-service';
+import { VoteParticipationStorageService } from '../../services/vote-participation-storage.service';
 
 describe('VoteHistoryComponent', () => {
   let component: VoteHistoryComponent;

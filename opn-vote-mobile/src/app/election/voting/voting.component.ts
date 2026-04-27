@@ -18,8 +18,8 @@ import { VoteParticipationStorageService } from 'src/app/services/vote-participa
 import { VoteService } from 'src/app/services/vote-service';
 import { VotingEndedNotificationService } from 'src/app/services/voting-ended-notification.service';
 import { VotingReminderService } from 'src/app/services/voting-reminder-service';
-import { VoteOption } from 'src/app/voting-system/vote-option';
-import { QuestionVote } from 'src/app/voting-system/vote';
+import { VoteOption } from 'src/app/models/vote-option';
+import { QuestionVote } from 'src/app/models/vote';
 import { QuestionListComponent } from '../question-list/question-list.component';
 
 @Component({

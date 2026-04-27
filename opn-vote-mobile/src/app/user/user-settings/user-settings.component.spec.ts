@@ -11,7 +11,7 @@ import { MasterKeyService } from '../../services/master-key-service';
 import { PdfService } from '../../services/pdf-service';
 import { QrCodeService } from '../../services/qr-code-service';
 import { VoteParticipationStorageService } from '../../services/vote-participation-storage.service';
-import type { Ballot } from '../../voting-system/ballot';
+import type { Ballot } from '../../models/ballot';
 
 const stubBallotForExport: Ballot = {
   electionId: 1,

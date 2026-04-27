@@ -1,6 +1,6 @@
 import { UrlPaths } from "../globals/url";
 import { VotingTransaction } from "../models/voting-transaction";
-import { EthSignature } from "./eth-signature";
+import { EthSignature } from "../models/eth-signature";
 import { ServerError } from "./server-error";
 
 export async function signTransaction(votingTransaction: VotingTransaction, voterSignatureObject: EthSignature) {

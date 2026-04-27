@@ -1,4 +1,4 @@
-import { VoteOption } from "../voting-system/vote-option";
+import { VoteOption } from "./vote-option";
 
 export interface Option {
     text: string;

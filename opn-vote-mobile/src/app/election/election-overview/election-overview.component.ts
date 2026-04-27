@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { ElectionInformation } from 'src/app/models/election-information';
-import { ImageComponent } from 'src/app/home-page/image/image.component';
+import { ImageComponent } from 'src/app/reusables/image/image.component';
 import { VotingCountdownComponent } from '../voting-countdown/voting-countdown.component';
 
 @Component({

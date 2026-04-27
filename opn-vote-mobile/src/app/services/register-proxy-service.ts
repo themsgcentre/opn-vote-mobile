@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
 import { UrlPaths } from '../globals/url';
-import { Signature } from '../voting-system/signature';
-import { Token } from '../voting-system/token';
+import { Signature } from '../models/signature';
+import { Token } from '../models/token';
 import { map, Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { RegisterErrorType } from '../globals/register-error.type';
 import { RegisterError } from '../globals/register-error';
 import { hexStringToBigInt, numberToHex32, padMessage, sha256Hex, validateR, validateRSAParams, validateSignature } from '../utils/utils';
-import { EncryptionType } from '../voting-system/encryption-type';
+import { EncryptionType } from '../models/encryption-type';
 import { Wallet } from 'ethers';
 import { VoterCredentials } from '../models/voter-credentials';
-import { Ballot } from '../voting-system/ballot';
+import { Ballot } from '../models/ballot';
 import { modInv } from 'bigint-crypto-utils';
-import { RSAParams } from '../voting-system/rsa-params';
-import { R } from '../voting-system/r';
+import { RSAParams } from '../models/rsa-params';
+import { R } from '../models/r';
 
 @Injectable({
   providedIn: 'root',

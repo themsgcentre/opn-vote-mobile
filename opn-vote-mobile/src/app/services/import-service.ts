@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { TranslationService } from '../i18n/translation.service';
 import { ExportPayload } from '../models/export-payload';
-import { Ballot } from '../voting-system/ballot';
-import { R } from '../voting-system/r';
-import { Token } from '../voting-system/token';
-import { MasterKey } from '../voting-system/masterkey';
+import { Ballot } from '../models/ballot';
+import { R } from '../models/r';
+import { Token } from '../models/token';
+import { MasterKey } from '../models/masterkey';
 
 @Injectable({
   providedIn: 'root',

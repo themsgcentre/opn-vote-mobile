@@ -8,8 +8,8 @@ import { createSmartAccountClient } from 'permissionless';
 import { to7702SimpleSmartAccount } from 'permissionless/accounts';
 
 import { UrlPaths, UrlProperties } from '../globals/url';
-import { EncryptionType } from '../voting-system/encryption-type';
-import { VoteOption } from '../voting-system/vote-option';
+import { EncryptionType } from '../models/encryption-type';
+import { VoteOption } from '../models/vote-option';
 import { postJson } from '../server/postJson';
 import { querySubgraph } from '../server/querySubgraph';
 import type { VoterCredentials } from '../models/voter-credentials';

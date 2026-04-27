@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { SavePdfOptions } from '../qr-code/save-pdf-options';
+import { SavePdfOptions } from '../import-export/save-pdf-options';
 import { Capacitor } from "@capacitor/core";
 import { Directory, Filesystem } from "@capacitor/filesystem";
 import { ToastController } from '@ionic/angular/standalone';
