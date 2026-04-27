@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "test": "npm --prefix opn-vote-mobile test"
+  },
   "dependencies": {
     "@apollo/client": "^4.1.6",
     "@capacitor/android": "^8.3.0",

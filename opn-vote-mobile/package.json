@@ -9,9 +9,15 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "test:ci": "ng test --configuration=ci",
     "lint": "ng lint"
   },
   "private": true,
+  "overrides": {
+    "@angular-builders/jest": {
+      "jest-preset-angular": "16.1.4"
+    }
+  },
   "dependencies": {
     "@angular/animations": "^20.0.0",
     "@angular/common": "^20.0.0",
@@ -36,13 +42,16 @@
     "html5-qrcode": "^2.3.8",
     "ionicons": "^7.0.0",
     "js-sha3": "^0.9.3",
+    "pdf-lib": "^1.17.1",
     "permissionless": "^0.3.4",
+    "qrcode": "^1.5.4",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "viem": "^2.47.6",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
+    "@angular-builders/jest": "^20.0.0",
     "@angular-devkit/build-angular": "^20.0.0",
     "@angular-eslint/builder": "^20.0.0",
     "@angular-eslint/eslint-plugin": "^20.0.0",
@@ -53,20 +62,17 @@
     "@angular/compiler-cli": "^20.0.0",
     "@angular/language-service": "^20.0.0",
     "@ionic/angular-toolkit": "^12.0.0",
-    "@types/jasmine": "~5.1.0",
+    "@types/jest": "^30.0.0",
+    "@types/qrcode": "^1.5.6",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
     "eslint": "^9.16.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-jsdoc": "^48.2.1",
     "eslint-plugin-prefer-arrow": "1.2.2",
-    "jasmine-core": "~5.1.0",
-    "jasmine-spec-reporter": "~5.0.0",
-    "karma": "~6.4.0",
-    "karma-chrome-launcher": "~3.2.0",
-    "karma-coverage": "~2.2.0",
-    "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.1.0",
+    "jest": "^30.3.0",
+    "jest-preset-angular": "^16.1.4",
+    "jsdom": "^26.1.0",
     "typescript": "~5.9.0"
   }
 }

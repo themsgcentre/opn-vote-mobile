@@ -1,0 +1,76 @@
+@import '../../styles/colors.scss';
+@import '../../styles/sizes.scss';
+@import '../../styles/font-weights.scss';
+
+.ballot-import-container {
+    width: 100%;
+    padding: 18px 18px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .section-title {
+        margin-top: 6px;
+        color: $opn-white;
+        font-size: $text-medium;
+        font-weight: $semi-bold;
+        text-align: center;
+
+        .title-with-icon {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .info-icon {
+            color: $opn-lightblue;
+            font-size: 14px;
+            cursor: pointer;
+        }
+    }
+
+    .section-description {
+        margin-top: 6px;
+        color: $opn-lightgray;
+        font-size: $text-medium;
+        text-align: center;
+        opacity: 0.9;
+    }
+
+    .import-feedback {
+        margin: 10px 16px 0;
+        padding: 10px 12px;
+        border-radius: 6px;
+        font-size: $text-small;
+        line-height: 1.4;
+        text-align: center;
+        white-space: pre-line;
+        width: 100%;
+        max-width: 360px;
+        box-sizing: border-box;
+    }
+
+    .import-feedback--error {
+        color: #ffb4b4;
+        background: rgba(255, 80, 80, 0.12);
+    }
+
+    .action-button {
+        margin-top: 12px;
+        width: 85%;
+        min-height: 44px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 0 14px;
+        font-size: $text-medium;
+        font-weight: $regular;
+        color: $opn-white;
+    }
+
+    .action-button.primary {
+        background-color: $opn-lightblue;
+    }
+}

@@ -6,7 +6,7 @@ function election(overrides: Partial<ElectionInformation> = {}): ElectionInforma
   const base = new Date('2026-01-01T12:00:00');
   return {
     id: 1,
-    title: 'Test',
+    title: 'Fixture-Wahl (Countdown-Test)',
     summary: '',
     description: '',
     headerImage: { large: '', small: '' },
