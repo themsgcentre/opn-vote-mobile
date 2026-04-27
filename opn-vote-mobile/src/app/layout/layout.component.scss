@@ -19,7 +19,6 @@
   position: fixed;
   bottom: 0;
   left: 0;
-  height: $navbar-height;
   width: 100%;
 }
 
@@ -28,7 +27,7 @@
   top: $top-bar-height;
   left: 0;
   right: 0;
-  bottom: $navbar-height;
+  bottom: calc(#{$navbar-height} + env(safe-area-inset-bottom, 0px));
 }
 
 

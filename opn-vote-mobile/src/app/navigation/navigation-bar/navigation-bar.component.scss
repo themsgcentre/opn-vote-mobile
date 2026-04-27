@@ -2,7 +2,9 @@
 @import '../../styles/sizes.scss';
 
 :host {
-    height: $navbar-height;
+    box-sizing: border-box;
+    height: calc(#{$navbar-height} + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
     position: relative;
     display: flex;
     z-index: 1;
