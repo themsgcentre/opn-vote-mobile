@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
-import { TranslatePipe } from '../i18n/translate.pipe';
-import { TranslationService } from '../i18n/translation.service';
+import { TranslatePipe } from 'src/app/i18n/translate.pipe';
+import { TranslationService } from 'src/app/i18n/translation.service';
 
 @Component({
   selector: 'app-message-dialog',

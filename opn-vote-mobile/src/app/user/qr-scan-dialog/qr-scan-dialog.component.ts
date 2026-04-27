@@ -9,8 +9,8 @@ import {
   inject,
 } from '@angular/core';
 import { Html5Qrcode, Html5QrcodeScannerState } from 'html5-qrcode';
-import { TranslatePipe } from '../i18n/translate.pipe';
-import { TranslationService } from '../i18n/translation.service';
+import { TranslatePipe } from 'src/app/i18n/translate.pipe';
+import { TranslationService } from 'src/app/i18n/translation.service';
 
 @Component({
   selector: 'app-qr-scan-dialog',

@@ -10,7 +10,6 @@ import { ElectionInformation } from 'src/app/models/election-information';
 import { Question } from 'src/app/models/question';
 import { VoterCredentials } from 'src/app/models/voter-credentials';
 import { MessageDialogWithNotifyComponent } from 'src/app/reusables/message-dialog-with-notify/message-dialog-with-notify.component';
-import { QuestionListComponent } from 'src/app/question-list/question-list.component';
 import { LineComponent } from 'src/app/reusables/line/line.component';
 import { BallotService } from 'src/app/services/ballot-service';
 import { ElectionService } from 'src/app/services/election-service';
@@ -21,6 +20,7 @@ import { VotingEndedNotificationService } from 'src/app/services/voting-ended-no
 import { VotingReminderService } from 'src/app/services/voting-reminder-service';
 import { VoteOption } from 'src/app/voting-system/vote-option';
 import { QuestionVote } from 'src/app/voting-system/vote';
+import { QuestionListComponent } from '../question-list/question-list.component';
 
 @Component({
   selector: 'app-voting',

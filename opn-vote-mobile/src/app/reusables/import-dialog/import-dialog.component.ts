@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, NgZone, Output } from '@angular/core';
-import { TranslatePipe } from '../i18n/translate.pipe';
+import { TranslatePipe } from 'src/app/i18n/translate.pipe';
 
 @Component({
   selector: 'app-import-dialog',
