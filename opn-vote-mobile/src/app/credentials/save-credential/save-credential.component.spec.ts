@@ -1,23 +1,24 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SaveCredentialComponent } from './save-credential.component';
 
 describe('SaveCredentialComponent', () => {
-  let component: SaveCredentialComponent;
   let fixture: ComponentFixture<SaveCredentialComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [SaveCredentialComponent, IonicModule.forRoot()],
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [SaveCredentialComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SaveCredentialComponent);
-    component = fixture.componentInstance;
     fixture.detectChanges();
-  }));
+  });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(fixture.componentInstance).toBeTruthy();
+  });
+
+  it('renders the placeholder template', () => {
+    expect(fixture.nativeElement.textContent).toContain('save-credential works!');
   });
 });
