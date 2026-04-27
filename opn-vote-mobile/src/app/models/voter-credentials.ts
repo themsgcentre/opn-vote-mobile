@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
-import { Signature } from "../voting-system/signature";
-import { Token } from "../voting-system/token";
-import { EncryptionKey } from "../voting-system/encryption-key";
+import { Signature } from "./signature";
+import { Token } from "./token";
+import { EncryptionKey } from "./encryption-key";
 
 
 export interface VoterCredentials {

@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
 
 import { VoteDraftService } from './vote-draft-service';
-import { VoteOption } from '../voting-system/vote-option';
+import { VoteOption } from '../models/vote-option';
 
 jest.mock('capacitor-secure-storage-plugin', () => ({
   SecureStoragePlugin: {

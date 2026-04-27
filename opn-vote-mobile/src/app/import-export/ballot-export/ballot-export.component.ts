@@ -18,14 +18,14 @@ import { UrlPaths } from '../../globals/url';
 import { TranslationService } from '../../i18n/translation.service';
 import { TranslatePipe } from '../../i18n/translate.pipe';
 import { ElectionInformation } from '../../models/election-information';
-import { ElectionPdfInformation } from '../../qr-code/election-pdf-info';
-import { PdfType } from '../../qr-code/pdf-type';
+import { ElectionPdfInformation } from '../election-pdf-info';
+import { PdfType } from '../pdf-type';
 import { BallotService } from '../../services/ballot-service';
 import { ElectionService } from '../../services/election-service';
 import { FileSaveService } from '../../services/file-save-service';
 import { PdfService } from '../../services/pdf-service';
 import { QrCodeService } from '../../services/qr-code-service';
-import { Ballot } from '../../voting-system/ballot';
+import { Ballot } from '../../models/ballot';
 import { QuestionDialogComponent } from 'src/app/reusables/question-dialog/question-dialog.component';
 
 export interface BallotExportRow {

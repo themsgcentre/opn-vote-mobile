@@ -8,10 +8,10 @@ import {
   RGB,
   PDFName,
 } from "pdf-lib";
-import { CreatePdfOptions } from "../qr-code/create-pdf-options";
-import { PdfType } from "../qr-code/pdf-type";
-import { PdfContentItem } from "../qr-code/pdf-content-item";
-import { ElectionPdfInformation } from "../qr-code/election-pdf-info";
+import { CreatePdfOptions } from "../import-export/create-pdf-options";
+import { PdfType } from "../import-export/pdf-type";
+import { PdfContentItem } from "../import-export/pdf-content-item";
+import { ElectionPdfInformation } from "../import-export/election-pdf-info";
 import { Injectable } from "@angular/core";
 
 const PDF_SUBJECT_QR_PREFIX = 'QRCODE:';

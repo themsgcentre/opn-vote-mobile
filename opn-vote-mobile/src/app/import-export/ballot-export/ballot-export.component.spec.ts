@@ -8,7 +8,7 @@ import { QrCodeService } from '../../services/qr-code-service';
 import { PdfService } from '../../services/pdf-service';
 import { FileSaveService } from '../../services/file-save-service';
 import type { ElectionInformation } from '../../models/election-information';
-import type { Ballot } from '../../voting-system/ballot';
+import type { Ballot } from '../../models/ballot';
 
 const stubBallot: Ballot = {
   electionId: 42,

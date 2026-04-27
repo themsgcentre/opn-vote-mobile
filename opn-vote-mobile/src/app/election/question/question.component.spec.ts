@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { QuestionComponent } from './question.component';
 import type { Question } from '../../models/question';
-import { VoteOption } from '../../voting-system/vote-option';
+import { VoteOption } from '../../models/vote-option';
 
 const mockQuestion: Question = {
   key: 0,

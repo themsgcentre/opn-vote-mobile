@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { IonContent } from "@ionic/angular/standalone";
-import { ElectionListComponent } from "./election-list/election-list.component";
+import { ElectionListComponent } from "../election/election-list/election-list.component";
 import { Observable, of } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';

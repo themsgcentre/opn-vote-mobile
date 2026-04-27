@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { QuestionListComponent } from './question-list.component';
 import type { Question } from '../../models/question';
-import { VoteOption } from '../../voting-system/vote-option';
+import { VoteOption } from '../../models/vote-option';
 
 const questions: Question[] = [
   { key: 0, text: 'Frage 1', imageUrl: '' },

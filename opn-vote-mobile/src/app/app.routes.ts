@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { HomePageComponent } from './home-page/home-page.component';
-import { VoteHistoryComponent } from './vote-history/vote-history.component';
+import { VoteHistoryComponent } from './election/vote-history/vote-history.component';
 import { ElectionDetailViewComponent } from './election/election-detail-view/election-detail-view.component';
 import { VotingComponent } from './election/voting/voting.component';
 import { RegistrationComponent } from './election/registration/registration.component';

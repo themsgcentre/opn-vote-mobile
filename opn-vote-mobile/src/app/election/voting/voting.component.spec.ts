@@ -15,7 +15,7 @@ import type { ElectionInformation } from 'src/app/models/election-information';
 import type { Question } from 'src/app/models/question';
 
 import { VotingComponent } from './voting.component';
-import { VoteOption } from 'src/app/voting-system/vote-option';
+import { VoteOption } from 'src/app/models/vote-option';
 
 const mockElection: ElectionInformation = {
   id: 1,

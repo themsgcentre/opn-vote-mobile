@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { EncryptionType } from '../voting-system/encryption-type';
-import { VoteOption } from '../voting-system/vote-option';
+import { EncryptionType } from '../models/encryption-type';
+import { VoteOption } from '../models/vote-option';
 import { addSVSSignatureToVotingTransaction, createVotingTransactionWithoutSVSSignature, encryptVotes } from '../voting-system/voting';
 import { VoterCredentials } from '../models/voter-credentials';
 import { createPublicClient, hashMessage, Hex, http } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
-import { EthSignature } from '../voting-system/eth-signature';
+import { EthSignature } from '../models/eth-signature';
 import { postJson } from '../server/postJson';
-import { EncryptionKey } from '../voting-system/encryption-key';
+import { EncryptionKey } from '../models/encryption-key';
 import { ENTRY_POINT, OPNVOTE_ADDRESS, PAYMASTER_ADDRESS, UrlPaths, UrlProperties } from '../globals/url';
 import { createSmartAccountClient } from 'permissionless'
 import { to7702SimpleSmartAccount } from 'permissionless/accounts'

@@ -1,4 +1,4 @@
-import { VoteOption } from "./vote-option";
+import { VoteOption } from "../models/vote-option";
 
 export const defaultOptions = [
     { text: "Ich stimme zu.", voteOption: VoteOption.Yes },

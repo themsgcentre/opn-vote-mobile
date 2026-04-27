@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
-import { VoteOption } from '../voting-system/vote-option';
+import { VoteOption } from '../models/vote-option';
 
 const STORAGE_KEY_PREFIX = 'opnvote_vote_draft_v3_';
 const VERSION = 1;
