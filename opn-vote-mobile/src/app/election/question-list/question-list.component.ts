@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Question } from '../models/question';
 import { QuestionComponent } from '../question/question.component';
-import { LineComponent } from '../reusables/line/line.component';
-import { QuestionVote } from '../voting-system/vote';
-import { VoteOption } from '../voting-system/vote-option';
+import { LineComponent } from 'src/app/reusables/line/line.component';
+import { VoteOption } from 'src/app/voting-system/vote-option';
+import { Question } from 'src/app/models/question';
+import { QuestionVote } from 'src/app/voting-system/vote';
 
 @Component({
   selector: 'app-question-list',

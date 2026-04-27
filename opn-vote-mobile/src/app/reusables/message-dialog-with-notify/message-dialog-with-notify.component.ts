@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { IonToggle } from '@ionic/angular/standalone';
-import { TranslatePipe } from '../i18n/translate.pipe';
+import { TranslatePipe } from '../../i18n/translate.pipe';
 
 @Component({
   selector: 'app-message-dialog-with-notify',

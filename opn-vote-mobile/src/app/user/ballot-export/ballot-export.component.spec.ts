@@ -2,12 +2,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { AlertController } from '@ionic/angular/standalone';
 import { BallotExportComponent } from './ballot-export.component';
-import { BallotService } from '../services/ballot-service';
-import { ElectionService } from '../services/election-service';
-import { QrCodeService } from '../services/qr-code-service';
-import { PdfService } from '../services/pdf-service';
-import { FileSaveService } from '../services/file-save-service';
-import type { ElectionInformation } from '../models/election-information';
+import { BallotService } from '../../services/ballot-service';
+import { ElectionService } from '../../services/election-service';
+import { QrCodeService } from '../../services/qr-code-service';
+import { PdfService } from '../../services/pdf-service';
+import { FileSaveService } from '../../services/file-save-service';
+import type { ElectionInformation } from '../../models/election-information';
 
 describe('BallotExportComponent', () => {
   let fixture: ComponentFixture<BallotExportComponent>;

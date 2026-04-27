@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Question } from '../models/question';
-import { ImageComponent } from "../home-page/image/image.component";
-import { OptionsComponent } from "../options/options.component";
-import { defaultOptions } from '../voting-system/default-options';
-import { VoteOption } from '../voting-system/vote-option';
+import { Question } from '../../models/question';
+import { ImageComponent } from "../../home-page/image/image.component";
+import { defaultOptions } from '../../voting-system/default-options';
+import { VoteOption } from '../../voting-system/vote-option';
+import { OptionsComponent } from '../options/options.component';
 
 @Component({
   selector: 'app-question',

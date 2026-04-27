@@ -17,27 +17,27 @@ import {
 import {
   MasterKeyManagementComponent,
   MasterKeyPanelState,
-} from '../credentials/master-key-management/master-key-management.component';
-import { formatDate } from '../formatting/date-formatting';
-import { TranslatePipe } from '../i18n/translate.pipe';
-import { TranslationService } from '../i18n/translation.service';
-import { Ballot } from '../voting-system/ballot';
-import { MasterKey } from '../voting-system/masterkey';
+} from '../../credentials/master-key-management/master-key-management.component';
+import { formatDate } from '../../formatting/date-formatting';
+import { TranslatePipe } from '../../i18n/translate.pipe';
+import { TranslationService } from '../../i18n/translation.service';
+import { Ballot } from '../../voting-system/ballot';
+import { MasterKey } from '../../voting-system/masterkey';
 import { BallotExportComponent } from '../ballot-export/ballot-export.component';
 import { BallotImportComponent } from '../ballot-import/ballot-import.component';
-import { ImportDialogComponent } from '../import-dialog/import-dialog.component';
-import { MessageDialogComponent } from '../message-dialog/message-dialog.component';
-import { ProviderPickerComponent } from '../provider-picker/provider-picker.component';
+import { ImportDialogComponent } from '../../import-dialog/import-dialog.component';
+import { ProviderPickerComponent } from '../../provider-picker/provider-picker.component';
 import { QrScanDialogComponent } from '../qr-scan-dialog/qr-scan-dialog.component';
-import { PdfType } from '../qr-code/pdf-type';
-import { QuestionDialogComponent } from '../question-dialog/question-dialog.component';
-import { BallotService } from '../services/ballot-service';
-import { FileSaveService } from '../services/file-save-service';
-import { ImportService } from '../services/import-service';
-import { MasterKeyService } from '../services/master-key-service';
-import { PdfService } from '../services/pdf-service';
-import { QrCodeService } from '../services/qr-code-service';
-import { VoteParticipationStorageService } from '../services/vote-participation-storage.service';
+import { PdfType } from '../../qr-code/pdf-type';
+import { BallotService } from '../../services/ballot-service';
+import { FileSaveService } from '../../services/file-save-service';
+import { ImportService } from '../../services/import-service';
+import { MasterKeyService } from '../../services/master-key-service';
+import { PdfService } from '../../services/pdf-service';
+import { QrCodeService } from '../../services/qr-code-service';
+import { VoteParticipationStorageService } from '../../services/vote-participation-storage.service';
+import { MessageDialogComponent } from 'src/app/reusables/message-dialog/message-dialog.component';
+import { QuestionDialogComponent } from 'src/app/reusables/question-dialog/question-dialog.component';
 
 type InfoPopupType = 'masterkey' | 'provider' | 'ballot' | null;
 
