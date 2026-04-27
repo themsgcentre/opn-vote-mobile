@@ -31,8 +31,9 @@ describe('BallotExportComponent', () => {
   };
 
   beforeEach(async () => {
-    const alert = jasmine.createSpyObj<AlertController>('AlertController', ['create']);
-    alert.create.and.resolveTo({ present: jasmine.createSpy('present') } as unknown as HTMLIonAlertElement);
+    const alert = {
+      create: jest.fn().mockResolvedValue({ present: jest.fn() } as unknown as HTMLIonAlertElement),
+    } as unknown as AlertController;
 
     await TestBed.configureTestingModule({
       imports: [BallotExportComponent],

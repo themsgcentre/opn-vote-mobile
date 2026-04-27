@@ -26,11 +26,12 @@ describe('VotingComponent', () => {
             snapshot: { paramMap: convertToParamMap({ id: '1' }) },
           },
         },
-        { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
+        { provide: Router, useValue: { navigate: jest.fn() } },
         {
           provide: ElectionService,
           useValue: {
             getElectionInformation: () => of(null),
+            getQuestions: () => of([]),
             loadQuestions: () => of([]),
             getPublicKey: () => of(undefined),
           },

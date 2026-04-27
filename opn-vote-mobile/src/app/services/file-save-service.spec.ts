@@ -7,10 +7,12 @@ describe('FileSaveService', () => {
   let service: FileSaveService;
 
   beforeEach(() => {
-    const toast = jasmine.createSpyObj<ToastController>('ToastController', ['create']);
-    toast.create.and.resolveTo({
-      present: jasmine.createSpy('present'),
-    } as unknown as Awaited<ReturnType<ToastController['create']>>);
+    const present = jest.fn();
+    const toast = {
+      create: jest.fn().mockResolvedValue({
+        present,
+      } as unknown as Awaited<ReturnType<ToastController['create']>>),
+    } as unknown as ToastController;
 
     TestBed.configureTestingModule({
       providers: [{ provide: ToastController, useValue: toast }],
