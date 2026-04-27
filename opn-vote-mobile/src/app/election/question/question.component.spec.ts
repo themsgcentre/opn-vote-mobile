@@ -1,23 +1,42 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { QuestionComponent } from './question.component';
+import type { Question } from '../../models/question';
+import { VoteOption } from '../../voting-system/vote-option';
+
+const mockQuestion: Question = {
+  key: 0,
+  text: 'Soll die Fixture-Frage angenommen werden?',
+  imageUrl: 'https://example.com/q.png',
+};
 
 describe('QuestionComponent', () => {
-  let component: QuestionComponent;
   let fixture: ComponentFixture<QuestionComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [QuestionComponent, IonicModule.forRoot()],
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [QuestionComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(QuestionComponent);
-    component = fixture.componentInstance;
+    fixture.componentRef.setInput('question', mockQuestion);
     fixture.detectChanges();
-  }));
+  });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(fixture.componentInstance).toBeTruthy();
+  });
+
+  it('renders the question title', () => {
+    expect(fixture.nativeElement.textContent).toContain(mockQuestion.text);
+  });
+
+  it('emits VoteOption when the user selects an option', () => {
+    const spy = jest.fn();
+    fixture.componentInstance.optionSelected.subscribe(spy);
+    const firstRadio = fixture.nativeElement.querySelector('input[type="radio"]') as HTMLInputElement;
+    firstRadio.click();
+    fixture.detectChanges();
+    expect(spy).toHaveBeenCalledWith(VoteOption.Yes);
   });
 });
