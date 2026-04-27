@@ -14,7 +14,7 @@ describe('BallotExportComponent', () => {
 
   const mockElection: ElectionInformation = {
     id: 42,
-    title: 'Test-Wahl',
+    title: 'Fixture-Wahl (Komponententest)',
     summary: '',
     description: '',
     headerImage: { large: '', small: '' },

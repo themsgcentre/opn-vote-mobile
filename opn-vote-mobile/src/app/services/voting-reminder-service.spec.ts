@@ -84,7 +84,7 @@ describe('VotingReminderService', () => {
     const res = await service.scheduleVotingStartReminder({
       electionId: 5,
       votingStart: start,
-      electionTitle: 'Wahl',
+      electionTitle: 'Fixture-Wahl Titel',
     });
     expect(res).toEqual({ ok: true });
     expect(LocalNotifications.schedule).not.toHaveBeenCalled();
